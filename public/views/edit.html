@@ -1,0 +1,46 @@
+<section data-ng-controller="DealsController" data-ng-init="findOne()">
+  <form name="dealForm" class="form-horizontal col-md-6" role="form" data-ng-submit="update(dealForm.$valid)" novalidate>
+    <div class="form-group" ng-class="{ 'has-error' : submitted && dealForm.title.$invalid }">
+      <label mean-token="'edit-title'" for="title" class="col-md-2 control-label">Titre</label>
+      <div class="col-md-10">
+        <input name="title" type="text" class="form-control" data-ng-model="deal.title" id="title" placeholder="Titre" required>
+        <div ng-show="submitted && dealForm.title.$invalid" class="help-block">
+          <p ng-show="dealForm.title.$error.required">Le titre est requis</p>
+        </div>
+      </div>
+    </div>
+    <div class="form-group" ng-class="{ 'has-error' : submitted && dealForm.initialPrice.$invalid }">
+      <label mean-token="'edit-initialPrice'" for="initialPrice" class="col-md-2 control-label">Prix initial</label>
+      <div class="col-md-10">
+        <input name="initialPrice" type="number" class="form-control" data-ng-model="deal.initialPrice" id="initialPrice" placeholder="Prix initial" required>
+        <div ng-show="submitted && dealForm.initialPrice.$invalid" class="help-block">
+          <p ng-show="dealForm.initialPrice.$error.required">Le prix initial est requis</p>
+        </div>
+      </div>
+    </div>
+    <div class="form-group" ng-class="{ 'has-error' : submitted && dealForm.salePrice.$invalid }">
+      <label mean-token="'edit-salePrice'" for="salePrice" class="col-md-2 control-label">Prix de vente</label>
+      <div class="col-md-10">
+        <input name="salePrice" type="number" class="form-control" data-ng-model="deal.salePrice" id="salePrice" placeholder="Prix de vente" required>
+        <div ng-show="submitted && dealForm.salePrice.$invalid" class="help-block">
+          <p ng-show="dealForm.salePrice.$error.required">Le prix de vente est requis</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' : submitted && dealForm.description.$invalid }">
+      <label mean-token="'edit-description'" for="description" class="col-md-2 control-label">Description</label>
+      <div class="col-md-10">
+        <textarea name="description" data-ng-model="deal.description" id="description" cols="30" rows="10" placeholder="Description" class="form-control" required></textarea>
+        <div ng-show="submitted && dealForm.description.$invalid" class="help-block">
+          <p ng-show="dealForm.description.$error.required">La description est requise</p>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-md-offset-2 col-md-10">
+        <button mean-token="'edit-submit'" type="submit" class="btn btn-default">Valider</button>
+      </div>
+    </div>
+  </form>
+</section>

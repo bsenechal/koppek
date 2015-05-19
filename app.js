@@ -7,8 +7,10 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var cons = require("consolidate");
+var deals = require('./routes/deals');
+var cons = require('consolidate');
 var app = express();
+var mongoose = require('mongoose');
 
 // view engine setup
 app.engine('html', cons.swig);
@@ -26,6 +28,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/deals', deals);
+
+app.use('/bower_components', express.static(__dirname + '/bower_components'));
+app.use('/public', express.static(__dirname + '/public'));
+
+mongoose.connect('mongodb://' + (process.env.DB_PORT_27017_TCP_ADDR || 'localhost') + '/mean-dev'); 
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
