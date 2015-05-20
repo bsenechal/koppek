@@ -18,6 +18,7 @@
 	"async": "~0.9.0",
 	"lodash": "~3.8.0",
 	"keyword-extractor": "~0.0.12",
-	"snowball-stemmer.jsx" : "~0.2.1"
+	"snowball-stemmer.jsx" : "~0.2.1",
+	"passport" : "~0.2.1"
   }
 }

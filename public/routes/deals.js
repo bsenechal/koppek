@@ -27,29 +27,29 @@ angular.module('deals').config(['$stateProvider',
     $stateProvider
       .state('all deals', {
         url: '/deals',
-        templateUrl: 'deals/views/list.html'
+        templateUrl: '../views/list.html'
       })
       .state('deals by radius', {
         url: '/dealsbyradius',
-        templateUrl: 'deals/views/list.html'
+        templateUrl: '../views/list.html'
       })
       .state('create deal', {
         url: '/deals/create',
-        templateUrl: 'deals/views/create.html',
+        templateUrl: '../views/create.html',
         resolve: {
           loggedin: checkLoggedin
         }
       })
       .state('edit deal', {
         url: '/deals/:dealId/edit',
-        templateUrl: 'deals/views/edit.html',
+        templateUrl: '../views/edit.html',
         resolve: {
           loggedin: checkLoggedin
         }
       })
       .state('deal by id', {
         url: '/deals/:dealId',
-        templateUrl: 'deals/views/view.html',
+        templateUrl: '../views/view.html',
         resolve: {
           loggedin: checkLoggedin
         }

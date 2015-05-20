@@ -15,7 +15,7 @@ var mongoose = require('mongoose');
 // view engine setup
 app.engine('html', cons.swig);
 app.set('view engine', 'html');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'public/views'));
 
 
 // uncomment after placing your favicon in /public
