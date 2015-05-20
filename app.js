@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var deals = require('./routes/deals');
+var comments = require('./routes/comments');
 var cons = require('consolidate');
 var app = express();
 var mongoose = require('mongoose');
@@ -29,6 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/deals', deals);
+app.use('/comments', comments);
 
 app.use('/bower_components', express.static(__dirname + '/bower_components'));
 app.use('/public', express.static(__dirname + '/public'));

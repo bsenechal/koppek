@@ -1,11 +1,11 @@
 'use strict';
 
-var deals = require('../models/deal');
-var tags = require('../models/tags');
-
 /**
  * Module dependencies.
  */
+var deal = require('../models/deal'); 
+var tag = require('../models/tags'); 
+ 
 var mongoose = require('mongoose'),
   Deal = mongoose.model('Deal'),
   async = require('async'),
@@ -15,28 +15,16 @@ var mongoose = require('mongoose'),
 
 var keyword_extractor = require("keyword-extractor");
 
-
 /**
  * Find deal by id
  */
-exports.deal = function(req, res, id) {
-	console.log("id " + id);
-	
-	Deal.findById(id, function (err, found) {
-		if (!err){
-			res.json(found);
-		} else {
-			return err;
-		}
-		
-	  /*console.log(found.creditCardNumber); // '****-****-****-1234'*/
-	});
-  /*Deal.load(id, function(err, deal) {
-    if (!deal) return new Error('Failed to load deal ' + id);
+exports.deal = function(req, res, next, id) {
+  Deal.load(id, function(err, deal) {
+    if (err) return next(err);
+    if (!deal) return next(new Error('Failed to load deal ' + id));
     req.deal = deal;
+    next();
   });
-  console.log(req.deal);*/
-  
 };
 
 /**
@@ -265,7 +253,6 @@ exports.show = function(req, res) {
  * List of Deals
  */
 exports.all = function(req, res) {
-
   Deal.find().sort('-created').populate('user', 'name username').exec(function(err, deals) {
     if (err) {
       return res.status(500).json({

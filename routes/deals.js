@@ -13,19 +13,19 @@ var hasAuthorization = function(req, res, next) {
   next();
 };
 
-  router.route('/deals')
-    .get(deals.all)
-    .post(auth.requiresLogin, deals.create);
-  router.route('/generateDeals')
-    .get(deals.generateDeals); 
-  router.route('/dealsbyradius')
-    .post(deals.dealsByRadius);
-  router.route('/deals/:dealId')
-    .get(auth.isMongoId, deals.show)
-    .put(auth.isMongoId, auth.requiresLogin, hasAuthorization, deals.update)
-    .delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, deals.destroy);
+router.route('/')
+  .get(deals.all)
+  .post(auth.requiresLogin, deals.create);
+router.route('/generateDeals')
+  .get(deals.generateDeals); 
+router.route('/dealsbyradius')
+  .post(deals.dealsByRadius);
+router.route('/:dealId')
+  .get(auth.isMongoId, deals.show)
+  .put(auth.isMongoId, auth.requiresLogin, hasAuthorization, deals.update)
+  .delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, deals.destroy);
 
-  // Finish with setting up the dealId param
-  router.param('dealId', deals.deal);
+// Finish with setting up the dealId param
+router.param('dealId', deals.deal);
 
 module.exports = router;

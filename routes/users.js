@@ -8,7 +8,7 @@ var router = express.Router();
 
   router.route('/logout')
     .get(users.signout);
-  router.route('/users/me')
+  router.route('/me')
     .get(users.me);
 
   // Setting up the users api
