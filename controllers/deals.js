@@ -73,9 +73,6 @@ exports.dealsByRadius = function(req, res) {
 
       });
 
-
-
-
       // //cast results in the appropriate form :
       // var dealsByRadius = [];
       // // console.log(results);
