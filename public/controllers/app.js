@@ -13,19 +13,18 @@ var Deals = new angular.module('deals',[
 var koppekApp = angular.module('koppekApp', [
   'ngRoute',
   'maps',
-  'deals'
+  'deals',
+  'ui.router'
   ]);
-
-koppekApp.config(['$routeProvider',
-  function($routeProvider) {
-    $routeProvider.
-      when('/deals', {
+/*
+koppekApp.config(function($stateProvider) {
+	$stateProvider.state('all deals', {
+        url: '/deals',
         templateUrl: 'views/deals/deals-list.html'
-      }). 
-      when('/test', {
-        templateUrl: 'error.html'
-      }). 
-      otherwise({
-        redirectTo: '/test'
-      });
-  }]);
+      })
+	  .state('deal by id', {
+        url: '/deals/:dealId',
+        templateUrl: 'views/deals/deals-view.html'
+	  });
+  });
+*/

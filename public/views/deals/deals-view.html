@@ -1,0 +1,28 @@
+<section data-ng-controller="DealsController" data-ng-init="findOne()">
+  <span>{{deal.created | date:'medium'}}</span> /
+  <span>{{deal.user.name}}</span>
+  <h2>{{deal.title}}</h2>
+  <div data-ng-if="hasAuthorization(deal)">
+    <a class="btn" href="/#!/deals/{{deal._id}}/edit">
+      <i class="glyphicon glyphicon-edit"></i>
+    </a>
+    <a class="btn" data-ng-click="remove(deal);">
+      <i class="glyphicon glyphicon-trash"></i>
+    </a>
+  </div>
+	<a class="btn" data-ng-click="updateGradePlus(deal);">
+	  <i class="glyphicon glyphicon-plus"></i>
+	</a>
+	{{deal.grade}}
+	<a class="btn" data-ng-click="updateGradeMinus(deal);">
+	  <i class="glyphicon glyphicon-minus"></i>
+	</a>
+  <a class="btn" data-ng-click="updateAlert(deal);">
+    <i class="glyphicon glyphicon-exclamation-sign"></i>
+  </a>
+  {{deal.alert}}
+  <div>Prix initial : {{deal.initialPrice}}</div>
+  <div>Prix de vente : {{deal.salePrice}}</div>
+  <div>{{deal.description}}</div>
+  <div ng-if="deal !== undefined" ng-include="'comments/views/index.html'" data-ng-controller="CommentsController" data-ng-init="findComments(deal, 2)"/>
+</section>

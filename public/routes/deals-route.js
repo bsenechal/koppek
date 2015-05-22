@@ -35,24 +35,24 @@ angular.module('deals').config(['$stateProvider',
       })
       .state('create deal', {
         url: '/deals/create',
-        templateUrl: 'deals/views/create.html',
-        resolve: {
+        templateUrl: 'views/deals/deals-create.html',
+        /*resolve: {
           loggedin: checkLoggedin
-        }
+        }*/
       })
       .state('edit deal', {
         url: '/deals/:dealId/edit',
-        templateUrl: 'deals/views/edit.html',
-        resolve: {
+        templateUrl: 'views/deals/deals-edit.html',
+        /*resolve: {
           loggedin: checkLoggedin
-        }
+        }*/
       })
       .state('deal by id', {
         url: '/deals/:dealId',
-        templateUrl: 'deals/views/view.html',
-        resolve: {
+        templateUrl: 'views/deals/deals-view.html',
+       /* resolve: {
           loggedin: checkLoggedin
-        }
+        }*/
       });
   }
 ]);

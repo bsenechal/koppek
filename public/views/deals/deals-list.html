@@ -12,9 +12,9 @@
     <ul class="deals unstyled">
       <li data-ng-repeat="deal in deals | filter:searchQuery">
         <h2>
-          <a data-ng-href="#!/deals/{{deal._id}}">{{deal.title}}</a>
+          <a data-ng-href="#/deals/{{deal._id}}">{{deal.title}}</a>
           <span data-ng-if="hasAuthorization(deal)">
-            <a class="btn" href="/#!/deals/{{deal._id}}/edit">
+            <a class="btn" ui-sref="/#/deals/{{deal._id}}/edit">
               <i class="glyphicon glyphicon-edit"></i>
             </a>
             <a class="btn" data-ng-click="remove(deal);">
@@ -42,7 +42,7 @@
         <div>{{deal.description}}</div>
       </li>
     </ul>
-    <h1 data-ng-hide="!deals || deals.length">No deals yet. <br> Why don't you <a href="/#!/deals/create">Create One</a>?</h1>
+    <h1 data-ng-hide="!deals || deals.length">No deals yet. <br> Why don't you <a ui-sref="/#!/deals/create">Create One</a>?</h1>
   </div>
 
 </section>
