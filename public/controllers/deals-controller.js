@@ -1,4 +1,5 @@
 'use strict';
+
 //depedencie 'Global' removed
 angular.module('deals').controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals',
   function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals) {

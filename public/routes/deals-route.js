@@ -27,11 +27,11 @@ angular.module('deals').config(['$stateProvider',
     $stateProvider
       .state('all deals', {
         url: '/deals',
-        templateUrl: 'partials/deal-list.html'
+        templateUrl: 'views/deals/deals-list.html'
       })
       .state('deals by radius', {
         url: '/dealsbyradius',
-        templateUrl: 'deals/views/list.html'
+        templateUrl: 'views/deals/deals-list.html'
       })
       .state('create deal', {
         url: '/deals/create',
