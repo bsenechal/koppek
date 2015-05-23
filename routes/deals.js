@@ -25,8 +25,8 @@ router.route('/:dealId')
   .get(auth.isMongoId, deals.show)
   //.put(auth.isMongoId, auth.requiresLogin, hasAuthorization, deals.update)
   .put(deals.update)
-  .delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, deals.destroy);
-
+  //.delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, deals.destroy);
+  .delete(deals.destroy);
 // Finish with setting up the dealId param
 router.param('dealId', deals.deal);
 

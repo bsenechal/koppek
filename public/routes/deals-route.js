@@ -26,7 +26,7 @@ angular.module('deals').config(['$stateProvider',
     // states for my app
     $stateProvider
       .state('all deals', {
-        url: '/deals',
+        url: '/deals/list',
         templateUrl: 'views/deals/deals-list.html'
       })
       .state('deals by radius', {

@@ -9,12 +9,24 @@ var Deals = new angular.module('deals',[
   'ui.router.compat',
   'ngResource'
   ]);
+  
+var Admin = new angular.module('admin',[
+  'ui.router.compat',
+  'ngResource'
+  ]);
+  
+var System = new angular.module('system',[
+  'ui.router.compat',
+  'ngResource'
+  ]);
 
 var koppekApp = angular.module('koppekApp', [
   'ngRoute',
   'maps',
   'deals',
-  'ui.router'
+  'ui.router',
+  'admin',
+  'system'
   ]);
 /*
 koppekApp.config(function($stateProvider) {
