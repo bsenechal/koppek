@@ -15,14 +15,16 @@ var hasAuthorization = function(req, res, next) {
 
 router.route('/')
   .get(deals.all)
-  .post(auth.requiresLogin, deals.create);
+  //.post(auth.requiresLogin, deals.create);
+  .post(deals.create);
 router.route('/generateDeals')
-  .get(deals.generateDeals); 
+  .get(deals.generateDeals);
 router.route('/dealsbyradius')
   .post(deals.dealsByRadius);
 router.route('/:dealId')
   .get(auth.isMongoId, deals.show)
-  .put(auth.isMongoId, auth.requiresLogin, hasAuthorization, deals.update)
+  //.put(auth.isMongoId, auth.requiresLogin, hasAuthorization, deals.update)
+  .put(deals.update)
   .delete(auth.isMongoId, auth.requiresLogin, hasAuthorization, deals.destroy);
 
 // Finish with setting up the dealId param

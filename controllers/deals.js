@@ -3,9 +3,11 @@
 /**
  * Module dependencies.
  */
-var deal = require('../models/deal'); 
-var tag = require('../models/tags'); 
- 
+var deal = require('../models/deal');
+var tag = require('../models/tags');
+var snowball_stemmer = require('../node_modules/snowball-stemmer.jsx/dest/french-stemmer.common.js');
+var keyword_extractor = require("keyword-extractor");
+
 var mongoose = require('mongoose'),
   Deal = mongoose.model('Deal'),
   async = require('async'),
@@ -13,7 +15,7 @@ var mongoose = require('mongoose'),
 //  Comment = mongoose.model('Comment'),
   _ = require('lodash');
 
-var keyword_extractor = require("keyword-extractor");
+
 
 /**
  * Find deal by id
@@ -112,16 +114,17 @@ exports.dealsByRadius = function(req, res) {
  */
 exports.create = function(req, res) {
   var deal = new Deal(req.body);
-
   deal.user = req.user;
 
   async.parallel([
     function(callback) {
+
       tagsManager(deal, 'create');
 
       callback();
     },
     function(callback) {
+
       deal.save(function(err) {
         if (err) {
           return res.status(500).json({
@@ -298,10 +301,9 @@ function tagsManager(deal, action){
     };
 
     function cleanText(text){
-      var tmp_keywords = keyword_extractor.extract(text, {language:"french", remove_digits: true, return_changed_case:false, remove_duplicates: true }),
-          FrenchStemmer = require('../../node_modules/snowball-stemmer.jsx/dest/french-stemmer.common.js').FrenchStemmer,
-          stemmer = new FrenchStemmer(),
-          stemmedWord, tmp, tmp2, keywords = new Array(), word;
+      var tmp_keywords = keyword_extractor.extract(text, {language:"french", remove_digits: true, return_changed_case:false, remove_duplicates: true });
+      var FrenchStemmer = snowball_stemmer.FrenchStemmer,
+          tmp, tmp2, keywords = new Array(), word;
 
       for(var i in tmp_keywords){
         tmp = tmp_keywords[i].split("’");
@@ -333,11 +335,12 @@ function tagsManager(deal, action){
                     .replace(new RegExp("[ýÿ]", 'g'),"y")
                     .replace(new RegExp("\\W", 'g'),"");
 
-        word = stemmer.stemWord(word);
+        word = (new FrenchStemmer).stemWord(word);
 
         if (word.length > 0) {
           keywords.push(word);
         }
       }
+
       return keywords;
     };
