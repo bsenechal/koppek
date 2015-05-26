@@ -24,5 +24,7 @@
   <div>Prix initial : {{deal.initialPrice}}</div>
   <div>Prix de vente : {{deal.salePrice}}</div>
   <div>{{deal.description}}</div>
-  <div ng-if="deal !== undefined" ng-include="'comments/views/index.html'" data-ng-controller="CommentsController" data-ng-init="findComments(deal, 2)"/>
+  
+   <div ng-if="deal !== undefined" ng-include="'modules/comments/views/index.client.view.html'" data-ng-controller="CommentsController" data-ng-init="findComments(deal, 2)"/>
+
 </section>

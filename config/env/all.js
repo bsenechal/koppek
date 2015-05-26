@@ -16,7 +16,7 @@ module.exports = {
 				'public/lib/bootstrap/dist/css/bootstrap.css',
 				'public/lib/bootstrap/dist/css/bootstrap-theme.css',
 			],
-			js: [
+			js: [	
 				'public/lib/angular/angular.js',
 				'public/lib/angular-resource/angular-resource.js', 
 				'public/lib/angular-cookies/angular-cookies.js', 
@@ -25,7 +25,11 @@ module.exports = {
 				'public/lib/angular-sanitize/angular-sanitize.js', 
 				'public/lib/angular-ui-router/release/angular-ui-router.js',
 				'public/lib/angular-ui-utils/ui-utils.js',
-				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js'
+				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
+				'public/lib/socket.io-client/socket.io.js',
+				'public/lib/angular-socket-io/socket.min.js',
+				'public/lib/Autolinker.js/dist/Autolinker.min.js',
+				'public/lib/angular-timeago/src/timeAgo.js',
 			]
 		},
 		css: [
