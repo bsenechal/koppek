@@ -56,8 +56,11 @@ angular.module('maps')
             $scope.package = {
                 name: 'maps'
             };
-            $scope.markers = [];
-
+            markers = [];
+            //no need to be in the scope :
+            var map,autocomplete,markers,circle,markerCluster;
+            var place_changedListener,dragendListener,bounds_changedListener,radius_changedListener,center_changedListener;
+            var singleton_cluster = 1;
 
             console.log('In MapDisplayController');
 
@@ -74,7 +77,7 @@ angular.module('maps')
 
                 //Map options  :
                 var mapOptions = {
-                    zoom: 12,
+                    zoom: 5,
                     streetViewControl: false,
                     // mapTypeControl: true,
                     mapTypeControl: false,
@@ -91,8 +94,8 @@ angular.module('maps')
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 };
 
-                if (!$scope.map) {
-                    $scope.map = new google.maps.Map(document.getElementById('map-canvas'),
+                if (!map) {
+                    map = new google.maps.Map(document.getElementById('map-canvas'),
                         mapOptions);
                 }
 
@@ -109,7 +112,7 @@ angular.module('maps')
                         document.getElementById('pac-input'));
                     console.log('initMap(): Input :' + $scope.input);
 
-                    $scope.map.controls[google.maps.ControlPosition.TOP_LEFT].push($scope.input);
+                    map.controls[google.maps.ControlPosition.TOP_LEFT].push($scope.input);
 
                     console.log('initMap(): Put input in map');
                 }
@@ -119,8 +122,8 @@ angular.module('maps')
                     //types: ['(cities)']//,
                     //componentRestrictions: {country: 'us'}
                 };
-                if (!$scope.autocomplete) {
-                    $scope.autocomplete = new google.maps.places.Autocomplete($scope.input, options);
+                if (!autocomplete) {
+                    autocomplete = new google.maps.places.Autocomplete($scope.input, options);
                 }
 
                 console.log('initMap(): autocomplete created');
@@ -136,16 +139,16 @@ angular.module('maps')
             //Map function for Create Deal Page :
             $scope.createDealMap = function(){
                 //if posible use localization to center the map:
-                geolocalize($scope.map, navigator);
+                geolocalize(map, navigator);
                 // Listen for the event fired when the user selects an item from the
                 // pick list. Retrieve the matching places for that item.
-                if ($scope.place_changedListener) {
-                    google.maps.event.removeListener($scope.place_changedListener);
+                if (place_changedListener) {
+                    google.maps.event.removeListener(place_changedListener);
                 }
 
-                $scope.place_changedListener = google.maps.event.addListener($scope.autocomplete, 'place_changed', function() {
+                place_changedListener = google.maps.event.addListener(autocomplete, 'place_changed', function() {
                     console.log('Create autocomplete Listener');
-                    var place = $scope.autocomplete.getPlace();
+                    var place = autocomplete.getPlace();
 
                     console.log('Search result :');
                     console.log(place);
@@ -169,7 +172,7 @@ angular.module('maps')
 
                     // Create a marker for each place.
                     var marker = new google.maps.Marker({
-                        map: $scope.map,
+                        map: map,
                         //icon: image,
                         title: place.name,
                         draggable: true,
@@ -186,17 +189,17 @@ angular.module('maps')
                     // console.log('resultPosition after affectation : '  + resultPosition);
 
                     //remove old marker :
-                    for (var j = 0; j < $scope.markers.length; j++) {
-                        $scope.markers[j].setMap(null);
+                    for (var j = 0; j < markers.length; j++) {
+                        markers[j].setMap(null);
                     }
 
-                    $scope.markers.push(marker);
+                    markers.push(marker);
 
-                    if ($scope.dragendListener) {
-                        google.maps.event.removeListener($scope.dragendListener);
+                    if (dragendListener) {
+                        google.maps.event.removeListener(dragendListener);
                     }
 
-                    $scope.dragendListener = google.maps.event.addListener(marker, 'dragend', function() {
+                    dragendListener = google.maps.event.addListener(marker, 'dragend', function() {
                         console.log('marker dragged');
 
                         $rootScope.latitude = marker.getPosition().lat();
@@ -208,24 +211,24 @@ angular.module('maps')
                         $scope.$apply();
 
                         console.log(marker.getPosition());
-                        $scope.map.setCenter(marker.getPosition());
+                        map.setCenter(marker.getPosition());
                     });
 
                     // bounds.extend(place.geometry.location);
 
                     //setmap center on marker :
                     if (marker) {
-                        $scope.map.setCenter(marker.getPosition());
+                        map.setCenter(marker.getPosition());
                     }
                 });
 
-                if ($scope.bounds_changedListener) {
-                    google.maps.event.removeListener($scope.bounds_changedListener);
+                if (bounds_changedListener) {
+                    google.maps.event.removeListener(bounds_changedListener);
                 }
                 // Bias the autocomplete results towards places that are within the bounds of the
                 // current map's viewport.
-                $scope.bounds_changedListener = google.maps.event.addListener($scope.map, 'bounds_changed', function() {
-                    var bounds = $scope.map.getBounds();
+                bounds_changedListener = google.maps.event.addListener(map, 'bounds_changed', function() {
+                    var bounds = map.getBounds();
                     //limit the search on the specific displayed map :
                     //autocomplete.setBounds(bounds);
                 });            
@@ -237,14 +240,15 @@ angular.module('maps')
                 console.log('listenMap(): start setting map listener');
                 // Listen for the event fired when the user selects an item from the
                 // pick list. Retrieve the matching places for that item.
-                if ($scope.place_changedListener) {
-                    google.maps.event.removeListener($scope.place_changedListener);
+                if (place_changedListener) {
+                    google.maps.event.removeListener(place_changedListener);
                 }
 
                 console.log('listenMap(): Create autocomplete Listener');
-                $scope.place_changedListener = google.maps.event.addListener($scope.autocomplete, 'place_changed', function() {
+                place_changedListener = google.maps.event.addListener(autocomplete, 'place_changed', function() {
+                    
                     console.log('listenMap(): place_changed');
-                    var place = $scope.autocomplete.getPlace();
+                    var place = autocomplete.getPlace();
 
                     console.log('listenMap(): Search result :');
                     console.log(place);
@@ -258,53 +262,61 @@ angular.module('maps')
                     }
                     console.log('listenMap(): init search circle :');
                     //clean old circle !
-                    if ($scope.circle) {
-                        $scope.circle.setMap(null);
+                    if (circle) {
+                        circle.setMap(null);
                     }
-                    $rootScope.srchRadius = 1000000;
+                    if(!$rootScope.srchRadius){
+                        $rootScope.srchRadius = 1000000;                        
+                    }
+                    else
+                    {
+                       $rootScope.srchRadius = +$rootScope.srchRadius; 
+                    }
                     var circleOptions = {
                         center: place.geometry.location,
                         radius: $rootScope.srchRadius,
-                        map: $scope.map,
+                        map: map,
                         editable: true
                     };
-                    $scope.circle = new google.maps.Circle(circleOptions);
+                    circle = new google.maps.Circle(circleOptions);
 
-                    $rootScope.srchLng = $scope.circle.getCenter().lng();
-                    $rootScope.srchLat = $scope.circle.getCenter().lat();
+                    $rootScope.srchLng = circle.getCenter().lng();
+                    $rootScope.srchLat = circle.getCenter().lat();
 
 
-                    if ($scope.radius_changedListener) {
-                        google.maps.event.removeListener($scope.radius_changedListener);
+                    if (radius_changedListener) {
+                        google.maps.event.removeListener(radius_changedListener);
                     }
-                    $scope.radius_changedListener = google.maps.event.addListener($scope.circle, 'radius_changed', function() {
+                    radius_changedListener = google.maps.event.addListener(circle, 'radius_changed', function() {
                         console.log('listenMap(): radius_changed');
-                        $rootScope.srchRadius = $scope.circle.getRadius();
-                        // $rootScope.srchLng = $scope.circle.getCenter().lng();
-                        // $rootScope.srchLat = $scope.circle.getCenter().lat();
+                        $rootScope.srchRadius = circle.getRadius();
+                        // $rootScope.srchLng = circle.getCenter().lng();
+                        // $rootScope.srchLat = circle.getCenter().lat();
                         //Clear listener :
-                        // $scope.mapChanged = true;
+                        // mapChanged = true;
+                        // map.fitBounds(circle.getBounds()% 2400000);
                         $scope.$apply();
                         $scope.queryByRadius();
                     });
 
-                    if ($scope.center_changedListener) {
-                        google.maps.event.removeListener($scope.center_changedListener);
+                    if (center_changedListener) {
+                        google.maps.event.removeListener(center_changedListener);
                     }
-                    $scope.center_changedListener = google.maps.event.addListener($scope.circle, 'center_changed', function() {
+                    center_changedListener = google.maps.event.addListener(circle, 'center_changed', function() {
                         console.log('listenMap(): center_changed');
-                        // $rootScope.srchRadius = $scope.circle.getRadius();
-                        $rootScope.srchLng = $scope.circle.getCenter().lng();
-                        $rootScope.srchLat = $scope.circle.getCenter().lat();
+                        // $rootScope.srchRadius = circle.getRadius();
+                        $rootScope.srchLng = circle.getCenter().lng();
+                        $rootScope.srchLat = circle.getCenter().lat();
                         //Clear listener :
-                        // $scope.mapChanged = true;
-                        $scope.map.setCenter($scope.circle.getCenter());
+                        // mapChanged = true;
                         $scope.$apply();
                         $scope.queryByRadius();
 
                     });
+
+                    map.fitBounds(circle.getBounds());
                     //Clear listener :
-                    // $scope.mapChanged = true;
+                    // mapChanged = true;
                     $scope.$apply();
                     $scope.queryByRadius();
                 });
@@ -316,14 +328,20 @@ angular.module('maps')
             $scope.markerMap = function () {
                 console.log('markerMap(): cleaning old circle');
                 //clean old circle !
-                if ($scope.circle && !($rootScope.srchLng && $rootScope.srchLat && $rootScope.srchRadius)) {
-                    $scope.circle.setMap(null);
+                if (circle && !($rootScope.srchLng && $rootScope.srchLat && $rootScope.srchRadius)) {
+                    circle.setMap(null);
                 }
                 console.log('markerMap(): start updating map markers');
-                //remove old marker :
-                for (var j = 0; j < $scope.markers.length; j++) {
-                    $scope.markers[j].setMap(null);
+
+                //clear cluster :
+                if(markerCluster){
+                    markerCluster.removeMarkers(markers, true);
                 }
+                //remove old marker :
+                for (var j = 0; j < markers.length; j++) {
+                    markers[j].setMap(null);
+                }
+                markers = [];
 
                 console.log('markerMap(): deals');
                 console.log($scope.deals);
@@ -333,7 +351,7 @@ angular.module('maps')
 
                         // Create a marker for each place.
                         var marker = new google.maps.Marker({
-                            map: $scope.map,
+                            map: map,
                             //icon: image,
                             title: $scope.deals[i].title,
                             draggable: false,
@@ -346,24 +364,37 @@ angular.module('maps')
                         // console.log('resultPosition before affectation : ' + resultPosition);
                         // resultPosition = marker.getPosition();
                         // console.log('resultPosition after affectation : '  + resultPosition);
-                        $scope.markers.push(marker);
+                        markers.push(marker);
                     }
-                    var markerCluster = new MarkerClusterer($scope.map, $scope.markers, {
-                      averageCenter: true
-                    });
+                    //TODO : clear marker once load !
+                    if(singleton_cluster == 1){
+                        markerCluster = new MarkerClusterer(map, markers, {
+                          averageCenter: true
+                        });
+                        singleton_cluster = 0;
+                    }
+                    else
+                    {
+                        //clean before, now update :
+                        markerCluster.addMarkers(markers);
+                    }
+                    // }
                     //recenter on result :
-                    var bounds = new google.maps.LatLngBounds();
-                    for (i = 0; i < $scope.markers.length; i++) {
-                        bounds.extend($scope.markers[i].getPosition());
-                    }
+                    //already done on search circle ! -> not yet!
+                    // if(!circle){
+                        var bounds = new google.maps.LatLngBounds();
+                        for (i = 0; i < markers.length; i++) {
+                            bounds.extend(markers[i].getPosition());
+                        }
 
-                    $scope.map.fitBounds(bounds);
+                        map.fitBounds(bounds);
+                    // }
                     console.log('markerMap(): markers updated');
                 }
                 else{
                     console.log('markerMap(): $scope.deals is not yet set !');
-                    if($scope.circle){
-                        $scope.map.setCenter($scope.circle.getCenter());
+                    if(circle){
+                        map.setCenter(circle.getCenter());
                     }
                 }
 

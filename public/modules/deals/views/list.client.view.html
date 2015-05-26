@@ -1,4 +1,5 @@
 <section data-ng-controller="DealsController">
+  <input type="range" ng-model="$root.srchRadius" min="0" max="10000000" step="10000" style="width: 140px" class="ng-pristine ng-valid">
   <div class=".col-md-4" data-ng-controller="MapsController" data-ng-init="Map()">
       Result on a Map : [{{srchLng}},{{srchLat}}] rad : {{srchRadius}}
       <input id="pac-input" class="controls" type="text" placeholder="Enter a location">
@@ -10,7 +11,7 @@
   </div>
   <div class=".col-md-4">
     <ul class="deals unstyled">
-      <li data-ng-repeat="deal in deals | filter:searchQuery">
+      <li data-ng-repeat="deal in deals by deal._id| filter:searchQuery">
         <h2>
           <a data-ng-href="#!/deals/{{deal._id}}">{{deal.title}}</a>
           <span data-ng-if="hasAuthorization(deal)">
@@ -33,13 +34,13 @@
           </a>
           {{deal.alert}}
         </h2>
-        <span>{{deal.created | date:'medium'}}</span> /
-        <span>{{deal.user.name}}</span>
-        <div><strong>Prix initial :</strong> {{deal.initialPrice}}</div>
-        <div><strong>Prix de vente :</strong> {{deal.salePrice}}</div>
-        <div><strong>Latitude :</strong> {{deal.latitude}}</div>
-        <div><strong>Longitude :</strong> {{deal.longitude}}</div>
-        <div>{{deal.description}}</div>
+        <span>{{::deal.created | date:'medium'}}</span> /
+        <span>{{::deal.user.name}}</span>
+        <div><strong>Prix initial :</strong> {{::deal.initialPrice}}</div>
+        <div><strong>Prix de vente :</strong> {{::deal.salePrice}}</div>
+        <div><strong>Latitude :</strong> {{::deal.latitude}}</div>
+        <div><strong>Longitude :</strong> {{::deal.longitude}}</div>
+        <div>{{::deal.description}}</div>
       </li>
     </ul>
     <h1 data-ng-hide="!deals || deals.length">No deals yet. <br> Why don't you <a href="/#!/deals/create">Create One</a>?</h1>

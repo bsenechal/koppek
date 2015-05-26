@@ -38,13 +38,13 @@ angular.module('admin').controller('AdminDealsController', ['$scope', 'Menus', '
             type: 'text',
             inTable: true
         }];
-        $scope.deal = {};
+        // $scope.deal = {};
 
         $scope.init = function() {
             Deals.query({}, function(deals) {
                 $scope.deals = deals;
             });
-			
+            console.log('admin : init() : end');
         };
 
         $scope.add = function() {

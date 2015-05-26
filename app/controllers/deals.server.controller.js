@@ -279,7 +279,6 @@ exports.all = function(req, res) {
     console.log('all');
     console.log(deals);
     res.json(deals);
-
   });
 };
 
