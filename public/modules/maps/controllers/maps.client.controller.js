@@ -408,9 +408,14 @@ angular.module('maps')
                     $scope.initMap();
                     $scope.listenMap();
                     $scope.findByRadius();
-                    $scope.$watch('queryExecuted',function(){
+                    $scope.$watch('queryExecuted',function(newValue, oldValue){
                         // $scope.listenMap();
-                        $scope.markerMap();
+                        if(newValue === oldValue){
+                            return;
+                        }
+                        else{                        
+                            $scope.markerMap();
+                        }
                     });
                     // $scope.markerMap();
                     // $scope.$watch('deals',function(){

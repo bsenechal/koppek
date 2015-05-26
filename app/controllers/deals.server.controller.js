@@ -51,6 +51,8 @@ exports.dealsByRadius = function(req, res) {
     {
       maxDistance : srchRadius/6378137,
       distanceMultiplier: 6378137,
+      //change default limit output... to study !
+      num : 2000,
       // query :
       spherical : true
     },
