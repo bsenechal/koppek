@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('deals').controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals',
-  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals) {
-
+angular.module('deals').controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket',
+  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket) {
+	
     // $scope.hasAuthorization = function(deal) {
     //   if (!deal || !deal.user){
     //     return false;

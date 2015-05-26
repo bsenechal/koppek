@@ -7,11 +7,14 @@ var mongoose = require('mongoose'),
   Deal = mongoose.model('Deal'),
   async = require('async'),
   Tag = mongoose.model('Tag'),
+  http = require('http'),
+  io = require('socket.io')(http),
 //  Comment = mongoose.model('Comment'),
   _ = require('lodash');
 
 var snowball_stemmer = require('../../node_modules/snowball-stemmer.jsx/dest/french-stemmer.common.js');
 var keyword_extractor = require('keyword-extractor');
+
 
 function cleanText(text){
       var tmp_keywords = keyword_extractor.extract(text, {language:'french', remove_digits: true, return_changed_case:false, remove_duplicates: true });

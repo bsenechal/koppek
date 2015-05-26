@@ -15,6 +15,7 @@ var fs = require('fs'),
 	cookieParser = require('cookie-parser'),
 	helmet = require('helmet'),
 	passport = require('passport'),
+	socketio = require('socket.io'),
 	mongoStore = require('connect-mongo')({
 		session: session
 	}),
@@ -109,7 +110,7 @@ module.exports = function(db) {
 	app.use(helmet.nosniff());
 	app.use(helmet.ienoopen());
 	app.disable('x-powered-by');
-
+	
 	// Setting the app router and static folder
 	app.use(express.static(path.resolve('./public')));
 

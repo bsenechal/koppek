@@ -11,4 +11,15 @@ angular.module('deals').factory('Deals', ['$resource',
       }
     });
   }
+])
+
+//socket factory that provides the socket service
+.factory('Socket', ['socketFactory',
+    function(socketFactory) {
+        return socketFactory({
+            prefix: '',
+            ioSocket: io.connect('http://localhost:3000')
+        });
+    }
 ]);
+;
