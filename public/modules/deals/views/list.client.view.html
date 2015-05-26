@@ -9,30 +9,31 @@
     TODO : (once the map service is generic -> update display node according to search criteria)
     Recherche : <input ng-model="searchQuery">
   </div>
+  <input type="range" ng-model="limit" min="0" max="1000" step="10" style="width: 240px" class="ng-pristine ng-valid">
   <div class=".col-md-4">
     <ul class="deals unstyled">
-      <li data-ng-repeat="deal in deals track by deal._id| filter:searchQuery">
+      <li data-ng-repeat="deal in deals track by deal._id| filter:searchQuery ">
         <h2>
-          <a data-ng-href="#!/deals/{{deal._id}}">{{deal.title}}</a>
-          <span data-ng-if="hasAuthorization(deal)">
+          <a data-ng-href="#!/deals/{{deal._id}}">{{::deal.title}}</a>
+<!--           <span data-ng-if="hasAuthorization(deal)">
             <a class="btn" href="/#!/deals/{{deal._id}}/edit">
               <i class="glyphicon glyphicon-edit"></i>
             </a>
             <a class="btn" data-ng-click="remove(deal);">
               <i class="glyphicon glyphicon-trash"></i>
             </a>
-          </span>
+          </span> -->
       <a class="btn" data-ng-click="updateGradePlus(deal);">
             <i class="glyphicon glyphicon-plus"></i>
           </a>
-          {{deal.grade}}
+          {{::deal.grade}}
           <a class="btn" data-ng-click="updateGradeMinus(deal);">
             <i class="glyphicon glyphicon-minus"></i>
           </a>
           <a class="btn" data-ng-click="updateAlert(deal);">
             <i class="glyphicon glyphicon-exclamation-sign"></i>
           </a>
-          {{deal.alert}}
+          {{::deal.alert}}
         </h2>
         <span>{{::deal.created | date:'medium'}}</span> /
         <span>{{::deal.user.name}}</span>
