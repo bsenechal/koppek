@@ -40,6 +40,12 @@ module.exports = function(db) {
 	app.locals.facebookAppId = config.facebook.clientID;
 	app.locals.jsFiles = config.getJavaScriptAssets();
 	app.locals.cssFiles = config.getCSSAssets();
+	
+	// Attach Socket.io
+	var server = http.createServer(app);
+	var io = socketio.listen(server);
+	app.set('socketio', io);
+	app.set('server', server);
 
 	// Passing the request url to environment locals
 	app.use(function(req, res, next) {
