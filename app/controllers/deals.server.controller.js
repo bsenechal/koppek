@@ -9,7 +9,7 @@ var mongoose = require('mongoose'),
   Tag = mongoose.model('Tag'),
   http = require('http'),
   io = require('socket.io')(http),
-//  Comment = mongoose.model('Comment'),
+  Comment = mongoose.model('Comment'),
   _ = require('lodash');
 
 var snowball_stemmer = require('../../node_modules/snowball-stemmer.jsx/dest/french-stemmer.common.js');
@@ -320,6 +320,17 @@ exports.destroy = function(req, res) {
 
       callback();
     },
+	function(callback) {
+      Comment.find().remove({ parent: deal._id }).exec(function(err){
+		if (err) {
+		  return res.json(500, {
+			error: 'Cannot delete the comments'
+		  });
+		}
+	  });
+
+      callback();
+    },
     function(callback) {
       deal.remove(function(err) {
         if (err) {
@@ -332,14 +343,6 @@ exports.destroy = function(req, res) {
       callback();
     }
   ]);
-
-/*  Comment.find().remove({ parent: deal._id }).exec(function(err){
-    if (err) {
-      return res.json(500, {
-        error: 'Cannot delete the comments'
-      });
-    }
-  });*/
 };
 
 /**
