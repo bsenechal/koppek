@@ -10,7 +10,7 @@
 				<img ng-src ="{{comment.user.picture}}">
 			</div> -->
 			<div>
- 				<span class="comment-author"><a href="#!/users/{{comment.user._id}}">{{comment.user.name}}</a></span>
+				<span class="comment-author"><a href="#!/users/{{comment.user._id}}">{{comment.user.name}}</a></span>
 				<span class="comment-time-ago" time-ago from-time="{{comment.created}}"></span>
 				<div class="comment-body-container">
 					<span data-ng-if="!comment.editable" class="comment-body" ng-bind-html="comment.body | newlines | parseUrlFilter:'_self' ">{{comment.body}}</span>
