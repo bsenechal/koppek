@@ -15,15 +15,15 @@
       <li data-ng-repeat="deal in deals track by deal._id| filter:searchQuery ">
         <h2>
           <a data-ng-href="#!/deals/{{deal._id}}">{{::deal.title}}</a>
-<!--           <span data-ng-if="hasAuthorization(deal)">
+<!--          <span data-ng-if="hasAuthorization(deal)">
             <a class="btn" href="/#!/deals/{{deal._id}}/edit">
               <i class="glyphicon glyphicon-edit"></i>
             </a>
             <a class="btn" data-ng-click="remove(deal);">
               <i class="glyphicon glyphicon-trash"></i>
             </a>
-          </span> -->
-      <a class="btn" data-ng-click="updateGradePlus(deal);">
+          </span>
+ -->       <a class="btn" data-ng-click="updateGradePlus(deal);">
             <i class="glyphicon glyphicon-plus"></i>
           </a>
           {{::deal.grade}}

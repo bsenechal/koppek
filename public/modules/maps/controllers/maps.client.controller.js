@@ -347,11 +347,13 @@ angular.module('maps')
                 console.log($scope.deals);
 
                 if($scope.deals.length > 0){
+                    var marker = null;
                     for (var i = 0; i < $scope.deals.length; i++) {
 
                         // Create a marker for each place.
-                        var marker = new google.maps.Marker({
-                            map: map,
+                        marker = new google.maps.Marker({
+                            //necessaire ????
+                            // map: map,
                             //icon: image,
                             title: $scope.deals[i].title,
                             draggable: false,
