@@ -30,6 +30,7 @@ module.exports = {
 				'public/lib/angular-socket-io/socket.min.js',
 				'public/lib/Autolinker.js/dist/Autolinker.min.js',
 				'public/lib/angular-timeago/src/timeAgo.js',
+				'public/lib/ngInfiniteScroll/build/ng-infinite-scroll.min.js',
 			]
 		},
 		css: [

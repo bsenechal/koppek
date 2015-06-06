@@ -11,10 +11,16 @@ module.exports = function(app) {
     .get(deals.all)
     .post(users.requiresLogin, deals.create);
     // .post(deals.create);
+  app.route('/Markers')
+    .get(deals.allMarkers);
+  app.route('/MarkersByRadius')
+    .post(deals.markersByRadius);
   app.route('/generateDeals')
     .get(deals.generateDeals); 
   app.route('/dealsbyradius')
     .post(deals.dealsByRadius);
+  app.route('/dealslimited')
+    .post(deals.limited);
   app.route('/deals/:dealId')
     .get(deals.show)
     .put(users.requiresLogin, users.hasAuthorization(['admin']), deals.update)

@@ -257,7 +257,7 @@ angular.module('maps')
                         console.log('listenMap(): no place result !');
                         $rootScope.srchLng = null;
                         $rootScope.srchLat = null;
-                        $scope.queryAll();
+                        $scope.findByRadius();
                         return;
                     }
                     console.log('listenMap(): init search circle :');
@@ -296,7 +296,8 @@ angular.module('maps')
                         // mapChanged = true;
                         // map.fitBounds(circle.getBounds()% 2400000);
                         $scope.$apply();
-                        $scope.queryByRadius();
+                        $scope.findByRadius();
+                        // $scope.queryByRadius();
                     });
 
                     if (center_changedListener) {
@@ -310,7 +311,8 @@ angular.module('maps')
                         //Clear listener :
                         // mapChanged = true;
                         $scope.$apply();
-                        $scope.queryByRadius();
+                        $scope.findByRadius();
+                        // $scope.queryByRadius();
 
                     });
 
@@ -318,7 +320,8 @@ angular.module('maps')
                     //Clear listener :
                     // mapChanged = true;
                     $scope.$apply();
-                    $scope.queryByRadius();
+                    $scope.findByRadius();
+                    // $scope.queryByRadius();
                 });
                 console.log('listenMap(): listener set');
             };
@@ -344,25 +347,26 @@ angular.module('maps')
                 markers = [];
 
                 console.log('markerMap(): deals');
-                console.log($scope.deals);
+                console.log($scope.dealMarkers);
 
-                if($scope.deals.length > 0){
+                if($scope.dealMarkers.length > 0){
                     var marker = null;
-                    for (var i = 0; i < $scope.deals.length; i++) {
+                    for (var i = 0; i < $scope.dealMarkers.length; i++) {
 
                         // Create a marker for each place.
                         marker = new google.maps.Marker({
                             //necessaire ????
                             // map: map,
                             //icon: image,
-                            title: $scope.deals[i].title,
+                            title: 'test',
+                            // title: $scope.dealMarkers[i].title,
                             draggable: false,
                             // animation: google.maps.Animation.DROP,
-                            position: new google.maps.LatLng($scope.deals[i].latitude, $scope.deals[i].longitude)
+                            position: new google.maps.LatLng($scope.dealMarkers[i].loc[1], $scope.dealMarkers[i].loc[0])
                         });
 
-                        console.log('markerMap(): marker ' + i + '; position:');
-                        console.log(marker.position);
+                        // console.log('markerMap(): marker ' + i + '; position:');
+                        // console.log(marker.position);
                         // console.log('resultPosition before affectation : ' + resultPosition);
                         // resultPosition = marker.getPosition();
                         // console.log('resultPosition after affectation : '  + resultPosition);
@@ -394,7 +398,7 @@ angular.module('maps')
                     console.log('markerMap(): markers updated');
                 }
                 else{
-                    console.log('markerMap(): $scope.deals is not yet set !');
+                    console.log('markerMap(): $scope.dealMarkers is not yet set !');
                     if(circle){
                         map.setCenter(circle.getCenter());
                     }
