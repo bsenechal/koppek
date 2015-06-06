@@ -16,10 +16,51 @@ angular.module('deals').controller('DealsController', ['$scope','$rootScope','$c
     $scope.limitStart = 0;
     $scope.limitEnd = limitDelta;
     $scope.busyLoadingData = true;
-
+	$scope.uploadProgress = 0;
+	$scope.creds = {
+		  bucket: 'koppekimages',
+		  access_key: 'AKIAJUN7X3P4N6YRHPIQ',
+		  secret_key: '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'
+	}
+	
+	$scope.upload = function() {
+	  // Configure The S3 Object 
+	  AWS.config.update({ accessKeyId: $scope.creds.access_key, secretAccessKey: $scope.creds.secret_key });
+	  AWS.config.region = 'eu-west-1';
+	  var bucket = new AWS.S3({ params: { Bucket: $scope.creds.bucket } });
+	 
+	  if($scope.file) {
+		var params = { Key: $scope.file.name, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
+	 
+		bucket.putObject(params, function(err, data) {
+		  if(err) {
+			// There Was An Error With Your S3 Config
+			alert(err.message);
+			return false;
+		  }
+		  else {
+			// Success!
+			alert('Upload ok :D');
+		  }
+		})
+		.on('httpUploadProgress',function(progress) {
+			  // Log Progress Information
+			  $scope.$apply(function() { 
+				$scope.uploadProgress = Math.round(progress.loaded / progress.total * 100);
+			  });
+			  
+			});
+	  }
+	  else {
+		// No File Selected
+		alert('No File Selected');
+	  }
+	}
+		
     $scope.create = function(isValid) {
       if (isValid) {
         this.loc = [this.longitude,this.latitude];
+
         var deal = new Deals({
           title: this.title,
           initialPrice: this.initialPrice,
@@ -27,7 +68,8 @@ angular.module('deals').controller('DealsController', ['$scope','$rootScope','$c
           latitude: this.latitude,
           longitude: this.longitude,
           loc : this.loc,
-          description: this.description
+          description: this.description,
+		  image: $scope.file.name
         });
         console.log('create: Tmp deal');
         console.log(deal);
@@ -42,6 +84,7 @@ angular.module('deals').controller('DealsController', ['$scope','$rootScope','$c
         this.longitude = '';
         this.loc = [];
         this.description = '';
+		this.description = '';
       } else {
         $scope.submitted = true;
       }

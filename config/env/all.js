@@ -31,6 +31,7 @@ module.exports = {
 				'public/lib/Autolinker.js/dist/Autolinker.min.js',
 				'public/lib/angular-timeago/src/timeAgo.js',
 				'public/lib/ngInfiniteScroll/build/ng-infinite-scroll.min.js',
+				'public/lib/aws-sdk-js/dist/aws-sdk.min.js',
 			]
 		},
 		css: [

@@ -19,6 +19,7 @@
     "angular-timeago": "~0.1.11",
     "Autolinker.js": "~0.17.1",
     "angular-elastic": "~2.4.2",
-    "ngInfiniteScroll": "~1.0.0"
+    "ngInfiniteScroll": "~1.0.0",
+	"aws-sdk-js": "~2.1.33"
 	}
 }

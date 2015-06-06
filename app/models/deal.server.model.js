@@ -62,7 +62,12 @@ var DealSchema = new Schema({
   user: {
     type: Schema.ObjectId,
     ref: 'User'
-  }
+  },
+  image: {
+    type: String,
+    required: true,
+    trim: true
+  },
 });
 
 /**
