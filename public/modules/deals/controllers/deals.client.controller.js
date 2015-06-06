@@ -17,6 +17,13 @@ angular.module('deals').controller('DealsController', ['$scope','$rootScope','$c
     $scope.limitEnd = limitDelta;
     $scope.busyLoadingData = true;
 	$scope.uploadProgress = 0;
+	
+	// Nécessaire pour la création de deal
+	$scope.onlineDeal = false;
+	$scope.validate = false;
+	$scope.longitude = 0;
+	$scope.latitude = 0;
+	
 	$scope.creds = {
 		  bucket: 'koppekimages',
 		  access_key: 'AKIAJUN7X3P4N6YRHPIQ',
@@ -39,6 +46,9 @@ angular.module('deals').controller('DealsController', ['$scope','$rootScope','$c
 			return false;
 		  }
 		  else {
+			  $scope.$apply(function() { 
+				$scope.validate = true;
+			  });
 			// Success!
 			alert('Upload ok :D');
 		  }
@@ -69,7 +79,8 @@ angular.module('deals').controller('DealsController', ['$scope','$rootScope','$c
           longitude: this.longitude,
           loc : this.loc,
           description: this.description,
-		  image: $scope.file.name
+		  image: $scope.file.name,
+		  onlineDeal: this.onlineDeal,
         });
         console.log('create: Tmp deal');
         console.log(deal);

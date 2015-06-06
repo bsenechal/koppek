@@ -45,22 +45,28 @@
 						{{uploadProgress}}%
 					  </div>
 				</div>
-				<button class="btn btn-info" ng-click="upload()">Transférer</button>
+				<button type="button" class="btn btn-info" ng-click="upload()">Transférer</button>
         </div>
       </div>
-      <div class="form-group" ng-class="{ 'has-error' : submitted && dealForm.latitude.$invalid }" >
+	 <div class="form-group">
+		<div class="checkbox">
+			<label class="col-md-3 control-label"></label>
+			<input type="checkbox" name="onlineDeal" data-ng-model='onlineDeal'>Deal en ligne ?
+		</div>
+	  </div>
+      <div class="form-group" ng-show="!onlineDeal" ng-class="{ 'has-error' : submitted && dealForm.latitude.$invalid }" >
         <label for="latitude" class="col-md-3 control-label">latitude</label>
         <div class="col-md-9">
-          <input name="latitude" type="text" class="form-control" data-ng-model="latitude" id="latitude" placeholder="Latitude" required>
+          <input name="latitude" type="text" class="form-control" data-ng-model="latitude" ng-required='!onlineDeal' id="latitude" placeholder="Latitude">
           <div ng-show="submitted && dealForm.latitude.$invalid" class="help-block">
             <p ng-show="dealForm.latitude.$error.required">La latitude est requise</p>
           </div>
         </div>
       </div>
-      <div class="form-group" ng-class="{ 'has-error' : submitted && dealForm.longitude.$invalid }" >
+      <div class="form-group" ng-show="!onlineDeal"  ng-class="{ 'has-error' : submitted && dealForm.longitude.$invalid }" >
         <label for="longitude" class="col-md-3 control-label">longitude</label>
         <div class="col-md-9">
-          <input name="longitude" type="text" class="form-control" data-ng-model="longitude" id="longitude" placeholder="Longitude" required>
+          <input name="longitude" type="text" class="form-control" data-ng-model="longitude" id="longitude" ng-required='!onlineDeal' placeholder="Longitude">
           <div ng-show="submitted && dealForm.longitude.$invalid" class="help-block">
             <p ng-show="dealForm.longitude.$error.required">La longitude est requise</p>
           </div>
@@ -86,7 +92,7 @@
       </div>
       <div class="form-group">
         <div class="col-md-offset-3 col-md-9">
-          <button type="submit" class="btn btn-info">Valider</button>
+          <button type="submit" ng-disabled="!validate"class="btn btn-info">Valider</button>
         </div>
       </div>
     </form>

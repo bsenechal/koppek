@@ -68,6 +68,10 @@ var DealSchema = new Schema({
     required: true,
     trim: true
   },
+  onlineDeal: {
+	type: Boolean,
+    required: true
+  }
 });
 
 /**
