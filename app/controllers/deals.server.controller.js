@@ -107,144 +107,91 @@ exports.deal = function(req, res, next, id) {
 };
 
 /**
- * TODO :
- * Find deal by latitude + longitude + radius
- */
-exports.dealsByRadius = function(req, res) {
-  // console.log(req);
-  //Dont forget to cast in order to use it in the geoNear fct as numbers :
-  var srchLng = parseFloat(req.query.srchLng),
-      srchLat = parseFloat(req.query.srchLat),
-      srchRadius = parseFloat(req.query.srchRadius);
-
-  console.log('Server Side: dealsByRadius');
-  // console.log(req);
-  console.log('srchLng:' + srchLng + ', srchLat: ' + srchLat + ', srchRadius: ' + srchRadius);
-
-  if(srchLng && srchLat && srchRadius){
-
-
-  Deal
-  // .find()
-  // .where('loc')
-  .geoNear(
-    [srchLng,srchLat],
-    {
-      maxDistance : srchRadius/6378137,
-      distanceMultiplier: 6378137,
-      //change default limit output... to study !
-      num : 2000,
-      // query :
-      spherical : true
-    },
-    function(err, results, stats) {
-      if (err) throw err;
-
-      results = results.map(function(x) {
-        delete x.dis;
-        var a = new Deal( x.obj );
-
-        return a;
-      });
-      Deal.populate( results, { path: 'user', select: 'name username' }, function(err,dealsByRadius) {
-        if (err) throw err;
-
-        console.log(dealsByRadius);
-        res.json(dealsByRadius);
-
-      });
-
-
-
-
-      // //cast results in the appropriate form :
-      // var dealsByRadius = [];
-      // // console.log(results);
-      // var resLength = results.length;
-      // //push ! plutot
-      // for (var i = 0 ; i<resLength;i++){
-      //   dealsByRadius.push(results[i].obj);
-      // }
-      // console.log(dealsByRadius);
-      // res.json(dealsByRadius);
-    }
-  );
-  // .where({ coordinates: ['longitude', 'latitude'], type: 'Point' })
-  // .within().box( [0, -50], [50, 0])
-  // .near({ center: { coordinates: [req.query.srchLng, req.query.srchLat], type: 'Point' }, maxDistance: req.body.srchRadius })
-  // .sort('-created')
-  // .populate('user', 'name username')
-  // .exec(function(err, deals) {
-  //   if (err) {
-  //     console.log('Cannot list the deals -> error in find paramters');
-  //     return res.status(500).json({
-  //       error: 'Cannot list the deals'
-  //     });
-  //   }
-  //   console.log('list the deals by radius -> Success !');
-  //   res.json(deals);
-  // });
-  }
-  else{
-      return res.status(500).json({
-        error: 'Empty Search Parameters !'
-      });  }
-};
-/**
- * TODO :
+ * TODO : succed in limiting the geoNear query...
  * Find deal by latitude + longitude + radius
  */
 exports.dealsByRadiusLimited = function(req, res) {
+
+  if(req.query.list_Id){
   // console.log(req);
   //Dont forget to cast in order to use it in the geoNear fct as numbers :
-  var srchLng = parseFloat(req.query.srchLng),
-      srchLat = parseFloat(req.query.srchLat),
-      srchRadius = parseFloat(req.query.srchRadius);
+  var list_Id = [];
+  if(typeof(req.query.list_Id) == "string"){
+    list_Id.push(req.query.list_Id);
 
-  console.log('Server Side: dealsByRadius');
-  // console.log(req);
-  console.log('srchLng:' + srchLng + ', srchLat: ' + srchLat + ', srchRadius: ' + srchRadius);
+  }else{
+    list_Id = req.query.list_Id;
+  }
 
-  if(srchLng && srchLat && srchRadius){
+  // var srchLng = parseFloat(req.query.srchLng),
+  //     srchLat = parseFloat(req.query.srchLat),
+  //     srchRadius = parseFloat(req.query.srchRadius);
+
+  console.log('Server Side: dealsByRadiusLimited');
+  console.log('list_Id:' + list_Id);
+  console.log('type of list_Id:' + typeof(list_Id));
+  // console.log('limitStart:' + limitStart);
+  // console.log('limitEnd:' + limitEnd);
 
 
   Deal
-  // .find()
-  // .where('loc')
-  .geoNear(
-    [srchLng,srchLat],
-    {
-      maxDistance : srchRadius/6378137,
-      distanceMultiplier: 6378137,
-      //change default limit output... to study !
-      num : 2000,
-      // query :
-      spherical : true
-    },
-    function(err, results, stats) {
-      if (err) throw err;
+    .where('_id').in(list_Id)
+    // .skip(limitStart)
+    // .limit(limitEnd-limitStart)
+    .exec(function(err, deals) {
+      if (err) {
+        return res.status(500).json({
+          error: 'Cannot list the deals'
+        });
+      }
+      console.log('dealsByRadiusLimited');
+      console.log(deals);
+      res.json(deals);
+    });
 
-      results = results.map(function(x) {
-        delete x.dis;
-        var a = new Deal( x.obj );
+  // Deal
+  // // .find()
+  // // .where('loc')
+  // .geoNear(
+  //   [srchLng,srchLat],
+  //   {
+  //     maxDistance : srchRadius/6378137,
+  //     distanceMultiplier: 6378137,
+  //     //change default limit output... to study !
+  //     num : 2000,
+  //     // query :
+  //     spherical : true
+  //   },
+  //   function(err, results, stats) {
+  //     if (err) throw err;
 
-        return a;
-      });
-      Deal.populate( results, { path: 'user', select: 'name username' }, function(err,dealsByRadius) {
-        if (err) throw err;
+  //     results = results.map(function(x) {
+  //       delete x.dis;
+  //       var a = new Deal( x.obj );
 
-        console.log(dealsByRadius);
-        res.json(dealsByRadius);
+  //       return a;
+  //     });
+  //     Deal.populate( results, { path: 'user', select: 'name username', options: {skip: limitStart, limit: limitEnd-limitStart} }, function(err,dealsByRadius) {
+  //       if (err) throw err;
 
-      });
-    }
-  );
+  //       console.log(dealsByRadius);
+  //       res.json(dealsByRadius);
+
+  //     });
+  //   }
+  // );
   }
   else{
       return res.status(500).json({
         error: 'Empty Search Parameters !'
       });  }
 };
+/*
+*
+* 
+*
+*/
+
 exports.markersByRadius = function(req, res) {
   // console.log(req);
   //Dont forget to cast in order to use it in the geoNear fct as numbers :
@@ -278,17 +225,20 @@ exports.markersByRadius = function(req, res) {
 
       results = results.map(function(x) {
         delete x.dis;
-        var a = new Deal( x.obj );
+
+        // var a = new Deal( x.obj );
+        var a = {_id: x.obj._id, loc: x.obj.loc};
 
         return a;
       });
-      Deal.populate( results, { path: 'user', select: 'name username' }, function(err,dealsByRadius) {
-        if (err) throw err;
+      // Deal.populate( results, { path: 'user', select: 'name username' }, function(err,dealsByRadius) {
+      //   if (err) throw err;
 
-        console.log(dealsByRadius);
-        res.json(dealsByRadius);
+        // console.log(dealsByRadius);
+        // res.json(dealsByRadius);
+        res.json(results);
 
-      });
+      // });
     }
   );
   // .where({ coordinates: ['longitude', 'latitude'], type: 'Point' })
@@ -345,8 +295,13 @@ exports.create = function(req, res) {
 exports.generateDeals = function(req, res) {
   var long = -50;
   var lat = -50;
+  var numberofdeals = 1000
+  if(req.query.number)
+  {
+    numberofdeals = parseInt(req.query.number);
+  }
 
-  for (var i = 0 ; i < 1000 ; i++){
+  for (var i = 0 ; i < numberofdeals ; i++){
     var deal = new Deal(req.body);
 
     deal.user = req.user;
@@ -355,32 +310,26 @@ exports.generateDeals = function(req, res) {
     deal.initialPrice = 10;
     deal.salePrice = 1;
 
-    deal.latitude = long;
-    deal.longitude = lat;
+    // deal.latitude = long;
+    // deal.longitude = lat;
+    long = -180 + 180 * 2 * Math.random();
+    lat = -85 + 85 * 2 * Math.random();
+
+    deal.latitude = lat;
+    deal.longitude = long;
 
     deal.loc = [long,lat];
-
-    if (lat < 50) {
-      lat += 0.4;
-    } else {
-      lat =  -50;
-    }
-
-    if (long < 50) {
-      long += 0.4;
-    } else {
-      long =  -50;
-    }
 
     deal.save(function(err) {
       if (err) {
         return res.status(500).json({
           error: 'Cannot save the deal'
         });
-    }
-    res.status(200).json();
-  });
-}
+      }
+      res.status(200).json();
+    });
+  }
+  console.log('Base pourrie avec ', numberofdeals, 'nouveau deal !');
 };
 
 /**
@@ -478,7 +427,8 @@ exports.show = function(req, res) {
  * List of Deals
  */
 exports.all = function(req, res) {
-  Deal.find().sort('-created').populate('user', 'name username').exec(function(err, deals) {
+  Deal.find().sort('-created').populate('user', 'name username')
+  .exec(function(err, deals) {
     if (err) {
       return res.status(500).json({
         error: 'Cannot list the deals'

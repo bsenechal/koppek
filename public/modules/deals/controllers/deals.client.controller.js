@@ -9,10 +9,13 @@ angular.module('deals').controller('DealsController', ['$scope','$rootScope','$c
     //   }
     //   return $scope.global.isAdmin || deal.user._id === $scope.global.user._id;
     // };
+    var okscroll = 1;
     var limitDelta = 10;
     $scope.deals = [];
+    var list_Id = [];
     $scope.limitStart = 0;
     $scope.limitEnd = limitDelta;
+    $scope.busyLoadingData = true;
 
     $scope.create = function(isValid) {
       if (isValid) {
@@ -103,127 +106,135 @@ angular.module('deals').controller('DealsController', ['$scope','$rootScope','$c
       }
     };
 
+    /*
+    * queryAll:
+    * get all deals with restriction, but limited to improve ng-repeat performance
+    */
     $scope.queryAll = function(){
-      // Deals.query(function(deals) {
-      //     console.log('queryAll() : server results');
-      //     console.log(deals);
-
-      var DealsLimited = $resource(
-          '/dealslimited',
-          {limitStart: $scope.limitStart,limitEnd: $scope.limitEnd},
-          {
-            query: {method:'POST',isArray: true }
-          }
-        );
+      if(okscroll == 1){
+        if($scope.limitEnd >= ($scope.dealMarkers.length)){
+          $scope.limitEnd = $scope.dealMarkers.length;
+          okscroll = 0;
+        };
+        //only ask from server the deal between the limits
+        var DealsLimited = $resource(
+            '/dealslimited',
+            {limitStart: $scope.limitStart,limitEnd: $scope.limitEnd},
+            {
+              query: {method:'POST',isArray: true }
+            }
+          );
         DealsLimited.query(function(deals) {
           console.log('queryall(): server results limited');
           console.log(deals);
           for (var j = 0; j < deals.length; j++) {
               $scope.deals.push(deals[j]);
           }
-        });
           $scope.limitStart = $scope.limitEnd;
-          //TODO : remove hard coded max :
-          if($scope.limitEnd + limitDelta < 200){
-            $scope.limitEnd += limitDelta;
-          }
-          // $scope.deals = deals;
-          // if($scope.queryExecuted){
-          //   $scope.queryExecuted = false;
-          // }else{
-          //   $scope.queryExecuted = true;
-          // }
-      // });
-    };
-    $scope.queryAllMarkers = function(){
-      // Deals.query(function(deals) {
-      //     console.log('queryAll() : server results');
-      //     console.log(deals);
+          $scope.limitEnd += limitDelta;
 
+          //enable scrolling again :
+          $scope.busyLoadingData = false;
+        });
+      }
+      else{
+        console.log('no more deals to show !');
+      }       
+
+    };
+
+    /*
+    * queryAllMarkers:
+    * get all loc only to be displayed on the map
+    */
+    $scope.queryAllMarkers = function(){
       var MarkersRessource = $resource(
           '/Markers',
           {
             query: {method:'GET',isArray: true }
           }
         );
-        MarkersRessource.query(function(markers) {
-          console.log('queryAllMarkers(): server results Markers');
-          console.log(markers);
-          $scope.dealMarkers = markers;
-          if($scope.queryExecuted){
-            $scope.queryExecuted = false;
-          }else{
-            $scope.queryExecuted = true;
-          }
-        });
-          // }
-          // $scope.deals = deals;
-      // });
+      MarkersRessource.query(function(markers) {
+        console.log('queryAllMarkers(): server results Markers');
+        console.log(markers);
+        $scope.dealMarkers = markers;
+        if($scope.queryExecuted){
+          $scope.queryExecuted = false;
+        }else{
+          $scope.queryExecuted = true;
+        }
+        $scope.queryAll();
+      });
     };
 
-    $scope.queryByRadius = function(){
-      console.log('queryByRadius(): limite parameters : ' + 
-         $scope.limitStart + ';' +
-         $scope.limitEnd
-      );
-      // console.log('queryByRadius(): search parameters : ' + 
-      //    $rootScope.srchLng + ';' +
-      //    $rootScope.srchLat + ';' +
-      //    $rootScope.srchRadius
-      // );
-      console.log('queryByRadius(): begin update list'); 
-      console.log($scope.dealMarkers);       
-      // var DealsByRadius = $resource(
-      //     '/dealsbyradius',
-      //     {srchLng: $rootScope.srchLng,srchLat: $rootScope.srchLat, srchRadius: $rootScope.srchRadius},
-      //     {
-      //       query: {method:'POST',isArray: true }
-      //     }
-      //   );
-      //   console.log('queryByRadius(): ressource created');
-        // DealsByRadius.query(function(deals) {
-        //   console.log('queryByRadius(): server results');
-        //   console.log(deals);
-          //infinite scroll modif :
-          if($scope.limitEnd > ($scope.dealMarkers.length)){
-            $scope.limitEnd = $scope.dealMarkers.length;
-          };
-          console.log('queryByRadius(): limite parameters before for: ' + 
-             $scope.limitStart + ';' +
-             $scope.limitEnd
+    /*
+    * dealsByRadius :
+    * UPDATE the list of deals in the ngreapet using the liste used to display the map markers
+    */
+
+    $scope.dealsByRadius = function(){     
+      if(okscroll == 1){
+        //limitEnd can't exeed dealMarkers size :    
+        if($scope.limitEnd >= ($scope.dealMarkers.length)){
+          $scope.limitEnd = $scope.dealMarkers.length;
+          okscroll = 0;
+        };
+
+        list_Id = [];
+        for (var j = $scope.limitStart; j < $scope.limitEnd; j++) {
+          list_Id.push($scope.dealMarkers[j]._id);            
+        }
+        console.log('dealsByRadius(): list_Id :');
+        console.log(list_Id);
+        var dealsByRadius = $resource(
+            '/DealsByRadius',
+            {
+              // srchLng: $rootScope.srchLng,
+              // srchLat: $rootScope.srchLat, 
+              // srchRadius: $rootScope.srchRadius,
+              list_Id: list_Id
+              // limitStart: $scope.limitStart,
+              // limitEnd: $scope.limitEnd
+            },
+            {
+              query: {method:'POST',isArray: true }
+            }
           );
+          console.log('dealsByRadius(): ressource created');
+          dealsByRadius.query(function(deals) {
+            console.log('dealsByRadius(): server results');
+            console.log(deals);
+            for (var j = 0; j < deals.length; j++) {
+                $scope.deals.push(deals[j]);
+            }
+            console.log('dealsByRadius(): limite parameters before for: ' + 
+               $scope.limitStart + ';' +
+               $scope.limitEnd
+            );
 
-          for (var j = $scope.limitStart; j < $scope.limitEnd; j++) {
-              $scope.deals.push($scope.dealMarkers[j]);
-          };
-          console.log('queryByRadius(): updated deal list'); 
-          console.log($scope.deals);       
-        // });
-          $scope.limitStart = $scope.limitEnd;
-          if($scope.limitEnd + limitDelta < $scope.dealMarkers.length){
+            //update limit
+            $scope.limitStart = $scope.limitEnd;
             $scope.limitEnd += limitDelta;
-          };
 
-      console.log('queryByRadius(): end update list');        
+            //enable scrolling again :
+            $scope.busyLoadingData = false;
+        });
 
-          // $scope.deals = deals;
-          // if($scope.queryExecuted){
-          //   $scope.queryExecuted = false;
-          // }else{
-          //   $scope.queryExecuted = true;
-          // }
-          // $controller('MapDisplayController',{$scope: $scope});
-        // });    
+
+        console.log('dealsByRadius(): end update list'); 
+      }
+      else
+      {
+        console.log('no more deals to show !');
+      }       
     };
+
     $scope.markersByRadius = function(){
       console.log('markersByRadius(): search parameters : ' + 
          $rootScope.srchLng + ';' +
          $rootScope.srchLat + ';' +
          $rootScope.srchRadius
       );      
-              $scope.limitStart = 0;
-        $scope.limitEnd = limitDelta;
-        $scope.deals = [];
   
       var markersByRadius = $resource(
           '/MarkersByRadius',
@@ -237,55 +248,72 @@ angular.module('deals').controller('DealsController', ['$scope','$rootScope','$c
           console.log('markersByRadius(): server results');
           console.log(markers);
           $scope.dealMarkers = markers;
-          $scope.queryByRadius();
           if($scope.queryExecuted){
             $scope.queryExecuted = false;
           }else{
             $scope.queryExecuted = true;
           }
           // $controller('MapDisplayController',{$scope: $scope});
+          $scope.dealsByRadius();
         });    
     };
 
+    /*
+    * findByRadius():
+    * this "selector" will, depending if it's a search or not, query the initial markers and deals
+    */
     $scope.findByRadius = function() {
+      okscroll = 1;
+      $scope.limitStart = 0;
+      $scope.limitEnd = limitDelta;
+      $scope.deals = [];      
       console.log('findByRadius(): start query choice');
       console.log('findByRadius(): search parameters : ' +
          $rootScope.srchLng + ';' +
          $rootScope.srchLat +';' +
          $rootScope.srchRadius
       );
-        if ($rootScope.srchLng && $rootScope.srchLat && $rootScope.srchRadius){
-        console.log('findByRadius() : with paramaters');
-        //A mettre dans une factory de services ?
-        //$scope.queryByRadius();
+      if ($rootScope.srchLng && $rootScope.srchLat && $rootScope.srchRadius){
+      console.log('findByRadius() : with paramaters');
+      //A mettre dans une factory de services ?
+      //$scope.queryByRadius();
 
-        //Basic scheme :
-        //1: init an empty map
-        // $controller('MapInitController',{$scope: $scope});
-        //2: query the deals according to search parameters
-        $scope.markersByRadius();
-        //$scope.queryByRadius();
-        //3: update the map
-        // $controller('MapDisplayController', {$scope, $scope});
-        //Final: Watch search parameters change, if so -> do 2 and 3 again
-        // $scope.$watch('srchRadius',function(){
-        //   $scope.queryByRadius();
-        //   $controller('MapDisplayController', {$scope, $scope});
-        // },true)
-      }
-      else{
-        console.log('findByRadius() : find : without paramaters');
-        // $controller('MapInitController',{$scope: $scope});
-        $scope.queryAllMarkers();
-        $scope.queryAll();
-        // $controller('MapDisplayController', {$scope, $scope});
-        
-      }
+      //Basic scheme :
+      //1: init an empty map
+      // $controller('MapInitController',{$scope: $scope});
+      //2: query the deals according to search parameters
+      $scope.markersByRadius();
+      //$scope.queryByRadius();
+      //3: update the map
+      // $controller('MapDisplayController', {$scope, $scope});
+      //Final: Watch search parameters change, if so -> do 2 and 3 again
+      // $scope.$watch('srchRadius',function(){
+      //   $scope.queryByRadius();
+      //   $controller('MapDisplayController', {$scope, $scope});
+      // },true)
+    }
+    else{
+      console.log('findByRadius() : find : without paramaters');
+      // $controller('MapInitController',{$scope: $scope});
+      $scope.queryAllMarkers();
+      //$scope.queryAll();
+      // $controller('MapDisplayController', {$scope, $scope});
+      
+    }
 
+  };
 
-    };
-
+    /*
+    * findByLimited():
+    * this "selector" will, depending if it's a search or not, query the markers and deals on scroll only
+    */
     $scope.findByLimited = function() {
+      //to prevent multiple call :
+      if ($scope.busyLoadingData){
+        console.log('findByLimited is already loading !');
+        return;
+      } 
+      $scope.busyLoadingData = true;
       console.log('findByLimited(): start query choice');
       console.log('findByLimited(): search parameters : ' +
          $rootScope.srchLng + ';' +
@@ -294,7 +322,7 @@ angular.module('deals').controller('DealsController', ['$scope','$rootScope','$c
       );
       if ($rootScope.srchLng && $rootScope.srchLat && $rootScope.srchRadius){
         console.log('findByLimited() : with paramaters');
-        $scope.queryByRadius();
+        $scope.dealsByRadius();
       }
       else{
         console.log('findByLimited() : find : without paramaters');

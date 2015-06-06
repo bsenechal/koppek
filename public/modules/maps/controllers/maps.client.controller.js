@@ -297,7 +297,6 @@ angular.module('maps')
                         // map.fitBounds(circle.getBounds()% 2400000);
                         $scope.$apply();
                         $scope.findByRadius();
-                        // $scope.queryByRadius();
                     });
 
                     if (center_changedListener) {
@@ -312,7 +311,6 @@ angular.module('maps')
                         // mapChanged = true;
                         $scope.$apply();
                         $scope.findByRadius();
-                        // $scope.queryByRadius();
 
                     });
 
@@ -321,7 +319,6 @@ angular.module('maps')
                     // mapChanged = true;
                     $scope.$apply();
                     $scope.findByRadius();
-                    // $scope.queryByRadius();
                 });
                 console.log('listenMap(): listener set');
             };

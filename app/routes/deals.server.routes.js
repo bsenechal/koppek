@@ -15,10 +15,10 @@ module.exports = function(app) {
     .get(deals.allMarkers);
   app.route('/MarkersByRadius')
     .post(deals.markersByRadius);
+  app.route('/DealsByRadius')
+    .post(deals.dealsByRadiusLimited);
   app.route('/generateDeals')
     .get(deals.generateDeals); 
-  app.route('/dealsbyradius')
-    .post(deals.dealsByRadius);
   app.route('/dealslimited')
     .post(deals.limited);
   app.route('/deals/:dealId')

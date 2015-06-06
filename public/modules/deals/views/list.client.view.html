@@ -14,7 +14,7 @@
     <ul class="deals unstyled">
       <div infinite-scroll='findByLimited()' infinite-scroll-distance='1'>
       <!-- <li data-ng-repeat="deal in deals| filter:searchQuery |limitTo: limitEnd"> -->
-      <li data-ng-repeat="deal in deals track by deal._id| filter:searchQuery |limitTo: limitEnd">
+      <li data-ng-repeat="deal in deals| filter:searchQuery |limitTo: limitEnd track by deal._id">
         <h2>
           <a data-ng-href="#!/deals/{{::deal._id}}">{{::deal.title}}</a>
 <!--          <span data-ng-if="hasAuthorization(deal)">
