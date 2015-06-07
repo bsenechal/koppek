@@ -10,7 +10,8 @@ var mongoose = require('mongoose'),
   http = require('http'),
   io = require('socket.io')(http),
   Comment = mongoose.model('Comment'),
-  _ = require('lodash');
+  _ = require('lodash'),
+  DealModification = mongoose.model('DealModification');
 
 var snowball_stemmer = require('../../node_modules/snowball-stemmer.jsx/dest/french-stemmer.common.js');
 var keyword_extractor = require('keyword-extractor');
@@ -360,6 +361,25 @@ exports.update = function(req, res) {
   ]);
 };
 
+exports.addModification = function(req, res) {
+  var dealModification = req.dealModification;
+
+  dealModification = _.extend(dealModification, req.body);
+  
+	dealModification.save(function(err) {
+		if (err) {
+		  return res.status(500).json({
+			error: 'Cannot update the deal'
+		  });
+		}
+	});
+ };
+
+ exports.updateGrade = function(req, res) {
+  console.log("Je suis updaté :D");
+  // TODO : Utiliser upsert de  mongoose
+ };
+ 
 /**
  * Update a article
  */

@@ -17,10 +17,15 @@ module.exports = function(app) {
     .post(deals.markersByRadius);
   app.route('/DealsByRadius')
     .post(deals.dealsByRadiusLimited);
+  app.route('/updateGrade')
+    .put(users.requiresLogin, deals.updateGrade);
   app.route('/generateDeals')
     .get(deals.generateDeals); 
   app.route('/dealslimited')
     .post(deals.limited);
+  app.route('/addModification')
+    .put(users.requiresLogin, deals.addModification)
+	.post(users.requiresLogin, deals.addModification);
   app.route('/deals/:dealId')
     .get(deals.show)
     .put(users.requiresLogin, users.hasAuthorization(['admin']), deals.update)

@@ -1,8 +1,9 @@
 <section data-ng-controller="DealsController" data-ng-init="findOne()">
-  
+
+<form editable-form name="editableForm" onaftersave="editDeal()">
   <span>{{deal.created | date:'medium'}}</span> /
   <span>{{deal.user.name}}</span>
-  <h2>{{deal.title}}</h2>
+  <h2 editable-text="deal.title" e-name="deal.title" e-required>{{deal.title}}</h2>
   <div data-ng-if="hasAuthorization(deal)">
     <a class="btn" href="/#!/deals/{{deal._id}}/edit">
       <i class="glyphicon glyphicon-edit"></i>
@@ -22,10 +23,28 @@
     <i class="glyphicon glyphicon-exclamation-sign"></i>
   </a>
   {{deal.alert}}
-  <div>Prix initial : {{deal.initialPrice}}</div>
-  <div>Prix de vente : {{deal.salePrice}}</div>
-  <div>{{deal.description}}</div>
+  <div>Prix initial : <span editable-text="deal.initialPrice" e-name="deal.initialPrice" e-required>{{deal.initialPrice}}</span></div>
+  <div>Prix de vente : <span editable-text="deal.salePrice" e-name="deal.salePrice" e-required>{{deal.salePrice}}</span></div>
+  <div><span editable-text="deal.description" e-name="deal.description" e-required>{{deal.description}}</span></div>
   <img ng-src="https://koppekimages.s3-eu-west-1.amazonaws.com/{{deal.image}}" />
+  
+    <div class="buttons">
+		<span ng-show="!editableForm.$visible"> Un problème dans l'annonce ? A vous de jouer : </span>
+      <!-- button to show form -->
+      <button type="button" class="btn btn-danger" ng-click="editableForm.$show()" ng-show="!editableForm.$visible">
+        Edit
+      </button>
+      <!-- buttons to submit / cancel form -->
+      <span ng-show="editableForm.$visible">
+        <button type="submit" class="btn btn-primary" ng-disabled="editableForm.$waiting">
+          Save
+        </button>
+        <button type="button" class="btn btn-default" ng-disabled="editableForm.$waiting" ng-click="editableForm.$cancel()">
+          Cancel
+        </button>
+      </span>
+    </div>
+</form>	
    <div ng-if="deal !== undefined" ng-include="'modules/comments/views/index.client.view.html'" data-ng-controller="CommentsController" data-ng-init="findComments(deal, 2)"/>
 
 </section>

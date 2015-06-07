@@ -12,7 +12,28 @@ angular.module('deals').factory('Deals', ['$resource',
     });
   }
 ])
-
+.factory('DealModification', ['$resource',
+  function($resource) {
+    return $resource('addModification/:dealId', {
+      dealId: '@_id'
+    }, {
+      updateModifcation: {
+        method: 'PUT'
+      }
+    });
+  }
+])
+.factory('DealsGrade', ['$resource',
+  function($resource) {
+    return $resource('updateGrade/:dealId', {
+      dealId: '@_id'
+      }, {  
+	  update: {
+        method: 'PUT'
+	}
+  });
+  }
+])
 //socket factory that provides the socket service
 .factory('Socket', ['socketFactory',
     function(socketFactory) {

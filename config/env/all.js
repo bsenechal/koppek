@@ -15,6 +15,7 @@ module.exports = {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.css',
 				'public/lib/bootstrap/dist/css/bootstrap-theme.css',
+				'public/lib/angular-xeditable/dist/css/xeditable.css',
 			],
 			js: [	
 				'public/lib/angular/angular.js',
@@ -32,6 +33,7 @@ module.exports = {
 				'public/lib/angular-timeago/src/timeAgo.js',
 				'public/lib/ngInfiniteScroll/build/ng-infinite-scroll.min.js',
 				'public/lib/aws-sdk-js/dist/aws-sdk.min.js',
+				'public/lib/angular-xeditable/dist/js/xeditable.js',
 			]
 		},
 		css: [

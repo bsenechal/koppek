@@ -1,7 +1,11 @@
 'use strict';
 
-angular.module('deals').controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket',
-  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket) {
+angular.module('deals').run(function(editableOptions) {
+  editableOptions.theme = 'bs3'; 
+})
+
+.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealModification', 'DealsGrade',
+  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealModification, DealsGrade) {
 	
     // $scope.hasAuthorization = function(deal) {
     //   if (!deal || !deal.user){
@@ -23,7 +27,23 @@ angular.module('deals').controller('DealsController', ['$scope','$rootScope','$c
 	$scope.validate = false;
 	$scope.longitude = 0;
 	$scope.latitude = 0;
-	
+	  
+	$scope.editDeal = function() {
+		// Marche pas :(
+	/*console.log(this.user);
+	var dealModification = new DealModification({
+		idDeal: this.deal._id});
+		console.log(dealModification);
+        dealModification.initialPrice.push(this.deal.initialPrice);
+        dealModification.salePrice.push(this.deal.salePrice);
+		
+		console.log('create: Tmp deal');
+        console.log(dealModification);
+        dealModification.$save(function(response) {
+          $location.path('addModification/' + response._id);
+        });*/
+	}  
+  
 	$scope.creds = {
 		  bucket: 'koppekimages',
 		  access_key: 'AKIAJUN7X3P4N6YRHPIQ',
@@ -123,7 +143,7 @@ angular.module('deals').controller('DealsController', ['$scope','$rootScope','$c
         var deal = $scope.deal;
         if(!deal.updated) {
           deal.updated = [];
-  }
+		}
         deal.updated.push(new Date().getTime());
 
         deal.$update(function() {
@@ -134,29 +154,31 @@ angular.module('deals').controller('DealsController', ['$scope','$rootScope','$c
       }
     };
 
-    $scope.updateAlert = function(deal) {
-       if (deal) {
-         if (deal.alert === 5) {
-           deal.$remove();
-           $location.path('deals');
-         } else {
-           deal.alert++;
-           deal.$update();
-         }
-       }
+    function updateGrade(deal) {
+
+	var dealsGrade = new DealsGrade({
+			// A remplir
+		});
+		
+      dealsGrade.$update(function() {
+        $location.path('deals/'+ deal._id);
+      }, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
     };
+
 
    $scope.updateGradePlus = function(deal) {
       if (deal) {
         deal.grade++;
-        deal.$update();
+        updateGrade(deal);
       }
     };
 
     $scope.updateGradeMinus = function(deal) {
       if (deal) {
         deal.grade--;
-        deal.$update();
+        updateGrade(deal);
       }
     };
 

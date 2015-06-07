@@ -1,25 +1,26 @@
 {
-	"name": "koppek",
-	"version": "0.0.1",
-	"description": "Full-Stack JavaScript with MongoDB, Express, AngularJS, and Node.js",
-	"dependencies": {
-		"bootstrap": "~3.3.4",
-		"angular": "~1.3.15",
-		"angular-resource": "~1.3.15",
-		"angular-mocks": "~1.3.15",
-		"angular-cookies": "~1.3.15",
-		"angular-animate": "~1.3.15",
-		"angular-touch": "~1.3.15",
-		"angular-sanitize": "~1.3.15",
-		"angular-bootstrap": "~0.13.0",
-		"angular-ui-utils": "~0.2.3",
-		"angular-ui-router": "~0.2.15",
+  "name": "koppek",
+  "version": "0.0.1",
+  "description": "Full-Stack JavaScript with MongoDB, Express, AngularJS, and Node.js",
+  "dependencies": {
+    "bootstrap": "~3.3.4",
+    "angular": "~1.3.15",
+    "angular-resource": "~1.3.15",
+    "angular-mocks": "~1.3.15",
+    "angular-cookies": "~1.3.15",
+    "angular-animate": "~1.3.15",
+    "angular-touch": "~1.3.15",
+    "angular-sanitize": "~1.3.15",
+    "angular-bootstrap": "~0.13.0",
+    "angular-ui-utils": "~0.2.3",
+    "angular-ui-router": "~0.2.15",
     "angular-socket-io": "~0.7.0",
     "socket.io-client": "~1.3.5",
     "angular-timeago": "~0.1.11",
     "Autolinker.js": "~0.17.1",
     "angular-elastic": "~2.4.2",
     "ngInfiniteScroll": "~1.0.0",
-	"aws-sdk-js": "~2.1.33"
-	}
+    "aws-sdk-js": "~2.1.33",
+    "angular-xeditable": "~0.1.9"
+  }
 }
