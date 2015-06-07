@@ -30,6 +30,11 @@ var CommentSchema = new Schema({
     trim: true,
     default: 0
   },
+  grade: {
+    type: Number,
+    default: 0,
+    trim: true
+  },
   user: {
     type: Schema.ObjectId,
     ref: 'User',

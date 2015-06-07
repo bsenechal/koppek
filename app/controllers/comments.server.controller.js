@@ -6,6 +6,7 @@
 var mongoose = require('mongoose'),
   Comment = mongoose.model('Comment'),
   User = mongoose.model('User'),
+  UserFunction = require('./users/users.role.server.controller'),
   _ = require('lodash');
 
 
@@ -162,3 +163,59 @@ exports.hasAuthorization = function(req, res, next) {
 	}
 	next();
 };
+
+ exports.updateGrade = function(req, res) {
+  console.log('updateGrade() : init');
+  var _id = req.query._id;
+  var action = req.query.action;
+  var idUser = req.query.idUser;
+  var value = 0;
+
+  console.log('updateGrade() : _id :', _id);
+  console.log('updateGrade() : action:', action);
+  console.log('updateGrade() : type of action:', typeof(action));
+  if(action){ 
+    if(action == 'plus'){
+      //here, we will be setting the value according to user role:
+      UserFunction.updateUserPoints(idUser, 2);
+      value = 1;      
+    } 
+    else if(action == 'minus')
+    {
+      // case 'minus':
+      UserFunction.updateUserPoints(idUser, -1);
+      value = -1;      
+    }
+
+    console.log('updateGrade() : value = ', value)
+    //get deal actual grade :
+    var actualGrade;
+    Comment.findOne({'_id': _id}).select('grade').exec(function (err, result) {
+      console.log('updateGrade() : findOne() : result= ', result);
+      actualGrade = result.grade;
+
+      console.log('updateGrade() : actualGrade = ', actualGrade);
+
+      //update grade according to value :
+      var query = {"_id": _id};
+      var update = {grade: actualGrade + value};
+      var options = {new: true};
+
+      Comment.findOneAndUpdate(query, update, options, function(err, comment) {
+        if (err) {
+          console.log('got an error');
+        }
+        else{
+          
+          console.log('updateGrade() : new Grade = ', comment.grade);
+          res.json(comment);        
+        }
+      });
+    })
+  }else{
+      return res.status(500).json({
+        error: 'Cannot update the comment grade'
+      });  
+  }
+  console.log("Je suis updaté :D");
+ };

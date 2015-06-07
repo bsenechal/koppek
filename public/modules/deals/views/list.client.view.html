@@ -12,7 +12,7 @@
   <input type="range" ng-model="limit" min="0" max="1000" step="10" style="width: 240px" class="ng-pristine ng-valid">
   <div class=".col-md-4">
     <ul class="deals unstyled">
-      <div infinite-scroll='findByLimited()' infinite-scroll-distance='1'>
+      <div infinite-scroll='findByLimited()' infinite-scroll-disabled='busyLoadingData' infinite-scroll-distance='1'>
       <!-- <li data-ng-repeat="deal in deals| filter:searchQuery |limitTo: limitEnd"> -->
       <li data-ng-repeat="deal in deals| filter:searchQuery |limitTo: limitEnd track by deal._id">
         <h2>
@@ -29,7 +29,7 @@
           <a class="btn" data-ng-click="::updateGradePlus(deal);">
             <i class="glyphicon glyphicon-plus"></i>
           </a>
-          {{::deal.grade}}
+          {{deal.grade}}
           <a class="btn" data-ng-click="::updateGradeMinus(deal);">
             <i class="glyphicon glyphicon-minus"></i>
           </a>

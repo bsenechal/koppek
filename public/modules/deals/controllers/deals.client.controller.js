@@ -154,31 +154,36 @@ angular.module('deals').run(function(editableOptions) {
       }
     };
 
-    function updateGrade(deal) {
+    function updateGrade(deal,action) {
+      console.log('updateGrade() : got a deal');
+      console.log('updateGrade() : action = ',action);
 
-	var dealsGrade = new DealsGrade({
-			// A remplir
-		});
-		
-      dealsGrade.$update(function() {
-        $location.path('deals/'+ deal._id);
-      }, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
+      var updateGrade = $resource(
+          '/updateGrade',
+          {_id: deal._id, idUser:deal.user._id , action: action},
+          {
+            query: {method:'POST',isArray: false }
+          }
+        );
+      updateGrade.query(function(dealGrade) {
+        console.log('updateGrade(): server results limited');
+        console.log('updateGrade(): new Deal Grade : ', dealGrade.grade);
+        deal.grade = dealGrade.grade;
+      });
+      console.log('updateGrade(): new Deal Grade : ', deal.grade);
+      console.log('updateGrade() : deal updated');
     };
 
 
    $scope.updateGradePlus = function(deal) {
       if (deal) {
-        deal.grade++;
-        updateGrade(deal);
+        updateGrade(deal, 'plus');
       }
     };
 
     $scope.updateGradeMinus = function(deal) {
       if (deal) {
-        deal.grade--;
-        updateGrade(deal);
+        updateGrade(deal, 'minus');
       }
     };
 

@@ -32,6 +32,13 @@
 							<i class="glyphicon glyphicon-pencil"></i>
 						</a>
 					</span>
+               <a class="btn" data-ng-click="::updateCommentGradePlus(comment);">
+                  <i class="glyphicon glyphicon-plus"></i>
+               </a>
+               {{comment.grade}}
+               <a class="btn" data-ng-click="::updateCommentGradeMinus(comment);">
+                  <i class="glyphicon glyphicon-minus"></i>
+               </a>
 					<a class="btn" data-ng-click="updateAlert(comment);">
 						<i class="glyphicon glyphicon-exclamation-sign"></i>
 					</a>

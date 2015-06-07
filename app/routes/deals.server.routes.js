@@ -18,7 +18,7 @@ module.exports = function(app) {
   app.route('/DealsByRadius')
     .post(deals.dealsByRadiusLimited);
   app.route('/updateGrade')
-    .put(users.requiresLogin, deals.updateGrade);
+    .post(users.requiresLogin, deals.updateGrade);
   app.route('/generateDeals')
     .get(deals.generateDeals); 
   app.route('/dealslimited')

@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('comments').controller('CommentsController', ['$scope', '$http',  '$stateParams', 'Comments', 'FetchComments', 'mentionUser', 'Socket', 'utils', 'Authentication',
-  function($scope, $http,  $stateParams, Comments, FetchComments, mentionUser, Socket, utils, Authentication) {
+angular.module('comments').controller('CommentsController', ['$scope', '$http',  '$stateParams','$resource', 'Comments', 'FetchComments', 'mentionUser', 'Socket', 'utils', 'Authentication',
+  function($scope, $http,  $stateParams,$resource, Comments, FetchComments, mentionUser, Socket, utils, Authentication) {
     var socket = Socket;
     $scope.authentication = Authentication;
     $scope.commentEditable = true;
@@ -188,5 +188,38 @@ angular.module('comments').controller('CommentsController', ['$scope', '$http', 
          $scope.update(comment);
        }
     };
+
+    function updateCommentGrade(comment,action) {
+      console.log('updateGrade() : got a comment');
+      console.log('updateGrade() : action = ',action);
+
+      var updateGrade = $resource(
+          '/comments/updateGrade',
+          {_id: comment._id, idUser: comment.user._id, action: action},
+          {
+            query: {method:'POST',isArray: false }
+          }
+        );
+      updateGrade.query(function(commentGrade) {
+        console.log('updateGrade(): server results limited');
+        console.log('updateGrade(): new comment Grade : ', commentGrade.grade);
+        comment.grade = commentGrade.grade;
+      });
+      console.log('updateGrade(): new comment Grade : ', comment.grade);
+      console.log('updateGrade() : comment updated');
+    };
+
+
+   $scope.updateCommentGradePlus = function(comment) {
+      if (comment) {
+        updateCommentGrade(comment, 'plus');
+      }
+    };
+
+    $scope.updateCommentGradeMinus = function(comment) {
+      if (comment) {
+        updateCommentGrade(comment, 'minus');
+      }
+    };    
   }
 ]);

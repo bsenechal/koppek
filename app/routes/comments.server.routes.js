@@ -9,6 +9,9 @@ module.exports = function(app) {
   app.route('/comments')
     .post(users.requiresLogin, comments.create);
 
+  app.route('/comments/updateGrade')
+    .post(users.requiresLogin, comments.updateGrade);
+
   app.route('/comments/parent/:parentId')
     .get(comments.fetchByParent);
 

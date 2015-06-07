@@ -11,6 +11,7 @@ var mongoose = require('mongoose'),
   io = require('socket.io')(http),
   Comment = mongoose.model('Comment'),
   _ = require('lodash'),
+  UserFunction = require('./users/users.role.server.controller'),
   DealModification = mongoose.model('DealModification');
 
 var snowball_stemmer = require('../../node_modules/snowball-stemmer.jsx/dest/french-stemmer.common.js');
@@ -366,18 +367,69 @@ exports.addModification = function(req, res) {
 
   dealModification = _.extend(dealModification, req.body);
   
-	dealModification.save(function(err) {
-		if (err) {
-		  return res.status(500).json({
-			error: 'Cannot update the deal'
-		  });
-		}
-	});
+    dealModification.save(function(err) {
+        if (err) {
+      return res.status(500).json({
+      error: 'Cannot update the deal'
+      });
+    }
+  });
  };
 
  exports.updateGrade = function(req, res) {
+  console.log('updateGrade() : init');
+  var _id = req.query._id;
+  var action = req.query.action;
+  var idUser = req.query.idUser;
+  var value = 0;
+
+  console.log('updateGrade() : _id :', _id);
+  console.log('updateGrade() : action:', action);
+  console.log('updateGrade() : type of action:', typeof(action));
+  if(action){ 
+    if(action == 'plus'){
+      //here, we will be setting the value according to user role:
+      UserFunction.updateUserPoints(idUser, 4);
+      value = 1;      
+    } 
+    else if(action == 'minus')
+    {
+      // case 'minus':
+      UserFunction.updateUserPoints(idUser, -2);
+      value = -1;      
+    }
+
+    console.log('updateGrade() : value = ', value)
+    //get deal actual grade :
+    var actualGrade;
+    Deal.findOne({'_id': _id}).select('grade').exec(function (err, result) {
+      console.log('updateGrade() : findOne() : result= ', result);
+      actualGrade = result.grade;
+
+      console.log('updateGrade() : actualGrade = ', actualGrade);
+
+      //update grade according to value :
+      var query = {"_id": _id};
+      var update = {grade: actualGrade + value};
+      var options = {new: true};
+
+      Deal.findOneAndUpdate(query, update, options, function(err, deal) {
+        if (err) {
+          console.log('got an error');
+        }
+        else{
+          
+          console.log('updateGrade() : new Grade = ', deal.grade);
+          res.json(deal);        
+        }
+      });
+    })
+  }else{
+      return res.status(500).json({
+        error: 'Cannot update the deal grade'
+      });  
+  }
   console.log("Je suis updaté :D");
-  // TODO : Utiliser upsert de  mongoose
  };
  
 /**
@@ -411,14 +463,14 @@ exports.destroy = function(req, res) {
 
       callback();
     },
-	function(callback) {
+    function(callback) {
       Comment.find().remove({ parent: deal._id }).exec(function(err){
-		if (err) {
-		  return res.json(500, {
-			error: 'Cannot delete the comments'
-		  });
-		}
-	  });
+        if (err) {
+          return res.json(500, {
+            error: 'Cannot delete the comments'
+          });
+        }
+      });
 
       callback();
     },
