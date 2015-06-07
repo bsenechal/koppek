@@ -187,10 +187,14 @@ angular.module('comments').controller('CommentsController', ['$scope', '$http', 
     function updateCommentGrade(comment,action) {
       console.log('updateGrade() : got a comment');
       console.log('updateGrade() : action = ',action);
-
+      console.log('updateGrade() : comment = ',comment);
+      var userId = comment.user;
+      if(typeof(userId) != 'string'){
+        userId = comment.user._id;
+      }
       var updateGrade = $resource(
           '/comments/updateGrade',
-          {_id: comment._id, idUser: comment.user._id, parent: comment.parent ,action: action},
+          {_id: comment._id, idUser: userId, parent: comment.parent ,action: action},
           {
             query: {method:'POST',isArray: false }
           }
@@ -199,7 +203,8 @@ angular.module('comments').controller('CommentsController', ['$scope', '$http', 
         console.log('updateGrade(): server results limited');
         if(action == 'alert'){
           console.log('updateGrade(): new comment Alert : ', commentResult.alert);
-          comment.alert = commentResult.alert;          
+          comment.alert = commentResult.alert;
+          comment.body = commentResult.body;          
         }
         else
         {
