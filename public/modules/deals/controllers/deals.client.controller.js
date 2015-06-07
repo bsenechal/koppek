@@ -154,23 +154,42 @@ angular.module('deals').run(function(editableOptions) {
       }
     };
 
+    $scope.updateAlert = function(comment) {
+     if (comment) {
+        updateGrade(comment, 'alert');
+       }
+    };
+
     function updateGrade(deal,action) {
       console.log('updateGrade() : got a deal');
       console.log('updateGrade() : action = ',action);
 
+      var userId = deal.user;
+      if(typeof(userId) != 'string'){
+        userId = userId._id;
+      }
+
       var updateGrade = $resource(
           '/updateGrade',
-          {_id: deal._id, idUser:deal.user._id , action: action},
+          {_id: deal._id, idUser:userId , action: action},
           {
             query: {method:'POST',isArray: false }
           }
         );
-      updateGrade.query(function(dealGrade) {
+      updateGrade.query(function(dealResult) {
         console.log('updateGrade(): server results limited');
-        console.log('updateGrade(): new Deal Grade : ', dealGrade.grade);
-        deal.grade = dealGrade.grade;
+        if(action == 'alert')
+        {
+          console.log('updateGrade(): new Deal Grade : ', dealResult.alert);
+          deal.alert = dealResult.alert;        
+
+        }
+        else
+        {
+          console.log('updateGrade(): new Deal Grade : ', dealResult.grade);
+          deal.grade = dealResult.grade;        
+        }
       });
-      console.log('updateGrade(): new Deal Grade : ', deal.grade);
       console.log('updateGrade() : deal updated');
     };
 

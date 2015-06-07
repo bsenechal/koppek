@@ -376,7 +376,84 @@ exports.addModification = function(req, res) {
   });
  };
 
- exports.updateGrade = function(req, res) {
+exports.visited = function(req, res) {
+console.log('visited() : init');
+    //update grade according to value :
+    var query = {"_id": req.deal._id};
+    var update = {$inc: {'visited': 1}};
+    var options = {new: true};
+
+    Deal.findOneAndUpdate(query, update, options, function(err, deal) {
+      if (err) {
+        console.log('got an error');
+      }
+      else{
+        
+        console.log('updateGrade() : new visited = ', deal.visited);
+        res.json(deal);        
+      }
+    });
+};
+
+function getVisited(idDeal, callback) {
+  console.log('getVisited() : init');
+  Deal.findOne({'_id': idDeal}).select('visited').exec(function (err, result) {
+    if (err) {
+      console.log('got an error');
+    }
+    else{
+      console.log('getVisited() : findOne() : result= ', result);
+      callback(result.visited);
+    }
+  });
+};
+
+exports.getVisited = getVisited;
+
+
+function getAlert (idDeal, callback) {
+  console.log('getAlert() : init');
+  Deal.findOne({'_id': idDeal}).select('alert').exec(function (err, result) {
+    if (err) {
+      console.log('got an error');
+    }
+    else{
+      console.log('getAlert() : findOne() : result= ', result);
+      callback(result.alert);
+    }
+  });
+};
+
+
+function dealAlertManager (idDeal){
+  getVisited(idDeal, function(visited){
+    console.log('dealAlertManager() : visited = ',visited);
+    getAlert(idDeal, function(alert){
+      console.log('dealAlertManager() : alert = ',alert);
+      //the threshold is higher for the deals than then comments
+      //since comment deletion is also based on the deal visit
+      //deal visit is higher than comment visit -> it needs to reflect on the threshold !
+      var threshold = 0.20;
+      if(alert>visited*threshold){
+        //remove comment or at least banish !
+        var query = {'_id': idDeal};
+        var update = {'description': 'ce deal a été supprimé par la communauté !'};
+        var options = {new: true};
+
+        Deal.findOneAndUpdate(query, update, options, function(err, deal) {
+          if (err) {
+            console.log('dealAlertManager() : findOneAndUpdate(): got an error');
+          }
+          else{   
+            console.log('dealAlertManager() : new body = ', deal.description);
+          }
+        });
+      }
+    });
+  });
+}
+
+exports.updateGrade = function(req, res) {
   console.log('updateGrade() : init');
   var _id = req.query._id;
   var action = req.query.action;
@@ -384,9 +461,11 @@ exports.addModification = function(req, res) {
   var value = 0;
 
   console.log('updateGrade() : _id :', _id);
+  console.log('updateGrade() : idUser:', idUser);
   console.log('updateGrade() : action:', action);
   console.log('updateGrade() : type of action:', typeof(action));
-  if(action){ 
+  if(action && _id && idUser){ 
+    console.log('updateGrade() : before updateUserPoints()');
     if(action == 'plus'){
       //here, we will be setting the value according to user role:
       UserFunction.updateUserPoints(idUser, 4);
@@ -398,19 +477,22 @@ exports.addModification = function(req, res) {
       UserFunction.updateUserPoints(idUser, -2);
       value = -1;      
     }
+    else if(action == 'alert')
+    {
+      // case 'minus':
+      UserFunction.updateUserPoints(idUser, -4);
+      dealAlertManager(_id);
+      value = 1;      
+    }
 
     console.log('updateGrade() : value = ', value)
-    //get deal actual grade :
-    var actualGrade;
-    Deal.findOne({'_id': _id}).select('grade').exec(function (err, result) {
-      console.log('updateGrade() : findOne() : result= ', result);
-      actualGrade = result.grade;
-
-      console.log('updateGrade() : actualGrade = ', actualGrade);
 
       //update grade according to value :
       var query = {"_id": _id};
-      var update = {grade: actualGrade + value};
+      var update = {$inc: {'grade': value}};
+      if(action == 'alert'){
+        update = {$inc: {'alert': value}};        
+      }
       var options = {new: true};
 
       Deal.findOneAndUpdate(query, update, options, function(err, deal) {
@@ -422,15 +504,14 @@ exports.addModification = function(req, res) {
           console.log('updateGrade() : new Grade = ', deal.grade);
           res.json(deal);        
         }
-      });
-    })
+    });
   }else{
       return res.status(500).json({
         error: 'Cannot update the deal grade'
       });  
   }
   console.log("Je suis updaté :D");
- };
+};
  
 /**
  * Update a article

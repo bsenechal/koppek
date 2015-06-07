@@ -179,13 +179,8 @@ angular.module('comments').controller('CommentsController', ['$scope', '$http', 
     };
 
     $scope.updateAlert = function(comment) {
-	   if (comment) {
-         if (comment.alert === 5) {
-           comment.body = "Commentaire signalé comme inapproprié par la communauté";
-         } else {
-           comment.alert++;
-         }
-         $scope.update(comment);
+     if (comment) {
+        updateCommentGrade(comment, 'alert');
        }
     };
 
@@ -195,17 +190,23 @@ angular.module('comments').controller('CommentsController', ['$scope', '$http', 
 
       var updateGrade = $resource(
           '/comments/updateGrade',
-          {_id: comment._id, idUser: comment.user._id, action: action},
+          {_id: comment._id, idUser: comment.user._id, parent: comment.parent ,action: action},
           {
             query: {method:'POST',isArray: false }
           }
         );
-      updateGrade.query(function(commentGrade) {
+      updateGrade.query(function(commentResult) {
         console.log('updateGrade(): server results limited');
-        console.log('updateGrade(): new comment Grade : ', commentGrade.grade);
-        comment.grade = commentGrade.grade;
+        if(action == 'alert'){
+          console.log('updateGrade(): new comment Alert : ', commentResult.alert);
+          comment.alert = commentResult.alert;          
+        }
+        else
+        {
+          console.log('updateGrade(): new comment Grade : ', commentResult.grade);
+          comment.grade = commentResult.grade;          
+        }
       });
-      console.log('updateGrade(): new comment Grade : ', comment.grade);
       console.log('updateGrade() : comment updated');
     };
 

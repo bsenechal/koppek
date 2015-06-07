@@ -27,7 +27,7 @@ module.exports = function(app) {
     .put(users.requiresLogin, deals.addModification)
 	.post(users.requiresLogin, deals.addModification);
   app.route('/deals/:dealId')
-    .get(deals.show)
+    .get(deals.visited, deals.show)
     .put(users.requiresLogin, users.hasAuthorization(['admin']), deals.update)
     // .put(deals.update)
     .delete(users.requiresLogin, users.hasAuthorization(['admin']), deals.destroy);

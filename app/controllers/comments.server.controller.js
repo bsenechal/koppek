@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
   Comment = mongoose.model('Comment'),
   User = mongoose.model('User'),
   UserFunction = require('./users/users.role.server.controller'),
+  DealFunction = require('./deals.server.controller'),
   _ = require('lodash');
 
 
@@ -164,17 +165,63 @@ exports.hasAuthorization = function(req, res, next) {
 	next();
 };
 
- exports.updateGrade = function(req, res) {
+function getAlert (idComment, callback) {
+  console.log('getAlert() : init');
+  Comment.findOne({'_id': idComment}).select('alert').exec(function (err, result) {
+    if (err) {
+      console.log('got an error');
+    }
+    else{
+      console.log('getAlert() : findOne() : result= ', result);
+      callback(result.alert);
+    }
+  });
+};
+
+
+/*
+* Manage alert on comment -> banish if necessary
+*/
+function commentAlertManager (idComment, idDeal){
+  DealFunction.getVisited(idDeal, function(visited){
+    console.log('commentAlertManager() : visited = ',visited);
+    getAlert(idComment, function(alert){
+      console.log('commentAlertManager() : alert = ',alert);
+      var threshold = 0.10;
+      if(alert>visited*threshold){
+        //remove comment or at least banish !
+        var query = {'_id': idComment};
+        var update = {'body': 'ce commentaire a été supprimé par la communauté !'};
+        var options = {new: true};
+
+        Comment.findOneAndUpdate(query, update, options, function(err, comment) {
+          if (err) {
+            console.log('commentAlertManager() : findOneAndUpdate(): got an error');
+          }
+          else{   
+            console.log('commentAlertManager() : new body = ', comment.body);
+          }
+        });
+      }
+    });
+  });
+}
+
+exports.updateGrade = function(req, res) {
   console.log('updateGrade() : init');
   var _id = req.query._id;
   var action = req.query.action;
   var idUser = req.query.idUser;
+  var parentDeal = req.query.parent;
   var value = 0;
 
   console.log('updateGrade() : _id :', _id);
+  console.log('updateGrade() : idUser:', idUser);
+  console.log('updateGrade() : parentDeal:', parentDeal);
   console.log('updateGrade() : action:', action);
   console.log('updateGrade() : type of action:', typeof(action));
-  if(action){ 
+  if(action && _id && idUser){ 
+    console.log('updateGrade() : before updateUserPoints()');
     if(action == 'plus'){
       //here, we will be setting the value according to user role:
       UserFunction.updateUserPoints(idUser, 2);
@@ -186,24 +233,28 @@ exports.hasAuthorization = function(req, res, next) {
       UserFunction.updateUserPoints(idUser, -1);
       value = -1;      
     }
+    else if(action == 'alert')
+    {
+      // case 'minus':
+      UserFunction.updateUserPoints(idUser, -2);
+      commentAlertManager(_id, parentDeal);
+      value = 1;
+
+    }
 
     console.log('updateGrade() : value = ', value)
-    //get deal actual grade :
-    var actualGrade;
-    Comment.findOne({'_id': _id}).select('grade').exec(function (err, result) {
-      console.log('updateGrade() : findOne() : result= ', result);
-      actualGrade = result.grade;
-
-      console.log('updateGrade() : actualGrade = ', actualGrade);
 
       //update grade according to value :
       var query = {"_id": _id};
-      var update = {grade: actualGrade + value};
+      var update = {$inc: {'grade': value}};
+      if(action == 'alert'){
+        update = {$inc: {'alert': value}};        
+      }
       var options = {new: true};
 
       Comment.findOneAndUpdate(query, update, options, function(err, comment) {
         if (err) {
-          console.log('got an error');
+          console.log('updateGrade(): findOneAndUpdate() : got an error');
         }
         else{
           
@@ -211,11 +262,10 @@ exports.hasAuthorization = function(req, res, next) {
           res.json(comment);        
         }
       });
-    })
   }else{
       return res.status(500).json({
         error: 'Cannot update the comment grade'
       });  
   }
-  console.log("Je suis updaté :D");
- };
+  console.log("updateGrade() : Je suis updaté :D");
+};

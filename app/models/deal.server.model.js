@@ -59,6 +59,11 @@ var DealSchema = new Schema({
     default: 0,
     trim: true
   },
+  visited: {
+    type: Number,
+    default: 0,
+    trim: true
+  },
   user: {
     type: Schema.ObjectId,
     ref: 'User'
