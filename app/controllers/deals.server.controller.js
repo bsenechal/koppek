@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
+  s3Credentials = require('../../s3Credentials.json'), 
   Deal = mongoose.model('Deal'),
   async = require('async'),
   Tag = mongoose.model('Tag'),
@@ -110,12 +111,7 @@ exports.deal = function(req, res, next, id) {
 
 
 exports.s3Credentials = function(req, res) {
-	res.json({
-		  bucket: 'koppekimages/deals',
-		  access_key: 'AKIAIYUVBE6QYDP3EEEQ',
-		  secret_key: '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',
-		  region : 'eu-west-1'
-	});
+	res.json(s3Credentials);
 };
 
 /**

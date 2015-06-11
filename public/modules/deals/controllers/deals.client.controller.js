@@ -53,7 +53,6 @@ angular.module('deals').run(function(editableOptions) {
         );
 		
 	  creds.get(function(credential) {
-
 	  // Configure The S3 Object 
 	  AWS.config.update({ accessKeyId: credential.access_key, secretAccessKey: credential.secret_key });
 	  AWS.config.region = credential.region;
