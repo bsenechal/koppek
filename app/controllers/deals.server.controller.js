@@ -108,6 +108,16 @@ exports.deal = function(req, res, next, id) {
   });
 };
 
+
+exports.s3Credentials = function(req, res) {
+	res.json({
+		  bucket: 'koppekimages/deals',
+		  access_key: 'AKIAIYUVBE6QYDP3EEEQ',
+		  secret_key: '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',
+		  region : 'eu-west-1'
+	});
+};
+
 /**
  * TODO : succed in limiting the geoNear query...
  * Find deal by latitude + longitude + radius
@@ -363,16 +373,11 @@ exports.update = function(req, res) {
 };
 
 exports.addModification = function(req, res) {
-  var dealModification = req.dealModification;
+  var modif = req.body;
 
-  dealModification = _.extend(dealModification, req.body);
-  
-    dealModification.save(function(err) {
-        if (err) {
-      return res.status(500).json({
-      error: 'Cannot update the deal'
-      });
-    }
+  DealModification.findOneAndUpdate({idDeal : modif.idDeal}, {$push : { user: req.user._id, salePrice: modif.salePrice, initialPrice: modif.initialPrice}}, {upsert: true}, function(err) {
+	  console.log(err);
+	  
   });
  };
 

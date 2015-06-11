@@ -4,8 +4,8 @@ angular.module('deals').run(function(editableOptions) {
   editableOptions.theme = 'bs3'; 
 })
 
-.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealModification', 'DealsGrade',
-  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealModification, DealsGrade) {
+.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade',
+  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade) {
 	
     // $scope.hasAuthorization = function(deal) {
     //   if (!deal || !deal.user){
@@ -29,32 +29,35 @@ angular.module('deals').run(function(editableOptions) {
 	$scope.latitude = 0;
 	  
 	$scope.editDeal = function() {
-		// Marche pas :(
-	/*console.log(this.user);
-	var dealModification = new DealModification({
-		idDeal: this.deal._id});
+		var dealModification = {
+		idDeal: this.deal._id,
+		initialPrice : this.deal.initialPrice,
+		salePrice : this.deal.salePrice};
 		console.log(dealModification);
-        dealModification.initialPrice.push(this.deal.initialPrice);
-        dealModification.salePrice.push(this.deal.salePrice);
 		
-		console.log('create: Tmp deal');
-        console.log(dealModification);
-        dealModification.$save(function(response) {
-          $location.path('addModification/' + response._id);
-        });*/
+	    var modifResource = $resource('/addModification');
+	 
+        modifResource.save(dealModification, function(response) {
+			// TODO : METTRE UN MESSAGE OK :D
+          console.log(response);
+        });
 	}  
   
-	$scope.creds = {
-		  bucket: 'koppekimages',
-		  access_key: 'AKIAJUN7X3P4N6YRHPIQ',
-		  secret_key: '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'
-	}
-	
 	$scope.upload = function() {
+		
+		var creds = $resource(
+          '/getS3Credentials',
+          {
+            query: { method:'GET', isArray: true }
+          }
+        );
+		
+	  creds.get(function(credential) {
+
 	  // Configure The S3 Object 
-	  AWS.config.update({ accessKeyId: $scope.creds.access_key, secretAccessKey: $scope.creds.secret_key });
-	  AWS.config.region = 'eu-west-1';
-	  var bucket = new AWS.S3({ params: { Bucket: $scope.creds.bucket } });
+	  AWS.config.update({ accessKeyId: credential.access_key, secretAccessKey: credential.secret_key });
+	  AWS.config.region = credential.region;
+	  var bucket = new AWS.S3({ params: { Bucket: credential.bucket } });
 	 
 	  if($scope.file) {
 		var params = { Key: $scope.file.name, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
@@ -85,6 +88,7 @@ angular.module('deals').run(function(editableOptions) {
 		// No File Selected
 		alert('No File Selected');
 	  }
+	  });
 	}
 		
     $scope.create = function(isValid) {
