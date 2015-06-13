@@ -45,10 +45,9 @@
 
 <body class="ng-cloak">
 	<header data-ng-include="'/modules/core/views/header.client.view.html'" class="navbar navbar-fixed-top navbar-inverse"></header>
+    <section class="menu" data-ng-include="'/modules/core/views/menu.client.view.html'"></section>
 	<section class="content">
-		<section class="container">
 			{% block content %}{% endblock %}
-		</section>
 	</section>
 
 	<!--Embedding The User Object-->

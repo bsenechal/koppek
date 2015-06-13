@@ -1,54 +1,68 @@
-<section data-ng-controller="DealsController">
-  <input type="range" ng-model="$root.srchRadius" min="0" max="10000000" step="10000" style="width: 140px" class="ng-pristine ng-valid">
-  <div class=".col-md-4" data-ng-controller="MapsController" data-ng-init="Map()">
-      Result on a Map : [{{srchLng}},{{srchLat}}] rad : {{srchRadius}}
-      <input id="pac-input" class="controls" type="text" placeholder="Enter a location">
-      <div map-canvas id="map-canvas" style="height: 300px;"></div>
-  </div>
-  <div class=".col-md-2">
-    TODO : (once the map service is generic -> update display node according to search criteria)
-    Recherche : <input ng-model="searchQuery">
-  </div>
-  <input type="range" ng-model="limit" min="0" max="1000" step="10" style="width: 240px" class="ng-pristine ng-valid">
-  <div class=".col-md-4">
-    <ul class="deals unstyled">
-      <div infinite-scroll='findByLimited()' infinite-scroll-disabled='busyLoadingData' infinite-scroll-distance='1'>
-      <!-- <li data-ng-repeat="deal in deals| filter:searchQuery |limitTo: limitEnd"> -->
-      <li data-ng-repeat="deal in deals| filter:searchQuery |limitTo: limitEnd track by deal._id">
-        <h2>
-          <a data-ng-href="#!/deals/{{::deal._id}}">{{::deal.title}}</a>
-<!--          <span data-ng-if="hasAuthorization(deal)">
-            <a class="btn" href="/#!/deals/{{deal._id}}/edit">
-              <i class="glyphicon glyphicon-edit"></i>
-            </a>
-            <a class="btn" data-ng-click="remove(::deal);">
-              <i class="glyphicon glyphicon-trash"></i>
-            </a>
-          </span>
- -->       
-          <a class="btn" data-ng-click="::updateGradePlus(deal);">
-            <i class="glyphicon glyphicon-plus"></i>
-          </a>
-          {{deal.grade}}
-          <a class="btn" data-ng-click="::updateGradeMinus(deal);">
-            <i class="glyphicon glyphicon-minus"></i>
-          </a>
-          <a class="btn" data-ng-click="::updateAlert(deal);">
-            <i class="glyphicon glyphicon-exclamation-sign"></i>
-          </a>
-          {{deal.alert}}
-        </h2>
-        <span>{{::deal.created | date:'medium'}}</span> /
-        <span>{{::deal.user.name}}</span>
-        <div><strong>Prix initial :</strong> {{::deal.initialPrice}}</div>
-        <div><strong>Prix de vente :</strong> {{::deal.salePrice}}</div>
-        <div><strong>Latitude :</strong> {{::deal.latitude}}</div>
-        <div><strong>Longitude :</strong> {{::deal.longitude}}</div>
-        <div>{{::deal.description}}</div>
-      </li>
-      </div>
-    </ul>
-    <h1 data-ng-hide="!deals || deals.length">No deals yet. <br> Why don't you <a href="/#!/deals/create">Create One</a>?</h1>
-  </div>
 
+<section data-ng-controller="DealsController">
+	<br> <br> <br> <br>
+
+	<div layout="row" layout-sm="column" layout-margin layout-fill
+		layout-padding layout-align="space-around start">
+
+		<div layout="column" flex style="height: 800px; overflow: auto;">
+
+			<div infinite-scroll='findByLimited()'
+				infinite-scroll-disabled='busyLoadingData'
+				infinite-scroll-distance='1'>
+				<md-content>
+				<section>
+					<md-subheader class="md-primary">Deals à compy city
+					plage :D</md-subheader>
+					<md-list> <md-list-item class="md-3-line"
+						data-ng-repeat="deal in deals| filter:searchQuery |limitTo: limitEnd track by deal._id">
+					<div layout="row" layout-wrap layout-margin layout-fill
+						layout-padding>
+
+						<div layout="column" flex="20">
+							<img
+								ng-src="https://koppekimages.s3-eu-west-1.amazonaws.com/deals/{{::deal.image}}"
+								alt="{{::deal.title}}" />
+							<div>
+								<strong>Prix initial :</strong> {{::deal.initialPrice}}
+							</div>
+							<div>
+								<strong>Prix de vente :</strong> {{::deal.salePrice}}
+							</div>
+						</div>
+						<div flex="70">
+							<h2>
+								<a data-ng-href="#!/deals/{{::deal._id}}">{{::deal.title}}</a>
+							</h2>
+							<div class="md-list-item-text">
+								<span>{{::deal.created | date:'medium'}}</span> / <span>{{::deal.user.name}}</span>
+								<p>{{::deal.description | limitTo:300}}...</p>
+							</div>
+						</div>
+					</div>
+					</md-list-item> </md-list>
+				</section>
+				</md-content>
+
+			</div>
+			<h1 data-ng-hide="!deals || deals.length">
+				No deals yet. <br> Why don't you <a href="/#!/deals/create">Create
+					One</a>?
+			</h1>
+		</div>
+
+		<div layout="column" flex>
+			<input type="range" ng-model="$root.srchRadius" min="0"
+				max="10000000" step="10000" style="width: 140px"
+				class="ng-pristine ng-valid">
+			<div class=".col-md-4" data-ng-controller="MapsController"
+				data-ng-init="Map()">
+				<input id="pac-input" class="controls" type="text"
+					placeholder="Enter a location">
+				<div map-canvas id="map-canvas" style="height: 300px;"></div>
+			</div>
+			<div class=".col-md-2">
+				<input ng-model="searchQuery">
+			</div>
+		</div>
 </section>

@@ -1,50 +1,90 @@
 <section data-ng-controller="DealsController" data-ng-init="findOne()">
 
-<form editable-form name="editableForm" onaftersave="editDeal()">
-  <span>{{deal.created | date:'medium'}}</span> /
-  <span>{{deal.user.name}}</span>
-  <h2 editable-text="deal.title" e-name="deal.title" e-required>{{deal.title}}</h2>
-  <div data-ng-if="hasAuthorization(deal)">
-    <a class="btn" href="/#!/deals/{{deal._id}}/edit">
-      <i class="glyphicon glyphicon-edit"></i>
-    </a>
-    <a class="btn" data-ng-click="remove(deal);">
-      <i class="glyphicon glyphicon-trash"></i>
-    </a>
-  </div>
-	<a class="btn" data-ng-click="updateGradePlus(deal);">
-	  <i class="glyphicon glyphicon-plus"></i>
-	</a>
-	{{deal.grade}}
-	<a class="btn" data-ng-click="updateGradeMinus(deal);">
-	  <i class="glyphicon glyphicon-minus"></i>
-	</a>
-  <a class="btn" data-ng-click="updateAlert(deal);">
-    <i class="glyphicon glyphicon-exclamation-sign"></i>
-  </a>
-  {{deal.alert}}
-  <div>Prix initial : <span editable-text="deal.initialPrice" e-name="deal.initialPrice" e-required>{{deal.initialPrice}}</span></div>
-  <div>Prix de vente : <span editable-text="deal.salePrice" e-name="deal.salePrice" e-required>{{deal.salePrice}}</span></div>
-  <div><span editable-text="deal.description" e-name="deal.description" e-required>{{deal.description}}</span></div>
-  <img ng-src="https://koppekimages.s3-eu-west-1.amazonaws.com/deals/{{deal.image}}" />
-  
-    <div class="buttons">
-		<span ng-show="!editableForm.$visible"> Un problème dans l'annonce ? A vous de jouer : </span>
-      <!-- button to show form -->
-      <button type="button" class="btn btn-danger" ng-click="editableForm.$show()" ng-show="!editableForm.$visible">
-        Edit
-      </button>
-      <!-- buttons to submit / cancel form -->
-      <span ng-show="editableForm.$visible">
-        <button type="submit" class="btn btn-primary" ng-disabled="editableForm.$waiting">
-          Save
-        </button>
-        <button type="button" class="btn btn-default" ng-disabled="editableForm.$waiting" ng-click="editableForm.$cancel()">
-          Cancel
-        </button>
-      </span>
-    </div>
-</form>	
-   <div ng-if="deal !== undefined" ng-include="'modules/comments/views/index.client.view.html'" data-ng-controller="CommentsController" data-ng-init="findComments(deal, 2)"/>
+	<md-content class="md-padding"> <md-card> <md-card-content>
+	<form editable-form name="editableForm" onaftersave="editDeal()">
+		<div layout-margin layout-fill layout-padding>
+
+			<span ng-show="editableForm.$visible"><br />
+			<br /></span>
+			<h2 class="md-display-2" editable-text="deal.title"
+				e-name="deal.title" e-required>{{deal.title}}</h2>
+			<hr>
+			<div layout="row" layout-sm="column" layout-margin layout-fill
+				layout-padding>
+				<div layout="column" flex="25">
+					<img
+						ng-src="https://koppekimages.s3-eu-west-1.amazonaws.com/deals/{{deal.image}}" />
+				</div>
+				<div layout="column" flex="75">
+					<div layout="row">
+						<span>{{deal.created | date:'medium'}}</span> / <span>{{deal.user.name}}</span>
+					</div>
+					<div layout="row">
+						<div data-ng-if="hasAuthorization(deal)">
+							<a class="btn" href="/#!/deals/{{deal._id}}/edit"> <i
+								class="glyphicon glyphicon-edit"></i>
+							</a> <a class="btn" data-ng-click="remove(deal);"> <i
+								class="glyphicon glyphicon-trash"></i>
+							</a>
+						</div>
+						<a class="btn" data-ng-click="updateGradePlus(deal);"> <i
+							class="glyphicon glyphicon-plus"></i>
+						</a> {{deal.grade}} <a class="btn"
+							data-ng-click="updateGradeMinus(deal);"> <i
+							class="glyphicon glyphicon-minus"></i>
+						</a> {{deal.alert}}
+					</div>
+					<div layout="row">
+						<div>
+							Prix initial : <span editable-text="deal.initialPrice"
+								e-name="deal.initialPrice" e-required>{{deal.initialPrice}}</span>
+						</div>
+					</div>
+					<div layout="row">
+						<div>
+							Prix de vente : <span editable-text="deal.salePrice"
+								e-name="deal.salePrice" e-required>{{deal.salePrice}}</span>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<md-content layout-padding>
+
+		<div>
+			<span editable-text="deal.description" e-name="deal.description"
+				e-required>{{deal.description}}</span>
+		</div>
+		<div class="buttons">
+			<!-- buttons to submit / cancel form -->
+			<span ng-show="editableForm.$visible"> <br />
+				<button type="submit" class="btn btn-primary"
+					ng-disabled="editableForm.$waiting">Save</button>
+				<button type="button" class="btn btn-default"
+					ng-disabled="editableForm.$waiting"
+					ng-click="editableForm.$cancel()">Cancel</button>
+			</span>
+		</div>
+
+		</md-content>
+	</form>
+	</md-card-content>
+
+	<div class="md-actions" layout="row" layout-align="end center">
+		Un problème dans l'annonce ?
+		<md-button class="md-primary md-raised"
+			ng-click="editableForm.$show()" ng-show="!editableForm.$visible">Editer</md-button>
+		<md-button class="md-raised"> Deal expiré ? </md-button>
+		<md-button class="md-raised md-warn" ngClick="updateAlert(deal)">
+		<i class="glyphicon glyphicon-exclamation-sign"></i></md-button>
+	</div>
+	</md-card> </md-content>
+
+	<div ng-if="deal !== undefined"
+		ng-include="'modules/comments/views/index.client.view.html'"
+		data-ng-controller="CommentsController"
+		data-ng-init="findComments(deal, 2)" />
 
 </section>
