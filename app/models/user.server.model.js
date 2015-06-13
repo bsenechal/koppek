@@ -75,6 +75,9 @@ var UserSchema = new Schema({
 		}],
 		default: ['user']
 	},
+	notifications: [{
+		content: String
+	}],
 	updated: {
 		type: Date
 	},
