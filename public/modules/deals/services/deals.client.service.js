@@ -12,17 +12,6 @@ angular.module('deals').factory('Deals', ['$resource',
     });
   }
 ])
-.factory('DealModification', ['$resource',
-  function($resource) {
-    return $resource('addModification/:dealId', {
-      dealId: '@_id'
-    }, {
-      updateModifcation: {
-        method: 'PUT'
-      }
-    });
-  }
-])
 .factory('DealsGrade', ['$resource',
   function($resource) {
     return $resource('updateGrade/:dealId', {

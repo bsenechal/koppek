@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
+  s3Credentials = require('../../s3Credentials.json'), 
   Deal = mongoose.model('Deal'),
   async = require('async'),
   Tag = mongoose.model('Tag'),
@@ -106,6 +107,11 @@ exports.deal = function(req, res, next, id) {
     req.deal = deal;
     next();
   });
+};
+
+
+exports.s3Credentials = function(req, res) {
+	res.json(s3Credentials);
 };
 
 /**
@@ -363,16 +369,11 @@ exports.update = function(req, res) {
 };
 
 exports.addModification = function(req, res) {
-  var dealModification = req.dealModification;
+  var modif = req.body;
 
-  dealModification = _.extend(dealModification, req.body);
-  
-    dealModification.save(function(err) {
-        if (err) {
-      return res.status(500).json({
-      error: 'Cannot update the deal'
-      });
-    }
+  DealModification.findOneAndUpdate({idDeal : modif.idDeal}, {$push : { user: req.user._id, salePrice: modif.salePrice, initialPrice: modif.initialPrice}}, {upsert: true}, function(err) {
+	  console.log(err);
+	  
   });
  };
 

@@ -21,17 +21,16 @@ module.exports = function(app) {
     .post(users.requiresLogin, deals.updateGrade);
   app.route('/generateDeals')
     .get(deals.generateDeals); 
+  app.route('/getS3Credentials')
+    .get(users.requiresLogin, deals.s3Credentials);
   app.route('/dealslimited')
     .post(deals.limited);
   app.route('/addModification')
-    .put(users.requiresLogin, deals.addModification)
 	.post(users.requiresLogin, deals.addModification);
   app.route('/deals/:dealId')
     .get(deals.visited, deals.show)
     .put(users.requiresLogin, users.hasAuthorization(['admin']), deals.update)
-    // .put(deals.update)
     .delete(users.requiresLogin, users.hasAuthorization(['admin']), deals.destroy);
-    // .delete(deals.destroy);
 
   // Finish with setting up the dealId param
   app.param('dealId', deals.deal);
