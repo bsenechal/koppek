@@ -49,5 +49,10 @@ module.exports = {
 			'public/lib/angular-mocks/angular-mocks.js',
 			'public/modules/*/tests/*.js'
 		]
-	}
+	},
+	//Koppek variables config : 
+	//used in user.role controller : help determine the distance between two update role
+	thresholdCheckRole: 10,
+	thresholdArrayRole: [0,0.25,0.5,0.75,1],
+	ArrayRole: ['manant','écuyer', 'sir', 'cavalier de l\'apocalypse']
 };

@@ -180,9 +180,9 @@ angular.module('deals').run(function(editableOptions) {
         console.log('updateGrade(): server results limited');
         if(action == 'alert')
         {
-          console.log('updateGrade(): new Deal Grade : ', dealResult.alert);
-          deal.alert = dealResult.alert;        
-
+          console.log('updateGrade(): new Deal Alert : ', dealResult.alert);
+          deal.alert = dealResult.alert; 
+          deal.description = dealResult.description;          
         }
         else
         {

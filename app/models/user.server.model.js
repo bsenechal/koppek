@@ -89,11 +89,16 @@ var UserSchema = new Schema({
 	resetPasswordExpires: {
 		type: Date
 	},
-  userPoints: {
-    type: Number,
-    default: 0,
-    trim: true
-  }
+   userPoints: {
+     type: Number,
+     default: 0,
+     trim: true
+   },
+	userRole: {
+		type: Number,
+    	default: 0,
+		trim: true
+	},
 });
 
 /**

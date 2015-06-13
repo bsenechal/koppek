@@ -5,6 +5,7 @@
  */
 var _ = require('lodash'),
    errorHandler = require('../errors.server.controller.js'),
+   config = require('../../../config/config'),
    mongoose = require('mongoose'),
    passport = require('passport'),
    User = mongoose.model('User');
@@ -33,39 +34,66 @@ function getTotalUserPoints(callback){
 *      Update user role if needed
 */
 function checkRole(id, points){
+  //check role for every user and update if necessary
 	console.log('checkRole() : init');
 	console.log('checkRole() : id= ',id);
 	console.log('checkRole() : points= ',points);
    getTotalUserPoints(function(totalUserPoints){
-
       console.log('checkRole() : totalUserPoints= ',totalUserPoints);
-      // !!! this array holds the threshold values of the different user role !!!
-      //store elsewhere ?
-      var thresholdArray = [0,0.25,0.5,0.75,1];
-      var thresholdRole = ['manant','écuyer', 'sir', 'cavalier de l\'apocalypse'];
-      //if points>thresholdArray[i]*totalUserPoints then ...
-      for(var i = 1; i < thresholdArray.length; i++){
-         if(points > thresholdArray[i-1]*totalUserPoints && points <= thresholdArray[i]*totalUserPoints){
-            //update user role :
-            console.log('checkRole() : user roles are being updated');
-            var query = {'_id': id, 'roles':{$ne: thresholdRole[i-1]}};
-            var update = {$push: {'roles': thresholdRole[i-1]}};
-            var options = {new: true};
+      console.log('checkRole() : thresholdCheckRole= ',config.thresholdCheckRole);
+      //does this only sometime :
+      if(totalUserPoints%config.thresholdCheckRole == 0)
+      {
+        // !!! this array holds the threshold values of the different user role !!!
+        //store in config all file
+        var thresholdArray = config.thresholdArrayRole;
+        var thresholdRole = config.ArrayRole;
+        //if points>thresholdArray[i]*totalUserPoints then ...
 
-            User.findOneAndUpdate(query, update, options, function(err, user) {
-              if (err) {
-                console.log('checkRole() : findOneAndUpdate() : got an error');
-              }
-              else{
-              		if(user){
-                		console.log('checkRole() : findOneAndUpdate() : new roles = ', user.roles);             			
-              		}
-              		else{
-                		console.log('checkRole() : findOneAndUpdate() : the user already has this role');             			              			
-              		}
-              }
-            });
-         }
+        //update for all so :
+        User.find({},function(err, AllUser) {
+          if(err) { console.log('checkRole() : find() : error'); return; }
+          //Will check role for every user and modify it according to its points and the sum of every points in the system
+          AllUser.forEach(function(U){
+
+            //small bool variable to see if a user has been modified :
+            var change = false;
+
+            console.log('checkRole() : user ',U.username,' is being updated');
+            for(var i = 1; i < thresholdArray.length; i++){
+               if(U.userPoints > thresholdArray[i-1]*totalUserPoints && U.userPoints <= thresholdArray[i]*totalUserPoints){
+                  //update user role :
+                  var query = {'_id': U._id};
+                  var update = {'userRole': i};
+                  var options = {new: true};
+                  //check if user role has changed :
+                  if(U.userRole != i){
+                    change = true;
+                    User.findOneAndUpdate(query, update, options, function(err, user) {
+                      if (err) {
+                        console.log('checkRole() : findOneAndUpdate() : got an error');
+                      }
+                      else{
+                          if(user){
+                            console.log('checkRole() : findOneAndUpdate() : new roles = ', user.userRole);                   
+                          }
+                          else{
+                            console.log('checkRole() : findOneAndUpdate() : the user already has this role');                                       
+                          }
+                      }
+                    });
+                  }
+               }
+            }
+            if(!change){
+              console.log('checkRole() : user ', U.username, ' remains unchanged.');              
+            }
+          });
+        });
+      }
+      else
+      {
+        console.log('checkRole() : Not time to update !');
       }
    });
 }
