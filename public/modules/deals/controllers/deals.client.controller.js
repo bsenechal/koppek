@@ -3,9 +3,16 @@
 angular.module('deals').run(function(editableOptions) {
   editableOptions.theme = 'bs3'; 
 })
-
-.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade',
-  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade) {
+.controller('RightCtrl', function ($scope, $timeout, $mdSidenav, $log) {
+    $scope.close = function () {
+      $mdSidenav('right').close()
+        .then(function () {
+          $log.debug("close RIGHT is done");
+        });
+    };
+  })
+.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade', '$mdSidenav', '$mdUtil',
+  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade, $mdSidenav, $mdUtil, $log) {
 	
     // $scope.hasAuthorization = function(deal) {
     //   if (!deal || !deal.user){
@@ -27,6 +34,23 @@ angular.module('deals').run(function(editableOptions) {
 	$scope.validate = false;
 	$scope.longitude = 0;
 	$scope.latitude = 0;
+	
+	$scope.toggleLeft = buildToggler('left');
+	$scope.toggleRight = buildToggler('right');
+    /**
+     * Build handler to open/close a SideNav; when animation finishes
+     * report completion in console
+     */
+    function buildToggler(navID) {
+      var debounceFn =  $mdUtil.debounce(function(){
+            $mdSidenav(navID)
+              .toggle()
+              .then(function () {
+                $log.debug("toggle " + navID + " is done");
+              });
+          },300);
+      return debounceFn;
+    }
 	  
 	$scope.editDeal = function() {
 		var dealModification = {

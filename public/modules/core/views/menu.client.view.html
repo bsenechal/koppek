@@ -1,0 +1,32 @@
+<div data-ng-controller="HeaderController">
+	<md-sidenav class="md-sidenav-left md-whiteframe-z2"
+		md-component-id="menu"> <md-toolbar
+		class="md-theme-light">
+	<h1 class="md-toolbar-tools">Menu</h1>
+	</md-toolbar> <md-content ng-controller="MenuCtrl" layout-padding> <md-list>
+	<md-list-item class="md-3-line"> <img
+		ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.who}}" />
+	<div class="md-list-item-text">
+		<h3></h3>
+		<h4>{{ authentication.user.firstName }} {{
+			authentication.user.lastName }}</h4>
+		<p>Cavalier de l'apocalypse</p>
+	</div>
+	</md-list-item> <md-divider></md-divider> <md-list-item class="md-3-line"
+		ng-repeat="item in ::menu.items | orderBy: 'position'">
+	<div class="md-list-item-text">
+		<h3>{{ item.title }}</h3>
+		<md-divider></md-divider>
+		<md-list-item class="md-2-line"
+			data-ng-repeat="subitem in item.items | orderBy: 'position'"
+			data-ng-if="subitem.shouldRender(authentication.user);"
+			ui-route="{{subitem.uiRoute}}" ng-class="{active: $uiRoute}">
+		<div class="md-list-item-text">
+			<a href="/#!/{{subitem.link}}" data-ng-bind="subitem.title"></a>
+		</div>
+		</md-list-item>
+
+	</div>
+	</md-list-item> </md-list> <md-divider></md-divider> <md-button ng-click="close()"
+		class="md-primary"> Fermer le menu </md-button> </md-content> </md-sidenav>
+</div>

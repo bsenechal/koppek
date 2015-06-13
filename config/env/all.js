@@ -14,8 +14,8 @@ module.exports = {
 		lib: {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.css',
-				'public/lib/bootstrap/dist/css/bootstrap-theme.css',
 				'public/lib/angular-xeditable/dist/css/xeditable.css',
+				'public/lib/angular-material/angular-material.min.css',
 			],
 			js: [	
 				'public/lib/angular/angular.js',
@@ -34,6 +34,9 @@ module.exports = {
 				'public/lib/ngInfiniteScroll/build/ng-infinite-scroll.min.js',
 				'public/lib/aws-sdk-js/dist/aws-sdk.min.js',
 				'public/lib/angular-xeditable/dist/js/xeditable.js',
+				'public/lib/angular-aria/angular-aria.min.js',
+				'public/lib/angular-material/angular-material.min.js',
+                'public/lib/angular-messages/angular-messages.min.js',
 			]
 		},
 		css: [
