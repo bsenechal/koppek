@@ -48,19 +48,27 @@
 </head>
 
 <body class="ng-cloak">
-	<div layout="column">
-		<div ng-controller="HeaderController" layout="row">
+		<div ng-controller="HeaderController">
 			<md-sidenav class="md-sidenav-left md-whiteframe-z2"
 				md-component-id="left"> <md-toolbar
 				class="md-theme-indigo">
 			<h1 class="md-toolbar-tools">Menu</h1>
-			</md-toolbar> <md-content layout-padding ng-controller="LeftCtrl"> <md-button
+			</md-toolbar> <md-content layout-padding ng-controller="LeftCtrl"> 
+            <img
+                ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.who}}" />
+            <div class="md-list-item-text">
+                <h4>{{ authentication.user.firstName }} {{
+                    authentication.user.lastName }}</h4>
+                <p>Cavalier de l'apocalypse</p>
+            </div>
+
+            <md-button
 				ng-click="close()" class="md-primary"> Fermer le menu </md-button>
 			<p hide-md show-gt-md>This sidenav is locked open on your device.
 				To go back to the default behavior, narrow your display.</p>
 			</md-content> </md-sidenav>
 
-			<md-toolbar layout="row">
+			<md-toolbar>
 			<div class="md-toolbar-tools">
 				<md-button class="md-icon-menu" aria-label="Menu"
 					ng-click="toggleLeft()"> <md-icon
@@ -84,7 +92,7 @@
 			</div>
 			</md-toolbar>
 		</div>
-		<div layout="row">{% block content %}{% endblock %}</div>
+		{% block content %}{% endblock %}
 	</div>
 	<!--Embedding The User Object-->
 	<script type="text/javascript">

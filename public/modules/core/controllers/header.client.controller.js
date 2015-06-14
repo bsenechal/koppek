@@ -3,10 +3,7 @@
 angular.module('core')
 .controller('LeftCtrl', function ($scope, $timeout, $mdSidenav, $log) {
     $scope.close = function () {
-      $mdSidenav('left').close()
-        .then(function () {
-          $log.debug("close LEFT is done");
-        });
+      $mdSidenav('left').close();
     };
   })
 .controller('HeaderController', ['$scope', '$rootScope', 'Authentication', 'Menus', '$mdSidenav', '$mdUtil',
@@ -14,7 +11,7 @@ angular.module('core')
 		$scope.authentication = Authentication;
 		$scope.isCollapsed = false;
 		$scope.menu = Menus.getMenu('topbar');
-        
+        console.log(Authentication);
         $scope.toggleLeft = buildToggler('left');
         
 		$scope.toggleCollapsibleMenu = function() {
@@ -29,10 +26,7 @@ angular.module('core')
         function buildToggler(navID) {
           var debounceFn =  $mdUtil.debounce(function(){
                 $mdSidenav(navID)
-                  .toggle()
-                  .then(function () {
-                    $log.debug("toggle " + navID + " is done");
-                  });
+                  .toggle();
               },300);
           return debounceFn;
         }
