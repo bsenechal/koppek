@@ -1,58 +1,48 @@
 <section data-ng-controller="DealsController">
-    <div layout="row" layout-sm="column" layout-margin layout-fill
-        layout-padding layout-align="space-around start">
-        <div layout="column" flex>
-            <md-content layout-padding layout-sm="column">
-            <h1 class=".md-headline">Ajout d'un deal</h1>
-            <form name="dealForm"
-                data-ng-submit="create(dealForm.$valid)">
-                <md-input-container> <label>Titre</label>
-                <input name="title" ng-model="title" ng-required="true">
-                </md-input-container>
+	<div layout="row" layout-sm="column" layout-margin layout-fill
+		layout-padding layout-align="space-around start">
+		<div layout="column" flex>
+			<md-content layout-padding layout-sm="column">
+			<h1 class=".md-headline">Ajout d'un deal</h1>
+			<form name="dealForm" data-ng-submit="create(dealForm.$valid)">
+				<md-input-container> <label>Titre</label> <input
+					name="title" ng-model="title" ng-required="true"> </md-input-container>
 
-                <md-input-container> <label>Prix
-                    initial</label> <input name="initialPrice"
-                    ng-model="initialPrice" ng-required="true">
-                </md-input-container>
+				<md-input-container> <label>Prix
+					initial</label> <input name="initialPrice" ng-model="initialPrice"
+					ng-required="true"> </md-input-container>
 
-                <md-input-container> <label>Prix
-                    de vente</label> <input name="salePrice"
-                    ng-model="salePrice" ng-required="true"
-                    ng-init="modifiedSalePrice=false"
-                    ng-Blur="modifiedSalePrice=true"> </md-input-container>
+				<md-input-container> <label>Prix de
+					vente</label> <input name="salePrice" ng-model="salePrice"
+					ng-required="true" ng-init="modifiedSalePrice=false"
+					ng-Blur="modifiedSalePrice=true"> </md-input-container>
 
-                <md-input-container> <label>Image</label>
-                </md-input-container>
-                <md-input-container> <input
-                    name="file" aria-label="Ajouter une image"
-                    type='file' class="form-control" file
-                    accept="image/*" id="file" required> </md-input-container>
+				<md-input-container> <label>Image</label> </md-input-container>
+				<md-input-container> <input name="file" aria-label="Ajouter une image"
+					type='file' class="form-control" file accept="image/*" id="file" required > </md-input-container>
 
-                <md-input-container> <md-progress-linear
-                    md-mode="buffer" value="{{determinateValue}}"
-                    md-buffer-value="{{uploadProgress}}"></md-progress-linear>
-                <md-button class="md-primary" ng-click="upload()">Transférer</md-button>
-                </md-input-container>
+				<md-input-container> <md-progress-linear
+					md-mode="buffer" value="{{determinateValue}}"
+					md-buffer-value="{{uploadProgress}}"></md-progress-linear> <md-button
+					class="md-primary" ng-click="upload()">Transférer</md-button> </md-input-container>
 
-                <md-input-container> <textarea
-                    name="description" data-ng-model="description"
-                    id="description" cols="30" rows="10"
-                    placeholder="Description" class="form-control"
-                    required></textarea> </md-input-container>
+				<md-input-container> <textarea
+					name="description" data-ng-model="description" id="description"
+					cols="30" rows="10" placeholder="Description" class="form-control"
+					required></textarea> </md-input-container>
 
-                <md-input-container> <md-button
-                    class="md-primary" ng-click="submit()">Valider</md-button>
-                </md-input-container>
-            </form>
-            </md-content>
-        </div>
-        <div layout="column" flex>
-            <div class="panel" data-ng-controller="MapsController"
-                data-ng-init="MapCreateDeal()">
-                <input id="pac-input" class="controls" type="text"
-                    placeholder="Enter a location">
-                <div map-canvas id="map-canvas" style="height: 800px;"></div>
-            </div>
-        </div>
-    </div>
+				<md-input-container> <md-button
+					class="md-primary" ng-click="submit()">Valider</md-button> </md-input-container>
+			</form>
+			</md-content>
+		</div>
+		<div layout="column" flex>
+			<div class="panel" data-ng-controller="MapsController"
+				data-ng-init="MapCreateDeal()">
+				<input id="pac-input" class="controls" type="text"
+					placeholder="Enter a location">
+				<div map-canvas id="map-canvas" style="height: 800px;"></div>
+			</div>
+		</div>
+	</div>
 </section>
