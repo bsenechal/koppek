@@ -54,7 +54,20 @@
 				md-component-id="left"> <md-toolbar
 				class="md-theme-indigo">
 			<h1 class="md-toolbar-tools">Menu</h1>
-			</md-toolbar> <md-content layout-padding ng-controller="LeftCtrl"> <md-button
+			</md-toolbar> <md-content layout-padding ng-controller="LeftCtrl"> 
+            <img
+                ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.who}}" />
+            <div class="md-list-item-text">
+                <h4>{{ authentication.user.firstName }} {{
+                    authentication.user.lastName }}</h4>
+                <p>Cavalier de l'apocalypse</p>
+            </div>
+            
+            
+            
+            
+            
+            <md-button
 				ng-click="close()" class="md-primary"> Fermer le menu </md-button>
 			<p hide-md show-gt-md>This sidenav is locked open on your device.
 				To go back to the default behavior, narrow your display.</p>
