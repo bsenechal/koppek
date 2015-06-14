@@ -1,43 +1,59 @@
-<div data-ng-controller="HeaderController">
-	<md-toolbar>
-	<div class="md-toolbar-tools">
-		<md-button class="md-icon-button" aria-label="Settings"> <md-icon
-			ng-click="toggleMenu()" md-svg-icon="modules/core/img/icons/menu.svg"></md-icon>
-		</md-button>
 
+<div ng-controller="HeaderController">
+    <md-sidenav class="md-sidenav-left md-whiteframe-z2"
+        md-component-id="left"> <md-toolbar
+        class="md-theme-light">
+    <h1 class="md-toolbar-tools">Menu</h1>
+    </md-toolbar> <md-content ng-controller="LeftCtrl" layout-padding> <md-list>
+    <md-list-item class="md-3-line" data-ng-show="authentication.user"> <img
+        ng-src="{{item.face}}?{{$index}}" class="md-avatar"
+        alt="{{item.who}}" />
+    <div class="md-list-item-text">
+        <h3></h3>
+        <h4>{{ authentication.user.firstName }} {{
+            authentication.user.lastName }}</h4>
+        <p>Cavalier de l'apocalypse</p>
+    </div>
+    </md-list-item> <md-divider></md-divider> <md-list-item class="md-3-line"
+        ng-repeat="item in ::menu.items | orderBy: 'position'">
+    <div class="md-list-item-text">
+        <h3>{{ item.title }}</h3>
+        <md-divider></md-divider>
+        <md-list-item class="md-2-line"
+            data-ng-repeat="subitem in item.items | orderBy: 'position'"
+            data-ng-if="subitem.shouldRender(authentication.user);"
+            ui-route="{{subitem.uiRoute}}" ng-class="{active: $uiRoute}">
+        <div class="md-list-item-text">
+            <a href="/#!/{{subitem.link}}" data-ng-bind="subitem.title"></a>
+        </div>
+        </md-list-item>
 
-		<div class="navbar-header">
-			<button class="navbar-toggle" type="button"
-				data-ng-click="toggleCollapsibleMenu()">
-				<span class="sr-only">Toggle navigation</span> <span
-					class="icon-bar"></span> <span class="icon-bar"></span> <span
-					class="icon-bar"></span>
-			</button>
-			<a href="/#!/">Koppek</a>
-		</div>
+    </div>
+    </md-list-item> </md-list> <md-divider></md-divider> <md-button ng-click="close()"
+        class="md-primary"> Fermer le menu </md-button> </md-content> </md-sidenav>
 
-		<span flex></span>
-		<nav class="collapse navbar-collapse" collapse="!isCollapsed"
-			role="navigation">
-
-			<ul class="nav navbar-nav navbar-right"
-				data-ng-hide="authentication.user">
-				<li ui-route="/signup" ng-class="{active: $uiRoute}"><a
-					href="/#!/signup">Sign Up</a></li>
-				<li class="divider-vertical"></li>
-				<li ui-route="/signin" ng-class="{active: $uiRoute}"><a
-					href="/#!/signin">Sign In</a></li>
-			</ul>
-		</nav>
-		<md-button href="/#!/deals/create" aria-label="Ajouter un deal" show-sm hide-gt-sm>
-		<span class="glyphicon glyphicon-plus"></span></md-button>
-		<md-button href="/#!/deals/create" aria-label="Ajouter un deal" hide-sm>Ajouter un deal</md-button>
-
-		<md-button class="md-icon-button" aria-label="Favorite"> <md-icon
-			md-svg-icon="modules/core/img/icons/favorite.svg"></md-icon> </md-button>
-		<md-button class="md-icon-button" aria-label="More"> <md-icon
-			md-svg-icon="modules/core/img/icons/more_vert.svg"></md-icon> </md-button>
-	</div>
-	</md-toolbar>
+    <md-toolbar>
+    <div class="md-toolbar-tools">
+        <md-button class="md-icon-menu" aria-label="Menu"
+            ng-click="toggleLeft()"> <md-icon
+            md-svg-icon="modules/core/img/icons/menu.svg"></md-icon> </md-button>
+        <a href="/#!/">Koppek</a> <span flex></span>
+        <md-button href="/#!/deals/create" aria-label="Ajouter un deal"
+            show-sm hide-gt-sm> <span
+            class="glyphicon glyphicon-plus"></span></md-button>
+        <md-button href="/#!/deals/create" aria-label="Ajouter un deal"
+            hide-sm>Ajouter un deal</md-button>
+        <md-button data-ng-hide="authentication.user" href="/#!/signup"
+            aria-label="Inscription" hide-sm>Inscription</md-button>
+        <md-button data-ng-hide="authentication.user" href="/#!/signin"
+            aria-label="Connexion" hide-sm>Connexion</md-button>
+        <md-button class="md-icon-button" aria-label="Favorite">
+        <md-icon md-svg-icon="modules/core/img/icons/favorite.svg"></md-icon>
+        </md-button>
+        <md-button class="md-icon-button" aria-label="More">
+        <md-icon md-svg-icon="modules/core/img/icons/more_vert.svg"></md-icon>
+        </md-button>
+    </div>
+    </md-toolbar>
 </div>
 
