@@ -60,7 +60,7 @@ exports.setUserNotifications = function(userId,Content) {
  * Delete from a user a notification 
  */
 exports.deleteUserNotifications = function(req, res) {
-  var userId = req.userId, notificationId = req.notificationId;
+  var userId = req.params.userId, notificationId = req.params.notificationId;
   console.log('deleteUserNotifications() : userId = ', userId);
   console.log('deleteUserNotifications() : notificationId = ', notificationId);
   User.findOne({'_id': userId}, function(err, user){
@@ -74,13 +74,43 @@ exports.deleteUserNotifications = function(req, res) {
       var socketio = req.app.get('socketio'); // tacke out socket instance from the app container
       socketio.sockets.emit('notifications:updated', user.notifications); // emit an event for all connected clients    console.log('setUserNotifications() : io.emit() : done');
       console.log('deleteUserNotifications() : io.emit() : done');
+      user.save(function (err) {
+        if (err) {
+          console.log('deleteUserNotifications() : save error');
+        }
+        // saved!
+      });
     }    
   });
 };
 /**
  * Delete from a user all notifications 
  */
-exports.deleteUserAllNotifications = function(userId) {
+exports.deleteUserAllNotifications = function(req,res) {
+  var userId = req.params.userId;
+  console.log('deleteUserAllNotifications() : userId = ', userId);
+  var query = {'_id': userId};
+  var update = {$set: {'notifications': []}};
+  var options = {new: true};
+  User.findOneAndUpdate(query, update, options, function(err, user) {
+    if (err) {
+      console.log('deleteUserAllNotifications() : findOne() : got an error');
+    }
+    else{
+      // user.notifications.pull({_id: notificationId});
+      // doc.subdocs.pull({ _id: 4815162342 }) // removed
+      console.log('deleteUserAllNotifications() : findOne() : notification empty');
+      var socketio = req.app.get('socketio'); // tacke out socket instance from the app container
+      socketio.sockets.emit('notifications:updated', user.notifications); // emit an event for all connected clients    console.log('setUserNotifications() : io.emit() : done');
+      console.log('deleteUserAllNotifications() : io.emit() : done');
+      // user.save(function (err) {
+      //   if (err) {
+      //     console.log('deleteUserAllNotifications() : save error');
+      //   }
+      //   // saved!
+      // });
+    }    
+  });
 };
 /**
  * Set to all user a notification 

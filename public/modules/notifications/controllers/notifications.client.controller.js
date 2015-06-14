@@ -12,6 +12,30 @@ angular.module('notifications').controller('NotificationsController', ['$scope',
     $scope.notifications = [];
     console.log('NotificationsController : init()');
 
+    $scope.removeNotification = function(notificationId) {
+      console.log('removeNotification : userId = ',Authentication.user._id);
+      console.log('removeNotification : notificationId = ',notificationId);
+      var notificationsRessource = $resource(
+        '/notifications/:userId/:notificationId'
+      );
+      notificationsRessource.delete({'userId': Authentication.user._id, 'notificationId': notificationId},
+        function(){
+        // console.log('getNotification : notifications = ', notifications);
+        // $scope.notifications = notifications;
+      });
+    };
+    $scope.removeAllNotification = function() {
+      console.log('removeAllNotification : userId = ',Authentication.user._id);
+      var notificationsRessource = $resource(
+        '/notifications/:userId'
+      );
+      notificationsRessource.delete({'userId': Authentication.user._id},
+        function(){
+        // console.log('getNotification : notifications = ', notifications);
+        // $scope.notifications = notifications;
+      });
+    };
+    
     $scope.getNotification = function() {
       console.log('getNotification : userId = ',Authentication.user._id);
       var notificationsRessource = $resource(
@@ -29,6 +53,7 @@ angular.module('notifications').controller('NotificationsController', ['$scope',
       left: false,
       right: true
     };
+
     $scope.getToastPosition = function() {
       return Object.keys($scope.toastPosition)
         .filter(function(pos) { return $scope.toastPosition[pos]; })
@@ -40,7 +65,8 @@ angular.module('notifications').controller('NotificationsController', ['$scope',
       console.log('NotificationsController : Socket.on : notifications = ',notifications);
       // console.log('NotificationsController : Socket.on : notifications = ',notificationsObj[0].notifications);
       // $scope.getNotification();
-      //$scope.notifications = notifications;
+      // $scope.notifications = notifications;
+      $scope.notifications = notifications;
       for(var i=0; i<notifications.length; i++){
         console.log('NotificationsController : Socket.on : showing a toast ! : content = ',notifications[i].content)
         var toast = $mdToast.simple()
@@ -51,7 +77,6 @@ angular.module('notifications').controller('NotificationsController', ['$scope',
           .position('top right');
         $mdToast.show(toast);
       }
-
 
       // $http.get('/notifications').success(function(data) {
       //   $scope.notifications = data;

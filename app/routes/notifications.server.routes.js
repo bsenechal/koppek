@@ -10,6 +10,8 @@ module.exports = function(app) {
   app.route('/notifications/:userId')
     // .get(deals.all)
     .get(users.requiresLogin, notifications.getUserNotifications)
+    .delete(users.requiresLogin, notifications.deleteUserAllNotifications);
+  app.route('/notifications/:userId/:notificationId')
     .delete(users.requiresLogin, notifications.deleteUserNotifications);
     // .post(deals.create);
   // app.route('/Markers')
