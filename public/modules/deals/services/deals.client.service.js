@@ -32,4 +32,3 @@ angular.module('deals').factory('Deals', ['$resource',
         });
     }
 ]);
-;

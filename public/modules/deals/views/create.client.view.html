@@ -20,12 +20,12 @@
 
 				<md-input-container> <label>Image</label> </md-input-container>
 				<md-input-container> <input name="file"
-					type='file' class="form-control" file id="file" required> </md-input-container>
+					type='file' class="form-control" file accept="image/*" id="file" required > </md-input-container>
 
 				<md-input-container> <md-progress-linear
 					md-mode="buffer" value="{{determinateValue}}"
 					md-buffer-value="{{uploadProgress}}"></md-progress-linear> <md-button
-					class="md-primary" ng-Click="upload()">Transférer</md-button> </md-input-container>
+					class="md-primary" ng-click="upload()">Transférer</md-button> </md-input-container>
 
 				<md-input-container> <textarea
 					name="description" data-ng-model="description" id="description"
