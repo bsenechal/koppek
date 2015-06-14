@@ -17,5 +17,5 @@ angular.module('core').config(['$stateProvider', '$urlRouterProvider',
 .config(function($mdThemingProvider) {
   $mdThemingProvider.theme('default')
     .primaryPalette('blue')
-    .accentPalette('orange');
+    .accentPalette('light-blue');
 });
