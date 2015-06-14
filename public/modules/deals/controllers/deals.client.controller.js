@@ -3,16 +3,8 @@
 angular.module('deals').run(function(editableOptions) {
   editableOptions.theme = 'bs3'; 
 })
-.controller('RightCtrl', function ($scope, $timeout, $mdSidenav, $log) {
-    $scope.close = function () {
-      $mdSidenav('right').close()
-        .then(function () {
-          $log.debug("close RIGHT is done");
-        });
-    };
-  })
-.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade', '$mdSidenav', '$mdUtil',
-  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade, $mdSidenav, $mdUtil, $log) {
+.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade', 
+  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade) {
 	
     // $scope.hasAuthorization = function(deal) {
     //   if (!deal || !deal.user){
@@ -34,23 +26,6 @@ angular.module('deals').run(function(editableOptions) {
 	$scope.validate = false;
 	$scope.longitude = 0;
 	$scope.latitude = 0;
-	
-	$scope.toggleLeft = buildToggler('left');
-	$scope.toggleRight = buildToggler('right');
-    /**
-     * Build handler to open/close a SideNav; when animation finishes
-     * report completion in console
-     */
-    function buildToggler(navID) {
-      var debounceFn =  $mdUtil.debounce(function(){
-            $mdSidenav(navID)
-              .toggle()
-              .then(function () {
-                $log.debug("toggle " + navID + " is done");
-              });
-          },300);
-      return debounceFn;
-    }
 	  
 	$scope.editDeal = function() {
 		var dealModification = {
@@ -66,17 +41,10 @@ angular.module('deals').run(function(editableOptions) {
           console.log(response);
         });
 	}  
-  
+
 	$scope.upload = function() {
 		
-		var creds = $resource(
-          '/getS3Credentials',
-          {
-            query: { method:'GET', isArray: true }
-          }
-        );
-		
-	  creds.get(function(credential) {
+	  $resource('/getS3Credentials').get(function(credential) {
 	  // Configure The S3 Object 
 	  AWS.config.update({ accessKeyId: credential.access_key, secretAccessKey: credential.secret_key });
 	  AWS.config.region = credential.region;

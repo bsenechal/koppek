@@ -16,4 +16,4 @@ angular.module('deals').directive('file', function() {
       });
     }
   };
-}); 
+});
