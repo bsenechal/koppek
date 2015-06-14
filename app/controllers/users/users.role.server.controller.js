@@ -77,7 +77,7 @@ function checkRole(id, points){
                       else{
                           if(user){
                             console.log('checkRole() : findOneAndUpdate() : new roles = ', user.userRole);
-                            notificationHandler.setUserNotification(user._id,'Your role has change ! You are now : ' + user.userRole);                  
+                            notificationHandler.setUserNotifications(user._id,'Your role has change ! You are now : ' + user.userRole);                  
                           }
                           else{
                             console.log('checkRole() : findOneAndUpdate() : the user already has this role');                                       

@@ -1,6 +1,14 @@
 'use strict';
 
-// angular.module('notifications').factory('FetchNotifications', ['$resource',
+angular.module('notifications')
+  .factory('notificationsSocket', function (socketFactory) {
+    return socketFactory({
+      prefix: '',
+      ioSocket: io.connect('http://localhost:3000')
+    });
+  });
+
+// .factory('FetchNotifications', ['$resource',
 //   function($resource) {
 //     var config = {
 //       query: { // GET /comments

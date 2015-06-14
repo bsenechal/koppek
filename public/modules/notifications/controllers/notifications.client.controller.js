@@ -1,8 +1,9 @@
 'use strict';
 
-angular.module('notifications').controller('NotificationsController', ['$scope', '$http',  '$stateParams','$resource', 'Socket', 'utils', 'Authentication',
-  function($scope, $http,  $stateParams,$resource, Socket, utils, Authentication) {
-    var socket = Socket;
+angular.module('notifications').controller('NotificationsController', ['$scope', '$http',  '$stateParams','$resource', 'notificationsSocket', 'utils', 'Authentication',
+  function($scope, $http,  $stateParams,$resource, notificationsSocket, utils, Authentication) {
+    
+
     $scope.authentication = Authentication;
 
     $scope.notifications = [];
@@ -14,14 +15,16 @@ angular.module('notifications').controller('NotificationsController', ['$scope',
         '/notifications/:userId'
       );
       var notifications = notificationsRessource.query({'userId': Authentication.user._id},function(){
-        console.log('getNotification : notifications = ', notifications);
-        $scope.notifications = notifications;
+        // console.log('getNotification : notifications = ', notifications);
+        // $scope.notifications = notifications;
       });
     }
 
-  Socket.on('notifications:updated', function () {
+  notificationsSocket.on('notifications:updated', function (ev, notifications) {
     console.log('NotificationsController : Socket.on : notifications:updated for userId : ',Authentication.user._id);
-    $scope.getNotification();
+    // $scope.getNotification();
+    $scope.notifications = notifications;
+
     // $http.get('/notifications').success(function(data) {
     //   $scope.notifications = data;
     // });

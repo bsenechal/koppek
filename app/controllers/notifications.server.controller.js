@@ -10,6 +10,20 @@ var mongoose = require('mongoose'),
   _ = require('lodash'),
   User = mongoose.model('User');
 
+
+// start sending once client connects
+io.on('connection', function (socket) {
+    console.log('Socket connected to client.');
+    // emits the string 'Yay!'
+    socket.emit('notifications:updated', 'Yay!');
+
+    // logs the data that's emitted from client when they receive 'emitting'
+    socket.on('received', function (data) {
+        console.log(data);
+    });
+});
+
+
 /**
  * Get notifications from a user 
  */
@@ -23,7 +37,9 @@ exports.getUserNotifications = function(req,res) {
       });
     }
     console.log('getUserNotifications() : list of notification = ', notifications);
-    res.json(notifications);
+    io.emit('notifications:updated', notifications);
+    // res.json(notifications);
+    res.status('getUserNotifications() : OK');
   });
 };
 /**
@@ -44,7 +60,7 @@ exports.setUserNotifications = function(userId,Content) {
     }
     else{
       console.log('setUserNotifications() : findOneAndUpdate() : new notifications = ', user.notifications);
-      io.sockets.emit('Notifications:updated', team);
+      io.emit('notifications:updated', user.notifications);
     }
   });
 };
