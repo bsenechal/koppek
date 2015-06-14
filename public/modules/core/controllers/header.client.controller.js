@@ -1,18 +1,21 @@
 'use strict';
 
 angular.module('core')
-.controller('MenuCtrl', function ($scope, $timeout, $mdSidenav, $log) {
+.controller('LeftCtrl', function ($scope, $timeout, $mdSidenav, $log) {
     $scope.close = function () {
-      $mdSidenav('menu').close();
+      $mdSidenav('left').close()
+        .then(function () {
+          $log.debug("close LEFT is done");
+        });
     };
   })
-.controller('HeaderController', ['$scope', 'Authentication', 'Menus', '$mdSidenav', '$mdUtil',
-	function($scope, Authentication, Menus, $mdSidenav, $mdUtil) {
+.controller('HeaderController', ['$scope', '$rootScope', 'Authentication', 'Menus', '$mdSidenav', '$mdUtil',
+	function($scope, $rootScope, Authentication, Menus, $mdSidenav, $mdUtil) {
 		$scope.authentication = Authentication;
 		$scope.isCollapsed = false;
 		$scope.menu = Menus.getMenu('topbar');
-
-        $scope.toggleMenu = buildToggler('menu');
+        
+        $scope.toggleLeft = buildToggler('left');
         
 		$scope.toggleCollapsibleMenu = function() {
 			$scope.isCollapsed = !$scope.isCollapsed;
@@ -24,18 +27,14 @@ angular.module('core')
 		});
         
         function buildToggler(navID) {
-      var debounceFn =  $mdUtil.debounce(function(){
-            $mdSidenav(navID)
-              .toggle();
-          },300);
-      return debounceFn;
-    }
+          var debounceFn =  $mdUtil.debounce(function(){
+                $mdSidenav(navID)
+                  .toggle()
+                  .then(function () {
+                    $log.debug("toggle " + navID + " is done");
+                  });
+              },300);
+          return debounceFn;
+        }
 	}
-]).controller('LeftCtrl', function ($scope, $timeout, $mdSidenav, $log) {
-    $scope.close = function () {
-      $mdSidenav('left').close()
-        .then(function () {
-          $log.debug("close LEFT is done");
-        });
-    };
-  });
+]);

@@ -2,67 +2,104 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-	<title>{{title}}</title>
+<title>{{title}}</title>
 
-	<!-- General META -->
-	<meta charset="utf-8">
-	<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<!-- General META -->
+<meta charset="utf-8">
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-	<!-- Semantic META -->
-	<meta name="keywords" content="{{keywords}}">
-	<meta name="description" content="{{description}}">
+<!-- Semantic META -->
+<meta name="keywords" content="{{keywords}}">
+<meta name="description" content="{{description}}">
 
-	<!-- Facebook META -->
-	<meta property="fb:app_id" content="{{facebookAppId}}">
-	<meta property="og:site_name" content="{{title}}">
-	<meta property="og:title" content="{{title}}">
-	<meta property="og:description" content="{{description}}">
-	<meta property="og:url" content="{{url}}">
-	<meta property="og:image" content="/img/brand/logo.png">
-	<meta property="og:type" content="website">
+<!-- Facebook META -->
+<meta property="fb:app_id" content="{{facebookAppId}}">
+<meta property="og:site_name" content="{{title}}">
+<meta property="og:title" content="{{title}}">
+<meta property="og:description" content="{{description}}">
+<meta property="og:url" content="{{url}}">
+<meta property="og:image" content="/img/brand/logo.png">
+<meta property="og:type" content="website">
 
-	<!-- Twitter META -->
-	<meta name="twitter:title" content="{{title}}">
-	<meta name="twitter:description" content="{{description}}">
-	<meta name="twitter:url" content="{{url}}">
-	<meta name="twitter:image" content="/img/brand/logo.png">
+<!-- Twitter META -->
+<meta name="twitter:title" content="{{title}}">
+<meta name="twitter:description" content="{{description}}">
+<meta name="twitter:url" content="{{url}}">
+<meta name="twitter:image" content="/img/brand/logo.png">
 
-	<!-- Fav Icon -->
-	<link href="/modules/core/img/brand/favicon.ico" rel="shortcut icon" type="image/x-icon">
+<!-- Fav Icon -->
+<link href="/modules/core/img/brand/favicon.ico" rel="shortcut icon"
+	type="image/x-icon">
 
-	<!--Application CSS Files-->
-	{% for cssFile in cssFiles %}<link rel="stylesheet" href="{{cssFile}}">{% endfor %}
+<!--Application CSS Files-->
+{% for cssFile in cssFiles %}
+<link rel="stylesheet" href="{{cssFile}}">
+{% endfor %}
 
-	<!-- HTML5 Shim -->
-	<!--[if lt IE 9]>
+<!-- HTML5 Shim -->
+<!--[if lt IE 9]>
 		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
 </head>
 
 <body class="ng-cloak">
-	<header data-ng-include="'/modules/core/views/header.client.view.html'" class="navbar navbar-fixed-top navbar-inverse"></header>
-    <section class="menu" data-ng-include="'/modules/core/views/menu.client.view.html'"></section>
-	<section class="content">
-			{% block content %}{% endblock %}
-	</section>
+	<div layout="column">
+		<div ng-controller="HeaderController" layout="row">
+			<md-sidenav class="md-sidenav-left md-whiteframe-z2"
+				md-component-id="left"> <md-toolbar
+				class="md-theme-indigo">
+			<h1 class="md-toolbar-tools">Menu</h1>
+			</md-toolbar> <md-content layout-padding ng-controller="LeftCtrl"> <md-button
+				ng-click="close()" class="md-primary"> Fermer le menu </md-button>
+			<p hide-md show-gt-md>This sidenav is locked open on your device.
+				To go back to the default behavior, narrow your display.</p>
+			</md-content> </md-sidenav>
 
+			<md-toolbar layout="row">
+			<div class="md-toolbar-tools">
+				<md-button class="md-icon-menu" aria-label="Menu"
+					ng-click="toggleLeft()"> <md-icon
+					md-svg-icon="modules/core/img/icons/menu.svg"></md-icon> </md-button>
+				<a href="/#!/">Koppek</a> <span flex></span>
+				<md-button href="/#!/deals/create" aria-label="Ajouter un deal"
+					show-sm hide-gt-sm> <span
+					class="glyphicon glyphicon-plus"></span></md-button>
+				<md-button href="/#!/deals/create" aria-label="Ajouter un deal"
+					hide-sm>Ajouter un deal</md-button>
+				<md-button data-ng-hide="authentication.user" href="/#!/signup"
+					aria-label="Inscription" hide-sm>Inscription</md-button>
+				<md-button data-ng-hide="authentication.user" href="/#!/signin"
+					aria-label="Connexion" hide-sm>Connexion</md-button>
+
+				<md-button class="md-icon-button" aria-label="Favorite">
+				<md-icon md-svg-icon="modules/core/img/icons/favorite.svg"></md-icon>
+				</md-button>
+				<md-button class="md-icon-button" aria-label="More"> <md-icon
+					md-svg-icon="modules/core/img/icons/more_vert.svg"></md-icon> </md-button>
+			</div>
+			</md-toolbar>
+		</div>
+		<div layout="row">{% block content %}{% endblock %}</div>
+	</div>
 	<!--Embedding The User Object-->
 	<script type="text/javascript">
 		var user = {{ user | json | safe }};
 	</script>
 
 	<!--Application JavaScript Files-->
-	{% for jsFile in jsFiles %}<script type="text/javascript" src="{{jsFile}}"></script>{% endfor %} 
-
-	{% if process.env.NODE_ENV === 'development' %}
+	{% for jsFile in jsFiles %}
+	<script type="text/javascript" src="{{jsFile}}"></script>
+	{% endfor %} {% if process.env.NODE_ENV === 'development' %}
 	<!--Livereload script rendered -->
-	<script type="text/javascript" src="http://{{request.hostname}}:35729/livereload.js"></script>
+	<script type="text/javascript"
+		src="http://{{request.hostname}}:35729/livereload.js"></script>
 	{% endif %}
-	
+
 </body>
 
 </html>
