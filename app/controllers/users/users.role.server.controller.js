@@ -5,6 +5,7 @@
  */
 var _ = require('lodash'),
    errorHandler = require('../errors.server.controller.js'),
+   notificationHandler = require('../notifications.server.controller.js'),
    config = require('../../../config/config'),
    mongoose = require('mongoose'),
    passport = require('passport'),
@@ -75,7 +76,8 @@ function checkRole(id, points){
                       }
                       else{
                           if(user){
-                            console.log('checkRole() : findOneAndUpdate() : new roles = ', user.userRole);                   
+                            console.log('checkRole() : findOneAndUpdate() : new roles = ', user.userRole);
+                            notificationHandler.setUserNotification(user._id,'Your role has change ! You are now : ' + user.userRole);                  
                           }
                           else{
                             console.log('checkRole() : findOneAndUpdate() : the user already has this role');                                       

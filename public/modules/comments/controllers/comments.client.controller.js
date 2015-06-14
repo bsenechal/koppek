@@ -9,6 +9,8 @@ angular.module('comments').controller('CommentsController', ['$scope', '$http', 
     $scope.taggedUsers = [];
     $scope.mentionsUsers = [];
 
+    console.log('CommentsController() : init');
+
     $scope.getCommentPeopleTextRaw = function(item) {
       $scope.mentionsUsers.push({
         'id': item._id,
