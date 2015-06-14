@@ -9,7 +9,7 @@
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport"
-	content="width=device-width,initial-scale=1,maximum-scale=1">
+    content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
@@ -34,7 +34,7 @@
 
 <!-- Fav Icon -->
 <link href="/modules/core/img/brand/favicon.ico" rel="shortcut icon"
-	type="image/x-icon">
+    type="image/x-icon">
 
 <!--Application CSS Files-->
 {% for cssFile in cssFiles %}
@@ -48,66 +48,25 @@
 </head>
 
 <body class="ng-cloak">
-		<div ng-controller="HeaderController">
-			<md-sidenav class="md-sidenav-left md-whiteframe-z2"
-				md-component-id="left"> <md-toolbar
-				class="md-theme-indigo">
-			<h1 class="md-toolbar-tools">Menu</h1>
-			</md-toolbar> <md-content layout-padding ng-controller="LeftCtrl"> 
-            <img
-                ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.who}}" />
-            <div class="md-list-item-text">
-                <h4>{{ authentication.user.firstName }} {{
-                    authentication.user.lastName }}</h4>
-                <p>Cavalier de l'apocalypse</p>
-            </div>
-            
-            <md-button
-				ng-click="close()" class="md-primary"> Fermer le menu </md-button>
-			<p hide-md show-gt-md>This sidenav is locked open on your device.
-				To go back to the default behavior, narrow your display.</p>
-			</md-content> </md-sidenav>
+    <section
+        data-ng-include="'/modules/core/views/header.client.view.html'"></section>
 
-			<md-toolbar>
-			<div class="md-toolbar-tools">
-				<md-button class="md-icon-menu" aria-label="Menu"
-					ng-click="toggleLeft()"> <md-icon
-					md-svg-icon="modules/core/img/icons/menu.svg"></md-icon> </md-button>
-				<a href="/#!/">Koppek</a> <span flex></span>
-				<md-button href="/#!/deals/create" aria-label="Ajouter un deal"
-					show-sm hide-gt-sm> <span
-					class="glyphicon glyphicon-plus"></span></md-button>
-				<md-button href="/#!/deals/create" aria-label="Ajouter un deal"
-					hide-sm>Ajouter un deal</md-button>
-				<md-button data-ng-hide="authentication.user" href="/#!/signup"
-					aria-label="Inscription" hide-sm>Inscription</md-button>
-				<md-button data-ng-hide="authentication.user" href="/#!/signin"
-					aria-label="Connexion" hide-sm>Connexion</md-button>
+    {% block content %}{% endblock %}
 
-				<md-button class="md-icon-button" aria-label="Favorite">
-				<md-icon md-svg-icon="modules/core/img/icons/favorite.svg"></md-icon>
-				</md-button>
-				<md-button class="md-icon-button" aria-label="More"> <md-icon
-					md-svg-icon="modules/core/img/icons/more_vert.svg"></md-icon> </md-button>
-			</div>
-			</md-toolbar>
-		{% block content %}{% endblock %}
-	</div>
-	<!--Embedding The User Object-->
-	<script type="text/javascript">
+    <!--Embedding The User Object-->
+    <script type="text/javascript">
 		var user = {{ user | json | safe }};
 	</script>
 
-	<!--Application JavaScript Files-->
-	{% for jsFile in jsFiles %}
-	<script type="text/javascript" src="{{jsFile}}"></script>
-	{% endfor %} {% if process.env.NODE_ENV === 'development' %}
-	<!--Livereload script rendered -->
-	<script type="text/javascript"
-		src="http://{{request.hostname}}:35729/livereload.js"></script>
-	{% endif %}
+    <!--Application JavaScript Files-->
+    {% for jsFile in jsFiles %}
+    <script type="text/javascript" src="{{jsFile}}"></script>
+    {% endfor %} {% if process.env.NODE_ENV === 'development' %}
+    <!--Livereload script rendered -->
+    <script type="text/javascript"
+        src="http://{{request.hostname}}:35729/livereload.js"></script>
+    {% endif %}
 
 </body>
 
 </html>
-
