@@ -6,13 +6,13 @@ angular.module('core')
       $mdSidenav('menu').close();
     };
   })
-.controller('HeaderController', ['$scope', 'Authentication', 'Menus', '$mdSidenav', '$mdUtil',
-	function($scope, Authentication, Menus, $mdSidenav, $mdUtil) {
+.controller('HeaderController', ['$scope', '$rootScope', 'Authentication', 'Menus', '$mdSidenav', '$mdUtil',
+	function($scope, $rootScope, Authentication, Menus, $mdSidenav, $mdUtil) {
 		$scope.authentication = Authentication;
 		$scope.isCollapsed = false;
 		$scope.menu = Menus.getMenu('topbar');
-
-        $scope.toggleMenu = buildToggler('menu');
+        
+        $rootScope.toggleMenu = buildToggler('menu');
         
 		$scope.toggleCollapsibleMenu = function() {
 			$scope.isCollapsed = !$scope.isCollapsed;
@@ -31,11 +31,4 @@ angular.module('core')
       return debounceFn;
     }
 	}
-]).controller('LeftCtrl', function ($scope, $timeout, $mdSidenav, $log) {
-    $scope.close = function () {
-      $mdSidenav('left').close()
-        .then(function () {
-          $log.debug("close LEFT is done");
-        });
-    };
-  });
+]);
