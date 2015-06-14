@@ -9,28 +9,28 @@
         <div>
             <md-card> <md-subheader class="md-primary">Recherche
             de deals</md-subheader> <md-card-content>
-            <div layout="row" flex offset="5">
-                <md-input-container class="md-accent" flex="30">
+            <div layout="row" layout-sm="column" flex-gt-sm offset="5">
+                <md-input-container class="md-accent" flex-gt-sm="30">
                 <label>Où voulez-vous chercher ?</label> <input
                     type="text"> </md-input-container>
-                <div flex offset="1"></div>
-                <md-input-container class="md-accent" flex="30">
+                <div flex-gt-sm offset="1"></div>
+                <md-input-container class="md-accent" flex-gt-sm="30">
                 <label>Cercle de recherche</label> <md-slider
-                    class="md-accent" flex="30" min="0" max="100"
+                    class="md-accent" flex-gt-sm="30" min="0" max="100"
                     value="10" ng-init="distance = 10"
                     ng-model="distance" aria-label="distance"
                     id="distance-slider"> </md-slider> </md-input-container>
-                <div flex offset="1"></div>
-                <md-input-container flex="4"> <label
+                <div flex-gt-sm offset="1"></div>
+                <md-input-container flex-gt-sm="4"> <label
                     ng-model="distance">km</label> <input type="number"
                     ng-model="distance" aria-label="distance"
                     aria-controls="distance-slider"> </md-input-container>
-                <div flex offset="1"></div>
-                <md-input-container flex="10"> <md-checkbox
+                <div flex-gt-sm offset="1"></div>
+                <md-input-container flex-gt-sm="15"> <md-checkbox
                     ng-model="data.cb1" aria-label="Checkbox 1">Deal
                 internet ?</md-checkbox> </md-input-container>
-                <div flex offset="1"></div>
-                <md-input-container flex="10"> <md-button
+                <div flex-gt-sm offset="1"></div>
+                <md-input-container flex-gt-sm="10"> <md-button
                     class="md-raised md-primary" ng-click="submit()">Rechercher</md-button>
                 </md-input-container>
             </div>
