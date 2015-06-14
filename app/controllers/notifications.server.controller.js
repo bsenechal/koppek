@@ -6,28 +6,18 @@
 var mongoose = require('mongoose'),
   async = require('async'),
   http = require('http'),
+  // io = require('socket.io').listen(3000),
   io = require('socket.io')(http),
   _ = require('lodash'),
   User = mongoose.model('User');
 
 
-// start sending once client connects
-io.on('connection', function (socket) {
-    console.log('Socket connected to client.');
-    // emits the string 'Yay!'
-    socket.emit('notifications:updated', 'Yay!');
-
-    // logs the data that's emitted from client when they receive 'emitting'
-    socket.on('received', function (data) {
-        console.log(data);
-    });
-});
-
-
+var socketio;
 /**
  * Get notifications from a user 
  */
 exports.getUserNotifications = function(req,res) {
+  
   console.log('getUserNotifications() : userId = ', req.param('userId'));
   User.find({'_id': req.param('userId')}).select('notifications').sort('-date')
   .exec(function(err, notifications) {
@@ -36,10 +26,10 @@ exports.getUserNotifications = function(req,res) {
         error: 'getUserNotifications() : Cannot list the notifications'
       });
     }
-    console.log('getUserNotifications() : list of notification = ', notifications);
-    io.emit('notifications:updated', notifications);
-    // res.json(notifications);
-    res.status('getUserNotifications() : OK');
+    console.log('getUserNotifications() : list of notification = ', notifications[0].notifications);
+    socketio = req.app.get('socketio'); // tacke out socket instance from the app container
+    socketio.sockets.emit('notifications:updated', notifications[0].notifications); // emit an event for all connected clients    console.log('setUserNotifications() : io.emit() : done');
+    res.json(notifications);
   });
 };
 /**
@@ -60,7 +50,9 @@ exports.setUserNotifications = function(userId,Content) {
     }
     else{
       console.log('setUserNotifications() : findOneAndUpdate() : new notifications = ', user.notifications);
-      io.emit('notifications:updated', user.notifications);
+      // var socketio = req.app.get('socketio'); // tacke out socket instance from the app container
+      socketio.sockets.emit('notifications:updated', user.notifications); // emit an event for all connected clients    console.log('setUserNotifications() : io.emit() : done');
+      console.log('setUserNotifications() : io.emit() : done');
     }
   });
 };
@@ -79,7 +71,9 @@ exports.deleteUserNotifications = function(req, res) {
       user.notifications.pull({_id: notificationId});
       // doc.subdocs.pull({ _id: 4815162342 }) // removed
       console.log('deleteUserNotifications() : findOne() : notification ',notificationId,' pulled');
-      io.sockets.emit('Notifications:deleted', team);
+      var socketio = req.app.get('socketio'); // tacke out socket instance from the app container
+      socketio.sockets.emit('notifications:updated', user.notifications); // emit an event for all connected clients    console.log('setUserNotifications() : io.emit() : done');
+      console.log('deleteUserNotifications() : io.emit() : done');
     }    
   });
 };

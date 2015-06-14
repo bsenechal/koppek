@@ -1,12 +1,14 @@
 'use strict';
 
-angular.module('notifications')
-  .factory('notificationsSocket', function (socketFactory) {
-    return socketFactory({
-      prefix: '',
-      ioSocket: io.connect('http://localhost:3000')
-    });
-  });
+//socket factory that provides the socket service
+angular.module('notifications').factory('Socket', ['socketFactory',
+    function(socketFactory) {
+        return socketFactory({
+            prefix: '',
+            ioSocket: io.connect('http://localhost:3000')
+        });
+    }
+]);
 
 // .factory('FetchNotifications', ['$resource',
 //   function($resource) {
