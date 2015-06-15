@@ -103,7 +103,7 @@
 			<md-list-item class="md-3-line"
 			data-ng-repeat="notification in notifications">
 				<md-chip>
-					<em>{{notification.date}}</em> - 
+					<em>{{notification.created}}</em> - 
 					{{notification.content}}
 						<a class="btn" data-ng-click="removeNotification(notification._id);"> <i
 							class="glyphicon glyphicon-trash"></i>
