@@ -17,9 +17,13 @@ var socketio;
 /**
  * Get notifications from a user model
  */
-function userNotifications(userTo, callback){
-  console.log('userNotifications() : userTo = ', userTo);
-  Notification.find({'userTo': userTo}).sort('-created')
+function userNotifications(user, callback){
+  console.log('userNotifications() : userTo = ', user);
+  Notification
+  .find({$or : [{'userTo': user},{'userFrom': user}]})
+  .populate('userTo', 'username')
+  .populate('userFrom', 'username')
+  .sort('-created')
   .exec(function(err, notifications) {
     if (err) {
       callback('userNotifications:error');
@@ -58,6 +62,7 @@ exports.setUserNotifications = function(userId,Content) {
   var Notif = new Notification();
   Notif.userTo = userId;
   Notif.content = Content;
+  Notif.type = 'notification';
 
   Notif.save(function (err) {
     if(err)
@@ -73,15 +78,18 @@ exports.setUserNotifications = function(userId,Content) {
 /**
  * Set to a user a notification mail
  */
-exports.setUserMailNotifications = function(userId, userTo, Content) {
+exports.setUserMailNotifications = function(req, res) {
+  console.log('setUserMailNotifications(): req = ',req);
+  var userId = req.params.userId, content = req.query.content, userTo = req.query.userTo;
   console.log('setUserMailNotifications() : userId = ', userId);
-  console.log('setUserMailNotifications() : Content = ', Content);
+  console.log('setUserMailNotifications() : content = ', content);
   console.log('setUserMailNotifications() : userTo = ', userTo);
   //update grade according to value :
   var Notif = new Notification();
   Notif.userTo = userTo;
   Notif.userFrom = userId;
-  Notif.content = Content;
+  Notif.content = content;
+  Notif.type = 'message';
 
   Notif.save(function (err) {
     if(err)
@@ -90,6 +98,7 @@ exports.setUserMailNotifications = function(userId, userTo, Content) {
     }
     else
     {
+      // socketio = req.app.get('socketio'); // tacke out socket instance from the app container
       socketio = req.app.get('socketio'); // tacke out socket instance from the app container
       emitUserNotifications(userId);
     }
@@ -108,6 +117,7 @@ exports.deleteUserNotifications = function(req, res) {
       console.log('deleteUserNotifications() : findOne() : got an error');
     }
     else{
+      // console.log("socketio contient :",req.app.get('socketio'));
       socketio = req.app.get('socketio'); // tacke out socket instance from the app container
       emitUserNotifications(userId);
     }    

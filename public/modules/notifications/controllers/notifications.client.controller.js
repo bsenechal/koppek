@@ -12,6 +12,24 @@ angular.module('notifications').controller('NotificationsController', ['$scope',
     $scope.notifications = [];
     console.log('NotificationsController : init()');
 
+    $scope.sendMessage = function(){
+      console.log('sendMessage : userFrom = ',Authentication.user._id);
+      console.log('sendMessage : userTo = ',$scope.message.userTo);
+      console.log('sendMessage : content = ',$scope.message.content);
+      var notificationsRessource = $resource(
+        '/notifications/:userId',
+          {'userId': Authentication.user._id, 'userTo': $scope.message.userTo, 'content': $scope.message.content},
+          {
+            query: {method:'POST',isArray: false }
+          }
+      );
+      notificationsRessource.query(
+        function(){
+        console.log('sendMessage : message sent');
+        // $scope.notifications = notifications;
+      });
+    }
+
     $scope.removeNotification = function(notificationId) {
       console.log('removeNotification : userId = ',Authentication.user._id);
       console.log('removeNotification : notificationId = ',notificationId);
@@ -45,20 +63,21 @@ angular.module('notifications').controller('NotificationsController', ['$scope',
         // console.log('getNotification : notifications = ', notifications);
         // $scope.notifications = notifications;
       });
+
     }
 
-    $scope.toastPosition = {
-      bottom: false,
-      top: true,
-      left: false,
-      right: true
-    };
+    // $scope.toastPosition = {
+    //   bottom: false,
+    //   top: true,
+    //   left: false,
+    //   right: true
+    // };
 
-    $scope.getToastPosition = function() {
-      return Object.keys($scope.toastPosition)
-        .filter(function(pos) { return $scope.toastPosition[pos]; })
-        .join(' ');
-    };
+    // $scope.getToastPosition = function() {
+    //   return Object.keys($scope.toastPosition)
+    //     .filter(function(pos) { return $scope.toastPosition[pos]; })
+    //     .join(' ');
+    // };
 
     Socket.on('notifications:updated', function (notifications) {
       console.log('NotificationsController : Socket.on : notifications:updated for userId : ',Authentication.user._id);
@@ -67,16 +86,17 @@ angular.module('notifications').controller('NotificationsController', ['$scope',
       // $scope.getNotification();
       // $scope.notifications = notifications;
       $scope.notifications = notifications;
-      for(var i=0; i<notifications.length; i++){
-        console.log('NotificationsController : Socket.on : showing a toast ! : content = ',notifications[i].content)
-        var toast = $mdToast.simple()
-          .content(notifications[i].content)
-          .action('remove')
-          .highlightAction(false)
-          .hideDelay(10000)
-          .position('top right');
-        $mdToast.show(toast);
-      }
+      $scope.$apply();
+      // for(var i=0; i<notifications.length; i++){
+      //   console.log('NotificationsController : Socket.on : showing a toast ! : content = ',notifications[i].content)
+        // var toast = $mdToast.simple()
+        //   .content(notifications[i].content)
+        //   .action('remove')
+        //   .highlightAction(false)
+        //   .hideDelay(10000)
+        //   .position('top right');
+        // $mdToast.show(toast);
+      // }
 
       // $http.get('/notifications').success(function(data) {
       //   $scope.notifications = data;

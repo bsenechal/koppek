@@ -21,6 +21,11 @@ var NotificationSchema = new Schema({
     trim: true,
     required: true
   },
+  type: {
+    type: String,
+    trim: true,
+    required: true
+  },
   userFrom: {
     type: Schema.ObjectId,
     ref: 'User',

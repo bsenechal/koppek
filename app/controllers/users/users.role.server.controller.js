@@ -36,7 +36,9 @@ function getTotalUserPoints(callback){
 */
 function checkRole(id, points){
   //check role for every user and update if necessary
-  notificationHandler.setUserNotifications(id,'test');                  
+  notificationHandler.setUserNotifications(id,'test');
+  // notificationHandler.setUserMailNotifications('55623dbfe24760741453dc5b',id,'test');
+
 	console.log('checkRole() : init');
 	console.log('checkRole() : id= ',id);
 	console.log('checkRole() : points= ',points);

@@ -54,3 +54,20 @@ exports.update = function(req, res) {
 exports.me = function(req, res) {
 	res.json(req.user || null);
 };
+
+/**
+ * List of Users
+ */
+exports.all = function(req, res) {
+  User.find().sort('username').select('username displayName')
+  .exec(function(err, users) {
+    if (err) {
+      return res.status(500).json({
+        error: 'Cannot list the users'
+      });
+    }
+    console.log('all');
+    console.log(users);
+    res.json(users);
+  });
+};

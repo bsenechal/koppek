@@ -94,25 +94,4 @@
 		data-ng-init="findComments(deal, 2)" />
 	</div>
 
-	<!-- tmp test notif -->
-	<div 
-		data-ng-controller="NotificationsController"
-		data-ng-init="getNotification()" >
-		TEST
-		<md-list> 
-			<md-list-item class="md-3-line"
-			data-ng-repeat="notification in notifications">
-				<md-chip>
-					<em>{{notification.created}}</em> - 
-					{{notification.content}}
-						<a class="btn" data-ng-click="removeNotification(notification._id);"> <i
-							class="glyphicon glyphicon-trash"></i>
-						</a>
-				</md-chip>
-			</md-list-item>
-			<a class="btn" data-ng-click="removeAllNotification();"> <i
-				class="glyphicon glyphicon-trash"></i>
-			</a>
-		</md-list> 
-	</div>
 </section>
