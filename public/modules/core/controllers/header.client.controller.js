@@ -11,7 +11,7 @@ angular.module('core')
 		$scope.authentication = Authentication;
 		$scope.isCollapsed = false;
 		$scope.menu = Menus.getMenu('topbar');
-        console.log(Authentication);
+
         $scope.toggleLeft = buildToggler('left');
         
 		$scope.toggleCollapsibleMenu = function() {

@@ -103,6 +103,11 @@ var UserSchema = new Schema({
     	default: 0,
 		trim: true
 	},
+    avatar: {
+		type: String,
+		trim: true,
+		default: 'default'
+	},
 });
 
 /**

@@ -288,12 +288,15 @@ exports.create = function(req, res) {
     function(callback) {
       deal.save(function(err) {
         if (err) {
+            error = true;
           return res.status(500).json({
             error: 'Cannot save the deal'
           });
       }
-    });
-      res.json(deal);
+      else {
+          res.json(deal);
+      }
+    });  
       callback();
     }
   ]);
