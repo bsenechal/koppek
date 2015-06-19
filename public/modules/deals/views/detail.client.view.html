@@ -80,10 +80,11 @@
     <div class="md-actions" layout="row" layout-align="end center">
         Un problème dans l'annonce ?
         <md-button class="md-primary md-raised"
+            aria-label="Editer"
             ng-click="editableForm.$show()"
             ng-show="!editableForm.$visible">Editer</md-button>
-        <md-button class="md-raised"> Deal expiré ? </md-button>
-        <md-button class="md-raised md-warn" ngClick="updateAlert(deal)">
+        <md-button class="md-raised" aria-label="Deal Expiré ?"> Deal expiré ? </md-button>
+        <md-button class="md-raised md-warn"  aria-label="Signaler un deal" ngClick="updateAlert(deal)">
         <i class="glyphicon glyphicon-exclamation-sign"></i></md-button>
     </div>
     </md-card> </md-content>

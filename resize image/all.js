@@ -16,7 +16,6 @@ module.exports = {
 				'public/lib/bootstrap/dist/css/bootstrap.css',
 				'public/lib/angular-xeditable/dist/css/xeditable.css',
 				'public/lib/angular-material/angular-material.min.css',
-                'public/lib/ngImgCrop/compile/minified/ng-img-crop.css',
 			],
 			js: [	
 				'public/lib/angular/angular.js',
@@ -38,13 +37,13 @@ module.exports = {
 				'public/lib/angular-aria/angular-aria.min.js',
 				'public/lib/angular-material/angular-material.min.js',
                 'public/lib/angular-messages/angular-messages.min.js',
-                'public/lib/angular-uuid4/angular-uuid4.min.js',
-                'public/lib/ngImgCrop/compile/minified/ng-img-crop.js',
+                'public/lib/image-upload/imageupload.js',
+                'public/lib/angular-base64/angular-base64.min.js',
+                'public/lib/angular-once/once.js',
 			]
 		},
 		css: [
-			'public/modules/**/css/*.css',
-            
+			'public/modules/**/css/*.css'
 		],
 		js: [
 			'public/config.js',

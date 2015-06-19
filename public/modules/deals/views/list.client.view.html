@@ -1,67 +1,93 @@
-<section data-ng-controller="DealsController">
-    <div layout="row" layout-sm="column" layout-margin layout-fill
-        layout-padding layout-align="space-around start">
-
-        <div layout="column" flex style="height: 800px; overflow: auto;">
+<section data-ng-controller="DealsController" >
+    <div layout="row" layout-sm="column">
+        <div layout="column" flex style="height: {{windowHeight}}px; overflow: auto;">
 
             <div infinite-scroll='findByLimited()'
                 infinite-scroll-disabled='busyLoadingData'
                 infinite-scroll-distance='1'>
                 <md-content>
-                <section>
+                 
                     <md-subheader class="md-primary">Deals
                     à compy city plage :D</md-subheader>
                     <md-list> <md-list-item class="md-3-line"
                         data-ng-repeat="deal in deals| filter:searchQuery |limitTo: limitEnd track by deal._id">
-                    <div layout="row" layout-wrap layout-margin
-                        layout-fill layout-padding>
+                    
+                    <md-whiteframe class="md-whiteframe-z2" layout="row" layout-padding layout-margin>
 
-                        <div layout="column" flex="20">
-                            <img
-                                ng-src="https://koppekimages.s3-eu-west-1.amazonaws.com/deals/{{::deal.image}}"
+                        <div flex = "15">
+                            <md-button data-ng-href="#!/deals/{{::deal._id}}">
+                                <img
+                                ng-src="https://koppekimages.s3-eu-west-1.amazonaws.com/deals/{{::deal.image}}" width = "100%" height="100%"
                                 alt="{{::deal.title}}" />
-                            <div>
-                                <strong>Prix initial :</strong>
-                                {{::deal.initialPrice}}
+                             </md-button>
+                            <div align="center">
+                                <md-button class="md-raised md-primary">{{::deal.initialPrice}} €</md-button>
                             </div>
-                            <div>
-                                <strong>Prix de vente :</strong>
-                                {{::deal.salePrice}}
+                            <div align="center">
+                                <del>{{::deal.salePrice}} €</del> (- {{::deal.reduction}}%)
                             </div>
                         </div>
-                        <div flex="70">
+                        <div flex = "70" layout-padding>
                             <h2>
                                 <a
                                     data-ng-href="#!/deals/{{::deal._id}}">{{::deal.title}}</a>
                             </h2>
-                            <div class="md-list-item-text">
-                                <span>{{::deal.created |
+                            <div>
+                                <span class="md-caption">{{::deal.created |
                                     date:'medium'}}</span> / <span>{{::deal.user.name}}</span>
                                 <p>{{::deal.description |
                                     limitTo:300}}...</p>
                             </div>
                         </div>
-                    </div>
+                        <div flex = "10" layout-column>
+                    <!--          <span data-ng-if="hasAuthorization(deal)">
+                                <a class="btn" href="/#!/deals/{{deal._id}}/edit">
+                                  <i class="glyphicon glyphicon-edit"></i>
+                                </a>
+                                <a class="btn" data-ng-click="remove(::deal);">
+                                  <i class="glyphicon glyphicon-trash"></i>
+                                </a>
+                              </span>-->
+                              <div align="center">
+                       <md-button align="center" class="md-fab md-mini md-primary" aria-label="Vote plus" data-ng-click="::updateGradePlus(deal);">
+                            <md-icon class="glyphicon glyphicon-thumbs-up"></md-icon>
+                          </md-button>
+                            </div>
+
+                              <h2 class="md-headline" align="center">{{deal.grade}}</h2>
+                              <div align="center">
+                         <md-button class="md-fab md-mini md-warn" aria-label="Vote plus" data-ng-click="::updateGradeMinus(deal);">
+                            <md-icon class="glyphicon glyphicon-thumbs-down"></md-icon>
+                          </md-button>
+                            </div>
+                            <div align="center">
+                              <a class="btn" data-ng-click="::updateAlert(deal);">
+                                <i class="glyphicon glyphicon-exclamation-sign"></i>
+                              </a>
+                            </div>
+                        </div>
+                        </md-whiteframe>
                     </md-list-item> </md-list>
-                </section>
+                
                 </md-content>
 
             </div>
 
         </div>
 
-        <div layout="column" flex>
-            <input type="range" ng-model="$root.srchRadius" min="0"
+        <div flex hide-sm>
+       
+            <!--<input type="range" ng-model="$root.srchRadius" min="0"
                 max="10000000" step="10000" style="width: 140px"
-                class="ng-pristine ng-valid">
-            <div class=".col-md-4" data-ng-controller="MapsController"
+                class="ng-pristine ng-valid">-->
+            <section data-ng-controller="MapsController"
                 data-ng-init="Map()">
                 <input id="pac-input" class="controls" type="text"
                     placeholder="Enter a location">
-                <div map-canvas id="map-canvas" style="height: 300px;"></div>
-            </div>
-            <div class=".col-md-2">
+                <div map-canvas id="map-canvas" style="height: 800px;"></div>
+            </section>
+            <!--<div class=".col-md-2">
                 <input ng-model="searchQuery">
-            </div>
+            </div>-->
         </div>
 </section>

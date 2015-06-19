@@ -3,17 +3,42 @@
 angular.module('deals').run(function(editableOptions) {
   editableOptions.theme = 'bs3'; 
 })
-.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade', '$window', 'uuid4',
-  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade, $window, uuid4) {
-	console.log();
-    
-    $scope.windowHeight = angular.element($window).height() - 64;
+.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade', '$base64', '$sce', '$http',
+  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade, $base64, $sce, $http) {
     // $scope.hasAuthorization = function(deal) {
     //   if (!deal || !deal.user){
     //     return false;
     //   }
     //   return $scope.global.isAdmin || deal.user._id === $scope.global.user._id;
     // };
+
+   /* $scope.initImage = function(imageName) {
+              $http.get('https://koppekimages.s3-eu-west-1.amazonaws.com/deals/' + imageName)
+      .success(function(data, status, headers, config) {
+          console.log("ici");
+         $scope.image =   data ;
+      })
+     .error(function(data, status, headers, config){
+            console.log("erreur");
+     });
+    };
+    */
+    $scope.test = function(){
+         $http.get('https://koppekimages.s3-eu-west-1.amazonaws.com/deals/test.png')
+      .success(function(data, status, headers, config) {
+          console.log("ici");
+         return   data ;
+      })
+        
+    }
+    $scope.$watch("images", function (deal) {
+        console.log(deal);
+});
+    
+$scope.initImage = function(imageName) {
+
+};
+
     var okscroll = 1;
     var limitDelta = 10;
     $scope.deals = [];
@@ -22,12 +47,12 @@ angular.module('deals').run(function(editableOptions) {
     $scope.limitEnd = limitDelta;
     $scope.busyLoadingData = true;
 	$scope.uploadProgress = 0;
-    $scope.urlWebSite = "";
-	$scope.imageName="default";
-    
+	
 	// Nécessaire pour la création de deal
 	$scope.onlineDeal = false;
 	$scope.validate = false;
+	$scope.longitude = 0;
+	$scope.latitude = 0;
 	  
 	$scope.editDeal = function() {
 		var dealModification = {
@@ -35,25 +60,33 @@ angular.module('deals').run(function(editableOptions) {
 		initialPrice : this.deal.initialPrice,
 		salePrice : this.deal.salePrice};
 		console.log(dealModification);
+		
+	    var modifResource = $resource('/addModification');
 	 
-        $resource('/addModification').save(dealModification, function(response) {
+        modifResource.save(dealModification, function(response) {
 			// TODO : METTRE UN MESSAGE OK :D
           console.log(response);
         });
 	}  
+    $scope.trustAsResourceUrl = function(url){
+        return $sce.trustAsResourceUrl(url);
+    }
 
-	$scope.upload = function(event) {
-        event.preventDefault();
-	  if($scope.file) {
-          
-         $resource('/getS3Credentials').get(function(credential) {
-          // Configure The S3 Object 
-          AWS.config.update({ accessKeyId: credential.access_key, secretAccessKey: credential.secret_key});
-          AWS.config.region = credential.region;
-          $scope.imageName = uuid4.generate();
-          var bucket = new AWS.S3({ params: { Bucket: credential.bucket } });
-		var params = { Key: $scope.imageName, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
+                
+	$scope.upload = function(image) {
+        console.log(image);
         
+        $scope.file = image.file.name;
+        
+	  $resource('/getS3Credentials').get(function(credential) {
+	  // Configure The S3 Object 
+	  AWS.config.update({ accessKeyId: credential.access_key, secretAccessKey: credential.secret_key });
+	  AWS.config.region = credential.region;
+	  var bucket = new AWS.S3({ params: { Bucket: credential.bucket } });
+	 
+	  if(image) {
+		var params = { Key: image.file.name, ContentType: 'blob', Body: image.resized.dataURL, ServerSideEncryption: 'AES256' };
+	 
 		bucket.putObject(params, function(err, data) {
 		  if(err) {
 			// There Was An Error With Your S3 Config
@@ -65,9 +98,7 @@ angular.module('deals').run(function(editableOptions) {
 				$scope.validate = true;
 			  });
 			// Success!
-
-            $scope.disableUpload = true;
-            $scope.$apply();
+			alert('Upload ok :D');
 		  }
 		})
 		.on('httpUploadProgress',function(progress) {
@@ -77,35 +108,43 @@ angular.module('deals').run(function(editableOptions) {
 			  });
 			  
 			});
-          });
 	  }
-      
 	  else {
 		// No File Selected
 		alert('No File Selected');
 	  }
-	  
+	  });
 	}
 		
     $scope.create = function(isValid) {
       if (isValid) {
-         
+        this.loc = [this.longitude,this.latitude];
+
         var deal = new Deals({
           title: this.title,
           initialPrice: this.initialPrice,
           salePrice: this.salePrice,
+          latitude: this.latitude,
+          longitude: this.longitude,
           loc : this.loc,
           description: this.description,
-		  image: $scope.imageName,
+		  image: $scope.file.name,
 		  onlineDeal: this.onlineDeal,
-          urlWebSite : this.urlWebSite
         });
         console.log('create: Tmp deal');
         console.log(deal);
         deal.$save(function(response) {
-            $location.path('deals/' + response._id);
+          $location.path('deals/' + response._id);
         });
         console.log('create: reinit scope');
+        this.title = '';
+        this.initialPrice = '';
+        this.salePrice = '';
+        this.latitude = '';
+        this.longitude = '';
+        this.loc = [];
+        this.description = '';
+		this.description = '';
       } else {
         $scope.submitted = true;
       }
