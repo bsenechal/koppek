@@ -32,6 +32,24 @@ function userNotifications(user, callback){
   });
 }
 /**
+ * Get messages from a user model in relation to another user
+ */
+function userMessages(user, userTo, callback){
+  console.log('userNotifications() : user = ', user);
+  console.log('userNotifications() : userTo = ', userTo);
+  Notification
+  .find({$or : [{$and :[{'userTo': user},{'userFrom': userTo}]},{$and :[{'userTo': userTo},{'userFrom': user}]}]})
+  .populate('userTo', 'username')
+  .populate('userFrom', 'username')
+  .sort('-created')
+  .exec(function(err, notifications) {
+    if (err) {
+      callback('userNotifications:error');
+    }
+    callback(notifications);
+  });
+}
+/**
  * emit
  */
 function emitUserNotifications (userId) {
@@ -44,6 +62,19 @@ function emitUserNotifications (userId) {
   });
 };
 /**
+ * emit
+ */
+function emitUserMessages (userId, userTo) {
+  console.log('emitUserMessages() : userId = ', userId);
+  console.log('emitUserMessages() : userTo = ', userTo);
+  userMessages(userId,userTo, function(notifications){
+    if(notifications != 'UserNotifications:error'){
+      console.log('emitUserMessages() : notifications = ', notifications);
+      socketio.sockets.emit('notifications:updated', notifications); // emit an event for all connected clients    console.log('setUserNotifications() : io.emit() : done');
+    }
+  });
+};
+/**
  * Get notifications from a user 
  */
 exports.getUserNotifications = function (req,res) {
@@ -51,6 +82,17 @@ exports.getUserNotifications = function (req,res) {
   console.log('getUserNotifications() : userId = ', userId);
   socketio = req.app.get('socketio'); // tacke out socket instance from the app container
   emitUserNotifications(userId);
+};
+/**
+ * Get message from a user in relation to another 
+ */
+exports.getUserMessages = function (req,res) {
+  var userId = req.param('userId');
+  var userTo = req.param('userTo');
+  console.log('getUserMessages() : userId = ', userId);
+  console.log('getUserMessages() : userTo = ', userTo);
+  socketio = req.app.get('socketio'); // tacke out socket instance from the app container
+  emitUserMessages(userId, userTo);
 };
 /**
  * Set to a user a notification 

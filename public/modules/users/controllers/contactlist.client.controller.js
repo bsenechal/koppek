@@ -17,6 +17,17 @@ angular.module('users').controller('ContactListController', ['$rootScope', '$sco
       });
     };
 
+    $scope.getNotificationIfEmpty = function()
+    {
+      if($scope.searchText == ''){
+        $rootScope.getNotification();
+      }
+    };
+    $scope.setSearchText = function()
+    {
+      $rootScope.searchText = $scope.searchText;
+    };
+
     // function createFilterFor(query) {
     //   var lowercaseQuery = angular.lowercase(query);
     //   return function filterFn(state) {
@@ -57,12 +68,18 @@ angular.module('users').controller('ContactListController', ['$rootScope', '$sco
       console.log('getMatches: tmp mapped', results);
       // var results = searchText ? contactList.filter( createFilterFor(searchText) ) : contactList;
       //set userTO dans le message :
-      if(results[0]){
+      if(results[0]  && searchText){
         $rootScope.message.userTo = results[0]._id;
+        $rootScope.message.userToName = results[0].display;
+
+        // $rootScope.getMessage(results[0]._id);
+        // $rootScope.selectedItem = results[0].$$hashKey;
       }
       else
       {
         $rootScope.message.userTo = null;
+        $rootScope.message.userToName = null;
+        // $rootScope.getNotification();
       }
       return results;
       // });

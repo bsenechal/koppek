@@ -1,16 +1,30 @@
 'use strict';
 
-angular.module('notifications').controller('NotificationsController', ['$scope', '$http',  '$stateParams','$resource', 'Socket', 'utils', 'Authentication', '$mdToast',
-  function($scope, $http,  $stateParams,$resource, Socket, utils, Authentication, $mdToast) {
+angular.module('notifications').controller('NotificationsController', ['$rootScope', '$scope', '$http',  '$stateParams','$resource', 'Socket', 'utils', 'Authentication', '$mdToast',
+  function($rootScope, $scope, $http,  $stateParams,$resource, Socket, utils, Authentication, $mdToast) {
     
 
     var socket = io('http://localhost:3000');
       
 
     $scope.authentication = Authentication;
+    $rootScope.searchText = '';
 
     $scope.notifications = [];
     console.log('NotificationsController : init()');
+
+    $rootScope.getMessage = function(userTo) {
+      console.log('getMessage : userId = ',Authentication.user._id);
+      console.log('getMessage : userTo = ',userTo);
+      // console.log('getNotification : contact = ',contact);
+      var notificationsRessource = $resource(
+        '/notifications/:userId/:userTo'
+      );
+      var notifications = notificationsRessource.query({'userId': Authentication.user._id, 'userTo': userTo},function(){
+        // console.log('getNotification : notifications = ', notifications);
+        // $scope.notifications = notifications;
+      });
+    }
 
     $scope.sendMessage = function(){
       console.log('sendMessage : userFrom = ',Authentication.user._id);
@@ -54,8 +68,9 @@ angular.module('notifications').controller('NotificationsController', ['$scope',
       });
     };
     
-    $scope.getNotification = function() {
+    $rootScope.getNotification = function() {
       console.log('getNotification : userId = ',Authentication.user._id);
+      // console.log('getNotification : contact = ',contact);
       var notificationsRessource = $resource(
         '/notifications/:userId'
       );
@@ -65,6 +80,36 @@ angular.module('notifications').controller('NotificationsController', ['$scope',
       });
 
     }
+
+    $scope.filterByContact = function(notification) {
+        if($rootScope.searchText != ''){
+          if(notification.userFrom){
+            if(
+                (
+                  notification.userTo._id == Authentication.user._id 
+                  && 
+                  notification.userFrom.username.match($rootScope.searchText)
+                )
+                ||
+                (
+                  notification.userTo.username.match($rootScope.searchText)
+                  && 
+                  notification.userFrom._id == Authentication.user._id 
+                )
+              )
+            {
+              return notification;
+            }
+          }
+          if($rootScope.searchText == 'notification' && notification.type == 'notification'){
+            return notification;
+          }
+        }
+        else{
+          return notification;
+        }
+    }
+
 
     // $scope.toastPosition = {
     //   bottom: false,
