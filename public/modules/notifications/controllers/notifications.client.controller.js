@@ -101,7 +101,7 @@ angular.module('notifications').controller('NotificationsController', ['$rootSco
               return notification;
             }
           }
-          if($rootScope.searchText == 'notification' && notification.type == 'notification'){
+          else if('notification'.match($rootScope.searchText) && notification.type == 'notification'){
             return notification;
           }
         }

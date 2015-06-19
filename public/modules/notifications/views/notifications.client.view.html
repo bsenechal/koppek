@@ -9,54 +9,62 @@
       md-item-text="contact.display"
       md-autoselect='true'
       md-search-text-change="setSearchText();"
-      md-floating-label="Chercher par contact (entre notification pour voir seulement les notifications)">
+      md-floating-label="Chercher par contact (commencer à entrer 'notifications' pour voir seulement les notifications)">
      <span md-highlight-text="searchText">{{contact.display}}</span>
    </md-autocomplete>
 </md-whiteframe>
 
    </div>
    <div 
+
+
+      
+
+
+
       data-ng-controller="NotificationsController"
       data-ng-init="getNotification()" >
          <div class="md-12-line" layout="row"
          data-ng-repeat="notification in notifications | filter:filterByContact track by notification._id">
-            <div ng-if="notification.type == 'message' && notification.userTo._id == authentication.user._id" div flex>
-            <md-whiteframe class="md-whiteframe-z1">
-               <em>{{notification.created}}</em> - 
-               {{notification.content}}
-               {{notification.type}} de
-               {{notification.userFrom.username}}
+            <md-whiteframe ng-if="notification.type == 'message' && notification.userTo._id == authentication.user._id" div flex>
+<!--             <md-subheader class="md-no-sticky">3 line item</md-subheader>
+ <md-whiteframe class="md-whiteframe-z1">-->               
+                     <h3><em>{{notification.created}}</em> - 
+                     {{notification.type}}</h3>
+                     <p>{{notification.content}} envoyé par 
+                     {{notification.userFrom.username}}</p>
+<!--                <img data-ng-src="{{notification.userFrom.avatar}}"
+                    width="200em" height="200em" class="img-circle" />
+ -->                  <a class="btn" data-ng-click="removeNotification(notification._id);"> <i
+                     class="glyphicon glyphicon-trash"></i>
+                  </a>
+            </md-whiteframe>            
+            <md-whiteframe ng-if="notification.type == 'message' && notification.userTo._id != authentication.user._id" div flex offset="66">
+            
+               <h3><em>{{notification.created}}</em> - 
+               {{notification.type}}</h3>
+               <p>{{notification.content}} envoyé par 
+               {{notification.userTo.username}}</p>
+<!--                <img data-ng-src="{{notification.userFrom.avatar}}"
+                    width="200em" height="200em" class="img-circle" />
+ -->                  <a class="btn" data-ng-click="removeNotification(notification._id);"> <i
+                     class="glyphicon glyphicon-trash"></i>
+                  </a>
+            </md-whiteframe>            
+            <md-whiteframe ng-if="notification.type == 'notification'" div flex offset="33">
+               
+               <h3><em>{{notification.created}}</em> - 
+               {{notification.type}}</h3>
+               <p>{{notification.content}} créé par le système</p>
+
                   <a class="btn" data-ng-click="removeNotification(notification._id);"> <i
                      class="glyphicon glyphicon-trash"></i>
                   </a>
             </md-whiteframe>
-            </div>            
-            <div ng-if="notification.type == 'message' && notification.userTo._id != authentication.user._id" div flex offset="66">
-            <md-whiteframe class="md-whiteframe-z1">
-               <em>{{notification.created}}</em> - 
-               {{notification.content}}
-               {{notification.type}} à
-               {{notification.userTo.username}}
-                  <a class="btn" data-ng-click="removeNotification(notification._id);"> <i
-                     class="glyphicon glyphicon-trash"></i>
-                  </a>
-            </md-whiteframe>
-            </div>            
-            <div ng-if="notification.type == 'notification'" div flex offset="33">
-            <md-whiteframe class="md-whiteframe-z1">
-               <em>{{notification.created}}</em> - 
-               {{notification.content}}
-               {{notification.type}}
-               {{notification.userFrom}}
-                  <a class="btn" data-ng-click="removeNotification(notification._id);"> <i
-                     class="glyphicon glyphicon-trash"></i>
-                  </a>
-            </md-whiteframe>
-            </div>
             <md-divider md-inset ng-if="!$last"></md-divider>
       </div> 
          <a class="btn" data-ng-click="removeAllNotification();"> <i
-            class="glyphicon glyphicon-trash"></i>
+            class="glyphicon glyphicon-trash"> ERASE ALL</i>
          </a>
    <form name="messageForm" data-ng-submit="sendMessage();">
    <md-input-container>

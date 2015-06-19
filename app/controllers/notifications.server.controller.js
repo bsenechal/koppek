@@ -21,8 +21,8 @@ function userNotifications(user, callback){
   console.log('userNotifications() : userTo = ', user);
   Notification
   .find({$or : [{'userTo': user},{'userFrom': user}]})
-  .populate('userTo', 'username')
-  .populate('userFrom', 'username')
+  .populate('userTo', 'username avatar')
+  .populate('userFrom', 'username avatar')
   .sort('-created')
   .exec(function(err, notifications) {
     if (err) {
