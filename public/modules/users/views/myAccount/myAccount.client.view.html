@@ -1,120 +1,118 @@
-<style>
-.cropArea {
-  background: #E4E4E4;
-  overflow: hidden;
-  width:500px;
-  height:350px;
-}
-
-</style>
 
 <section data-ng-controller="MyAccountController" layout="row">
     <div flex="20">
-    <md-content class="md-padding"> 
-    <md-card> <md-card-content><form editable-form name="editableForm" onaftersave="editUser()">
-        <center>
-            <img ng-src="https://s3-eu-west-1.amazonaws.com/koppekimages/users/default" width="200em" height="200em" class="img-circle"/>
-        
-     <md-button class="md-primary"
-            aria-label="Modifier l'avatar"
-            ng-click="imageForm.$show()"
-            ng-show="!imageForm.$visible">Modifier l'avatar</md-button>
-    </center>
-        <h2 ng-show="!editableForm.$visible">
-            {{authentication.user.displayName}} 
-        </h2>
-        <div ng-show="editableForm.$visible">
-                <h5><b>Nom</b></h5>
-             <span editable-text="authentication.user.firstName"
-                e-name="authentication.user.firstName" e-required>
-                {{authentication.user.firstName}} 
-                </span>
-         <h5><b>Prénom</b></h5>
-         <span editable-text="authentication.user.lastName"
-                                e-name="authentication.user.lastName" e-required>{{authentication.user.lastName}}</span>
-         </div>                       
-        <h5 ng-show="editableForm.$visible"><b>Email</b></h5>
-        <span editable-text="authentication.user.email"
-                                e-name="authentication.user.email" e-required>{{authentication.user.email}}</span>
-        
-        
-       <md-list>
-      <h4>Rôles</h4>
-      <md-list-item class="md-3-line" ng-repeat="item in authentication.user.roles">
-          <p>{{ item}}</p>
-      </md-list-item>
+        <md-content class="md-padding"> <md-card>
+        <md-card-content>
+        <form editable-form name="editableForm" onaftersave="editUser()">
+            <center>
+                <img
+                    data-ng-src="{{authentication.user.avatar}}"
+                    width="200em" height="200em" class="img-circle" />
 
-    </md-list>
+                <md-button class="md-primary"
+                    aria-label="Modifier l'avatar"
+                    ng-click="imageForm.$show()"
+                    ng-show="!imageForm.$visible">Modifier
+                l'avatar</md-button>
+            </center>
+            <h2 ng-show="!editableForm.$visible">
+                {{authentication.user.displayName}}</h2>
+            <div ng-show="editableForm.$visible">
+                <h5>
+                    <b>Nom</b>
+                </h5>
+                <span editable-text="authentication.user.firstName"
+                    e-name="authentication.user.firstName" e-required>
+                    {{authentication.user.firstName}} </span>
+                <h5>
+                    <b>Prénom</b>
+                </h5>
+                <span editable-text="authentication.user.lastName"
+                    e-name="authentication.user.lastName" e-required>{{authentication.user.lastName}}</span>
+            </div>
+            <h5 ng-show="editableForm.$visible">
+                <b>Email</b>
+            </h5>
+            <span editable-text="authentication.user.email"
+                e-name="authentication.user.email" e-required>{{authentication.user.email}}</span>
 
-               <div class="buttons">
-            <!-- buttons to submit / cancel form -->
-            <span ng-show="editableForm.$visible"> <br />
-                <md-button class="md-primary md-raised"
-                    aria-label="Sauvegarder"
-                    ng-disabled="editableForm.$waiting">Sauvegarder</md-button>
-                <md-button class="md-default md-raised"
-                    aria-label="Annuler"
-                    ng-disabled="editableForm.$waiting"
-                    ng-click="editableForm.$cancel()">Annuler</button>
-            </span>
-        </div>
+
+            <md-list>
+            <h4>Rôles</h4>
+            <md-list-item class="md-3-line"
+                ng-repeat="item in authentication.user.roles">
+            <p>{{ item}}</p>
+            </md-list-item> </md-list>
+
+            <div class="buttons">
+                <!-- buttons to submit / cancel form -->
+                <span ng-show="editableForm.$visible"> <br /> <md-button
+                        class="md-primary md-raised"
+                        aria-label="Sauvegarder"
+                        ng-disabled="editableForm.$waiting">Sauvegarder</md-button>
+                    <md-button class="md-default md-raised"
+                        aria-label="Annuler"
+                        ng-disabled="editableForm.$waiting"
+                        ng-click="editableForm.$cancel()">Annuler
+                    </button></span>
+            </div>
         </form>
-    </md-card-content>
-    <div class="md-actions" layout="row" layout-align="end center">
-        <md-button class="md-primary md-raised"
-            aria-label="Editer"
-            ng-click="editableForm.$show()"
-            ng-show="!editableForm.$visible">Editer</md-button>
-    </div>
-  
-    </md-card> 
- </md-content>
-   </div>
-   
-   <div flex="80">
-    <md-content class="md-padding"> 
-    <md-card> <md-card-content>
-        <div ng-show="!imageForm.$visible">
-        <h2>Mon activité</h2>
-        </div>    
-        <div ng-show="imageForm.$visible">
-         <h2>Modification de l'avatar</h2>
-          <md-toolbar class="md-theme-light">
-    <h2 class="md-toolbar-tools">
-      <span>Etape 1 : Selection d'une image</span>
-    </h2>
-  </md-toolbar>
-        <form editable-form name="imageForm" onaftersave="editUser()">
-         <md-content>
-         <label>Selectionnez une image
-                </label>
-                        <md-input-container>  <input name="file" type="file" id="fileInput" /> </md-input-container>
-         
-         </md-content>
-         <div ng-show="myImage">
-                   <md-toolbar class="md-theme-light">
-    <h2 class="md-toolbar-tools">
-      <span>Etape 2 : Redimensionnement</span>
-    </h2>
-  </md-toolbar>
-         
-  <div class="cropArea" width="200em" height="200em" >
-    <img-crop image="myImage" result-image="myCroppedImage" ></img-crop>
-  </div>
-  <h4>Aperçu</h4>
-  <div><img ng-src="{{myCroppedImage}}" class="img-circle" /></div>
-       </form>
-       
-       <md-button class="md-primary md-raised"
-                    aria-label="Enregistrer">Enregistrer</md-button>
-   </div>
+        </md-card-content>
+        <div class="md-actions" layout="row" layout-align="end center">
+            <md-button class="md-primary md-raised" aria-label="Editer"
+                ng-click="editableForm.$show()"
+                ng-show="!editableForm.$visible">Editer</md-button>
         </div>
-       
+
+        </md-card> </md-content>
+    </div>
+
+    <div flex="80">
+        <md-content class="md-padding"> <md-card>
+        <md-card-content>
+        <div ng-show="!imageForm.$visible">
+            <h2>Mon activité</h2>
+        </div>
+        <div ng-show="imageForm.$visible">
+            <h2>Modification de l'avatar</h2>
+            <md-toolbar class="md-theme-light">
+            <h2 class="md-toolbar-tools">
+                <span>Etape 1 : Selection d'une image</span>
+            </h2>
+            </md-toolbar>
+            <form editable-form name="imageForm"
+                onaftersave="editAvatar()">
+                <md-content> <label>Selectionnez
+                    une image </label> <md-input-container>
+                <input aria-label="Selectionnez une image" name="file" type="file" id="fileInput" /> </md-input-container> </md-content>
+                <div ng-show="myImage">
+                    <md-toolbar class="md-theme-light">
+                    <h2 class="md-toolbar-tools">
+                        <span>Etape 2 : Redimensionnement</span>
+                    </h2>
+                    </md-toolbar>
+
+                    <div class="cropArea" width="200em" height="200em">
+                        <img-crop image="myImage"
+                            result-image="myCroppedImage"></img-crop>
+                    </div>
+                    <h4>Aperçu</h4>
+                    <div>
+                        <img ng-src="{{myCroppedImage}}"
+                            class="img-circle" />
+                    </div>
+            </form>
+
+            <md-button class="md-primary md-raised"
+                aria-label="Enregistrer">Enregistrer</md-button>
+        </div>
+    </div>
+
     </md-card-content>
 
-  
-    </md-card> 
- </md-content>
-   </div>
+
+    </md-card>
+    </md-content>
+    </div>
 
 </section>

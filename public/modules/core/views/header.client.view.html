@@ -6,7 +6,7 @@
     <h1 class="md-toolbar-tools">Menu</h1>
     </md-toolbar> <md-content ng-controller="LeftCtrl" layout-padding> <md-list>
     <md-list-item class="md-3-line" data-ng-show="authentication.user"> <img
-        ng-src="{{item.face}}?{{$index}}" class="md-avatar"
+        ng-src="{{authentication.user.avatar}}" class="md-avatar"
         alt="{{item.who}}" />
     <div class="md-list-item-text">
     <md-button href="/#!/myAccount" aria-label="Mon compte">

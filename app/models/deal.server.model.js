@@ -60,7 +60,7 @@ var DealSchema = new Schema({
   },
   image: {
     type: String,
-    required: true,
+    default: 'default',
     trim: true
   },
   onlineDeal: {
