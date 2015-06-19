@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('users').controller('MyAccountController', ['$scope', 'Authentication', '$resource',
-	function($scope, Authentication, $resource) {
+angular.module('users').controller('MyAccountController', ['$scope', 'Authentication', '$resource', '$location',
+	function($scope, Authentication, $resource, $location) {
         $scope.authentication = Authentication;
         $scope.myImage='';
         $scope.myCroppedImage='';
@@ -26,6 +26,7 @@ angular.module('users').controller('MyAccountController', ['$scope', 'Authentica
         };
         
         $scope.editUser = function() {
+          
             updateUser($scope.authentication.user);
         };
         
