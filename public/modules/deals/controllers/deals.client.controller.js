@@ -8,7 +8,8 @@ angular.module('deals').run(function(editableOptions) {
 	console.log();
     
     $scope.windowHeight = angular.element($window).height() - 64;
-    // $scope.hasAuthorization = function(deal) {
+    // document.documentElement.style.overflow = 'hidden';  // firefox, chrome
+    // document.body.scroll = "no"; // ie only    // $scope.hasAuthorization = function(deal) {
     //   if (!deal || !deal.user){
     //     return false;
     //   }

@@ -14,28 +14,26 @@
     <img ng-src="{{item.face}}?{{$index}}" class="md-avatar"
         alt="{{item.who}}" />
     <div class="md-list-item-text">
-        <h3>{{comment.user.name}}</h3>
+        <h3>{{comment.user.username}}</h3>
         <h4>{{comment.body}}</h4>
         <p>
             <span class="comment-time-ago" time-ago
                 from-time="{{comment.created}}"></span>
         </p>
         <hr>
-    </div>
 
-    </md-list-item> <md-divider></md-divider> </md-list> </md-content>
 
     <div>
         <div class="comment">
             <div>
-                <span class="comment-author"><a
+<!--                 <span class="comment-author"><a
                     href="#!/users/{{comment.user._id}}">{{comment.user.name}}</a></span>
-
+ -->
                 <div class="comment-body-container">
-                    <span data-ng-if="!comment.editable"
+<!--                     <span data-ng-if="!comment.editable"
                         class="comment-body"
                         ng-bind-html="comment.body | newlines | parseUrlFilter:'_self' ">{{comment.body}}</span>
-                    <div data-ng-if="comment.editable"
+ -->                    <div data-ng-if="comment.editable"
                         data-ng-show="authentication.user._id == comment.user._id">
                         <form
                             class="form-horizontal center-block comment-{{parent._id}}"
@@ -73,11 +71,13 @@
                         class="glyphicon glyphicon-exclamation-sign"></i>
                     </a>
                     <!--{{comment.alert}}-->
-                    <!-- 					<span ng-include="'likes/views/like-button.html'" data-ng-controller="LikesController" data-ng-init="findLikes('comment', comment)" /> -->
+                    <!--                    <span ng-include="'likes/views/like-button.html'" data-ng-controller="LikesController" data-ng-init="findLikes('comment', comment)" /> -->
                 </div>
             </div>
         </div>
     </div>
+    </div>
+    </md-list-item> <md-divider></md-divider> </md-list> </md-content>
 
 </div>
 
