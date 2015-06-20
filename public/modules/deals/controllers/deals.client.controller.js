@@ -3,8 +3,8 @@
 angular.module('deals').run(function(editableOptions) {
   editableOptions.theme = 'bs3'; 
 })
-.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade', '$window', 'uuid4',
-  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade, $window, uuid4) {
+.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade', '$window', 'uuid4', '$mdToast',
+  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade, $window, uuid4, $mdToast) {
 	console.log();
     
     $scope.windowHeight = angular.element($window).height() - 64;
@@ -30,7 +30,16 @@ angular.module('deals').run(function(editableOptions) {
 	// Nécessaire pour la création de deal
 	$scope.onlineDeal = false;
 	$scope.validate = false;
-	  
+	
+    function displayToast(content){
+       $mdToast.show(
+            $mdToast.simple()
+                .content(content)
+                .position('top right')
+                .hideDelay(2000)
+         );
+    };
+    
 	$scope.editDeal = function() {
 		var dealModification = {
 		idDeal: this.deal._id,
@@ -83,8 +92,7 @@ angular.module('deals').run(function(editableOptions) {
 	  }
       
 	  else {
-		// No File Selected
-		alert('No File Selected');
+		displayToast('Veuillez selectionner un fichier svp');
 	  }
 	  
 	}
@@ -105,9 +113,9 @@ angular.module('deals').run(function(editableOptions) {
         console.log('create: Tmp deal');
         console.log(deal);
         deal.$save(function(response) {
+            displayToast('Le deal a correctement été ajouté.');
             $location.path('deals/' + response._id);
         });
-        console.log('create: reinit scope');
       } else {
         $scope.submitted = true;
       }
@@ -118,9 +126,10 @@ angular.module('deals').run(function(editableOptions) {
         deal.$remove(function(response) {
           for (var i in $scope.deals) {
             if ($scope.deals[i] === deal) {
-        $scope.deals.splice(i,1);
+                $scope.deals.splice(i,1);
             }
           }
+          displayToast('Le deal a correctement été supprimé.');
           $location.path('deals');
         });
       } else {
@@ -153,32 +162,24 @@ angular.module('deals').run(function(editableOptions) {
     };
 
     function updateGrade(deal,action) {
-      console.log('updateGrade() : got a deal');
-      console.log('updateGrade() : action = ',action);
 
       var userId = deal.user;
       if(typeof(userId) != 'string'){
         userId = userId._id;
       }
 
-      var updateGrade = $resource(
-          '/updateGrade'
-        );
-      updateGrade.save({_id: deal._id, idUser:userId , action: action},function(dealResult) {
-        console.log('updateGrade(): server results limited');
-        if(action == 'alert')
-        {
-          console.log('updateGrade(): new Deal Alert : ', dealResult.alert);
-          deal.alert = dealResult.alert; 
-          deal.description = dealResult.description;          
-        }
-        else
-        {
-          console.log('updateGrade(): new Deal Grade : ', dealResult.grade);
-          deal.grade = dealResult.grade;        
-        }
+      $resource('/updateGrade', {_id: deal._id, idUser:userId , action: action}).save(function(dealResult) {
+          if(action == 'alert')
+            {
+              deal.alert = dealResult.alert; 
+              deal.description = dealResult.description;          
+            }
+            else
+            {
+              deal.grade = dealResult.grade;        
+            }
       });
-      console.log('updateGrade() : deal updated');
+      displayToast('Votre vote a bien été pris en compte.');
     };
 
 
@@ -276,29 +277,34 @@ angular.module('deals').run(function(editableOptions) {
         //   okscroll = 0;
         // };
         $scope.resultIsByRadius = true;
-        // list_Id = [];
-        // var limitEnd = page*20;
-        // if(limitEnd > $scope.dealMarkers.length){
-        //   limitEnd = $scope.dealMarkers.length;
-        // }
-        // for (var j = (page-1)*20; j < limitEnd; j++) {
-        //   list_Id.push($scope.dealMarkers[j]._id);            
-        // }
+        list_Id = [];
+        var limitEnd = page*20;
+        if(limitEnd > $scope.dealMarkers.length){
+          limitEnd = $scope.dealMarkers.length;
+        }
+        for (var j = (page-1)*20; j < limitEnd; j++) {
+          list_Id.push($scope.dealMarkers[j]._id);            
+        }
         console.log('dealsByRadius(): list_Id :');
         console.log(list_Id);
         console.log('dealsByRadius(): page : ', page);
         var dealsByRadius = $resource(
-            '/DealsByRadius/:srchLng/:srchLat/:srchRadius/:page'
+            '/DealsByRadius',
+            {
+              // srchLng: $rootScope.srchLng,
+              // srchLat: $rootScope.srchLat, 
+              // srchRadius: $rootScope.srchRadius,
+              list_Id: list_Id,
+              // page: page
+              // limitStart: $scope.limitStart,
+              // limitEnd: $scope.limitEnd
+            },
+            {
+              query: {method:'POST',isArray: true }
+            }
           );
           console.log('dealsByRadius(): ressource created');
-          dealsByRadius.query({
-              srchLng: $rootScope.srchLng,
-              srchLat: $rootScope.srchLat, 
-              srchRadius: $rootScope.srchRadius,
-              //list_Id: list_Id,
-              page: page
-            },
-          function(deals) {
+          dealsByRadius.query(function(deals) {
             console.log('dealsByRadius(): server results');
             console.log(deals);
             $scope.deals = deals
@@ -308,8 +314,8 @@ angular.module('deals').run(function(editableOptions) {
             );
 
             //update limit
-            // $scope.limitStart = $scope.limitEnd;
-            // $scope.limitEnd += limitDelta;
+            $scope.limitStart = $scope.limitEnd;
+            $scope.limitEnd += limitDelta;
 
             //enable scrolling again :
             $scope.busyLoadingData = false;

@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('users').controller('MyAccountController', ['$scope', 'Authentication', '$resource', '$location',
-	function($scope, Authentication, $resource, $location) {
+angular.module('users').controller('MyAccountController', ['$scope', 'Authentication', '$resource', '$location', '$mdToast',
+	function($scope, Authentication, $resource, $location, $mdToast) {
         $scope.authentication = Authentication;
         $scope.myImage='';
         $scope.myCroppedImage='';
@@ -23,11 +23,15 @@ angular.module('users').controller('MyAccountController', ['$scope', 'Authentica
             var user = $scope.authentication.user;
             user.avatar = $scope.myCroppedImage;
             updateUser($scope.authentication.user);
+            
+            displayToast('Votre avatar a correctement été modifié.');
         };
         
         $scope.editUser = function() {
           
             updateUser($scope.authentication.user);
+            
+            displayToast('Votre profil a correctement été modifié.');
         };
         
         function updateUser(user){
@@ -35,6 +39,15 @@ angular.module('users').controller('MyAccountController', ['$scope', 'Authentica
             {
                 'update': { method:'PUT' }
             }).update(user);
+        }
+        
+        function displayToast(content){
+            $mdToast.show(
+                $mdToast.simple()
+                  .content(content)
+                  .position('top right')
+                  .hideDelay(2000)
+             );
         }
     }
 ]);
