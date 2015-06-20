@@ -18,7 +18,6 @@ var socketio;
  * Get notifications from a user model
  */
 function userNotifications(user, callback){
-  console.log('userNotifications() : userTo = ', user);
   Notification
   .find({$or : [{'userTo': user},{'userFrom': user}]})
   .populate('userTo', 'username avatar')
@@ -35,8 +34,6 @@ function userNotifications(user, callback){
  * Get messages from a user model in relation to another user
  */
 function userMessages(user, userTo, callback){
-  console.log('userNotifications() : user = ', user);
-  console.log('userNotifications() : userTo = ', userTo);
   Notification
   .find({$or : [{$and :[{'userTo': user},{'userFrom': userTo}]},{$and :[{'userTo': userTo},{'userFrom': user}]}]})
   .populate('userTo', 'username')
@@ -53,11 +50,9 @@ function userMessages(user, userTo, callback){
  * emit
  */
 function emitUserNotifications (userId) {
-  console.log('emitUserNotifications() : userId = ', userId);
   userNotifications(userId, function(notifications){
     if(notifications != 'UserNotifications:error'){
-      console.log('emitUserNotifications() : notifications = ', notifications);
-      socketio.sockets.emit('notifications:updated', notifications); // emit an event for all connected clients    console.log('setUserNotifications() : io.emit() : done');
+      socketio.sockets.emit('notifications:updated', notifications); // emit an event for all connected clients  
     }
   });
 };
@@ -65,11 +60,8 @@ function emitUserNotifications (userId) {
  * emit
  */
 function emitUserMessages (userId, userTo) {
-  console.log('emitUserMessages() : userId = ', userId);
-  console.log('emitUserMessages() : userTo = ', userTo);
   userMessages(userId,userTo, function(notifications){
     if(notifications != 'UserNotifications:error'){
-      console.log('emitUserMessages() : notifications = ', notifications);
       socketio.sockets.emit('notifications:updated', notifications); // emit an event for all connected clients    console.log('setUserNotifications() : io.emit() : done');
     }
   });
@@ -79,7 +71,6 @@ function emitUserMessages (userId, userTo) {
  */
 exports.getUserNotifications = function (req,res) {
   var userId = req.param('userId');
-  console.log('getUserNotifications() : userId = ', userId);
   socketio = req.app.get('socketio'); // tacke out socket instance from the app container
   emitUserNotifications(userId);
 };
@@ -89,8 +80,6 @@ exports.getUserNotifications = function (req,res) {
 exports.getUserMessages = function (req,res) {
   var userId = req.param('userId');
   var userTo = req.param('userTo');
-  console.log('getUserMessages() : userId = ', userId);
-  console.log('getUserMessages() : userTo = ', userTo);
   socketio = req.app.get('socketio'); // tacke out socket instance from the app container
   emitUserMessages(userId, userTo);
 };
@@ -98,8 +87,6 @@ exports.getUserMessages = function (req,res) {
  * Set to a user a notification 
  */
 exports.setUserNotifications = function(userId,Content) {
-  console.log('setUserNotifications() : userId = ', userId);
-  console.log('setUserNotifications() : Content = ', Content);
   //update grade according to value :
   var Notif = new Notification();
   Notif.userTo = userId;
@@ -121,11 +108,8 @@ exports.setUserNotifications = function(userId,Content) {
  * Set to a user a notification mail
  */
 exports.setUserMailNotifications = function(req, res) {
-  console.log('setUserMailNotifications(): req = ',req);
   var userId = req.params.userId, content = req.query.content, userTo = req.query.userTo;
-  console.log('setUserMailNotifications() : userId = ', userId);
-  console.log('setUserMailNotifications() : content = ', content);
-  console.log('setUserMailNotifications() : userTo = ', userTo);
+
   //update grade according to value :
   var Notif = new Notification();
   Notif.userTo = userTo;
@@ -152,8 +136,6 @@ exports.setUserMailNotifications = function(req, res) {
  */
 exports.deleteUserNotifications = function(req, res) {
   var userId = req.params.userId, notificationId = req.params.notificationId;
-  console.log('deleteUserNotifications() : userId = ', userId);
-  console.log('deleteUserNotifications() : notificationId = ', notificationId);
   Notification.findByIdAndRemove(notificationId,{}, function(err, notif){
     if (err) {
       console.log('deleteUserNotifications() : findOne() : got an error');
@@ -170,7 +152,7 @@ exports.deleteUserNotifications = function(req, res) {
  */
 exports.deleteUserAllNotifications = function(req,res) {
   var userId = req.params.userId;
-  console.log('deleteUserAllNotifications() : userId = ', userId);
+
   Notification.remove({'userTo': userId}, function(err, user) {
     if (err) {
       console.log('deleteUserAllNotifications() : findOne() : got an error');

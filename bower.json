@@ -27,6 +27,7 @@
     "angular-messages": "~1.4.0",
     "aws-sdk": "~2.1.34",
     "angular-uuid4": "~0.3.0",
-    "ngImgCrop": "~0.3.2"
+    "ngImgCrop": "~0.3.2",
+    "message-center": "~1.1.4"
   }
 }
