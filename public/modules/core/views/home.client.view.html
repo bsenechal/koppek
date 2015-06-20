@@ -1,40 +1,39 @@
 <section data-ng-controller="HomeController">
     <div layout="column" layout-sm="column">
         <div data-ng-controller="MapsController"
-            data-ng-init="MapCreateDeal()" hide-sm>
-
-
-            <div map-canvas id="map-canvas" style="height: 600px;"></div>
+            data-ng-init="HomeMap()" hide-sm>
+<!--                 <input id="pac-input" type="text"
+                    placeholder="Enter a location">
+ -->            <div map-canvas id="map-canvas" style="height: 600px;"></div>
         </div>
         <div>
-            <md-card> <md-subheader class="md-primary">Recherche
-            de deals</md-subheader> <md-card-content>
-            <div layout="row" layout-sm="column" flex-gt-sm offset="5">
-                <md-input-container class="md-accent" flex-gt-sm="30">
-                <label>Où voulez-vous chercher ?</label> <input
-                    type="text"> </md-input-container>
-                <div flex-gt-sm offset="1"></div>
-                <md-input-container class="md-accent" flex-gt-sm="30">
-                <label>Cercle de recherche</label> <md-slider
-                    class="md-accent" flex-gt-sm="30" min="0" max="100"
-                    value="10" ng-init="distance = 10"
-                    ng-model="distance" aria-label="distance"
-                    id="distance-slider"> </md-slider> </md-input-container>
-                <div flex-gt-sm offset="1"></div>
-                <md-input-container flex-gt-sm="4"> <label
-                    ng-model="distance">km</label> <input type="number"
-                    ng-model="distance" aria-label="distance"
-                    aria-controls="distance-slider"> </md-input-container>
-                <div flex-gt-sm offset="1"></div>
-                <md-input-container flex-gt-sm="15"> <md-checkbox
-                    ng-model="data.cb1" aria-label="Checkbox 1">Deal
-                internet ?</md-checkbox> </md-input-container>
-                <div flex-gt-sm offset="1"></div>
-                <md-input-container flex-gt-sm="10"> <md-button
-                    class="md-raised md-primary" ng-click="submit()">Rechercher</md-button>
-                </md-input-container>
-            </div>
-
+                <md-card> <md-subheader class="md-primary">Recherche
+                de deals</md-subheader> <md-card-content>
+                <div layout="row" layout-sm="column" flex-gt-sm offset="5">
+                    <md-input-container class="md-accent" flex-gt-sm="30">
+                    <label>Où voulez-vous chercher ?</label> <input id="pac-input"
+                        type="text"> </md-input-container>
+                    <div flex-gt-sm offset="1"></div>
+                    <md-input-container class="md-accent" flex-gt-sm="30">
+                    <label>Cercle de recherche</label> <md-slider
+                        class="md-accent" flex-gt-sm="30" min="0" max="1000"
+                        value="500" ng-init="HomesrchRadius = 500"
+                        ng-model="HomesrchRadius" aria-label="HomesrchRadius"
+                        id="HomesrchRadius-slider"> </md-slider> </md-input-container>
+                    <div flex-gt-sm offset="1"></div>
+                    <md-input-container flex-gt-sm="5"> <label
+                        ng-model="HomesrchRadius">km</label> <input type="number"
+                        ng-model="HomesrchRadius" aria-label="HomesrchRadius"
+                        aria-controls="HomesrchRadius-slider"> </md-input-container>
+                    <div flex-gt-sm offset="1"></div>
+                    <md-input-container flex-gt-sm="15"> <md-checkbox
+                        ng-model="data.cb1" aria-label="Checkbox 1">Deal
+                    internet ?</md-checkbox> </md-input-container>
+                    <div flex-gt-sm offset="1"></div>
+                    <md-input-container flex-gt-sm="10"> <md-button
+                        class="md-raised md-primary" href="/#!/deals?">Rechercher</md-button>
+                    </md-input-container>
+                </div>
             </md-card-content> </md-card>
 
             <div layout-margin layout-fill layout-padding

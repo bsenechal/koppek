@@ -15,8 +15,7 @@ angular.module('deals').run(function(editableOptions) {
     // };
     var okscroll = 1;
     var limitDelta = 10;
-    $scope.deals = [];
-    var list_Id = [];
+    $scope.deals = null;
     $scope.limitStart = 0;
     $scope.limitEnd = limitDelta;
     $scope.busyLoadingData = true;
@@ -277,16 +276,7 @@ angular.module('deals').run(function(editableOptions) {
         //   okscroll = 0;
         // };
         $scope.resultIsByRadius = true;
-        // list_Id = [];
-        // var limitEnd = page*20;
-        // if(limitEnd > $scope.dealMarkers.length){
-        //   limitEnd = $scope.dealMarkers.length;
-        // }
-        // for (var j = (page-1)*20; j < limitEnd; j++) {
-        //   list_Id.push($scope.dealMarkers[j]._id);            
-        // }
-        console.log('dealsByRadius(): list_Id :');
-        console.log(list_Id);
+
         console.log('dealsByRadius(): page : ', page);
         var dealsByRadius = $resource(
             '/DealsByRadius/:srchLng/:srchLat/:srchRadius/:page'
@@ -296,7 +286,6 @@ angular.module('deals').run(function(editableOptions) {
               srchLng: $rootScope.srchLng,
               srchLat: $rootScope.srchLat, 
               srchRadius: $rootScope.srchRadius,
-              //list_Id: list_Id,
               page: page
             },
           function(deals) {

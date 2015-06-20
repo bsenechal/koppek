@@ -42,7 +42,7 @@ function checkRole(id, points){
 	console.log('checkRole() : init');
 	console.log('checkRole() : id= ',id);
 	console.log('checkRole() : points= ',points);
-   getTotalUserPoints(function(totalUserPoints){
+  getTotalUserPoints(function(totalUserPoints){
       console.log('checkRole() : totalUserPoints= ',totalUserPoints);
       console.log('checkRole() : thresholdCheckRole= ',config.thresholdCheckRole);
       //does this only sometime :

@@ -9,8 +9,8 @@
  -->                <md-content>
                     <md-subheader class="md-primary">Deals
                     à compy city plage :D</md-subheader>
-                    <md-list> <md-list-item class="md-3-line"
-                        data-ng-repeat="deal in deals| filter:searchQuery |limitTo: limitEnd track by deal._id">
+                    <md-list data-ng-if="deals[0]._id"> <md-list-item class="md-3-line"
+                        data-ng-repeat="deal in deals| filter:searchQuery track by deal._id">
                     
                     <md-whiteframe class="md-whiteframe-z2" layout="row" layout-padding layout-margin>
 
