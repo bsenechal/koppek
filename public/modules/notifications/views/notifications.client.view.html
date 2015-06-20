@@ -1,106 +1,108 @@
 <style>
-        #response{
-            color:rgb(33,150,243);
-        }
-        
-        #sent{
-            color: #259b24;
-        }
-        
-        #systeme{
-            color: #9852D9;
-        }
-        
+#response {
+	color: rgb(33, 150, 243);
+}
+
+#sent {
+	color: #259b24;
+}
+
+#systeme {
+	color: #9852D9;
+}
 </style>
 
 
 
 <section layout-padding>
-   <!-- tmp test notif -->
-   <h1>Notifications</h1>
-   <md-whiteframe class="md-whiteframe-z1">
-   <div data-ng-controller="ContactListController" 
+    <!-- tmp test notif -->
+    <h1>Notifications</h1>
+    <md-whiteframe class="md-whiteframe-z1">
+    <div data-ng-controller="ContactListController"
         data-ng-init="getContactList();">
-   <md-autocomplete  md-search-text="searchText" md-items="contact in getMatches(searchText)"
-      md-selected-item="selectedItem" 
-      md-item-text="contact.display"
-      md-autoselect='true'
-      md-search-text-change="setSearchText();"
-      md-floating-label="Chercher par contact (commencer à entrer 'notifications' pour voir seulement les notifications)">
-     <span md-highlight-text="searchText">{{contact.display}}</span>
-   </md-autocomplete>
-</md-whiteframe>
+        <md-autocomplete md-search-text="searchText"
+            md-items="contact in getMatches(searchText)"
+            md-selected-item="selectedItem"
+            md-item-text="contact.display" md-autoselect='true'
+            md-search-text-change="setSearchText();"
+            md-floating-label="Chercher par contact (commencer à entrer 'notifications' pour voir seulement les notifications)">
+        <span md-highlight-text="searchText">{{contact.display}}</span>
+        </md-autocomplete>
+    </md-whiteframe>
 
-   </div>
-   <div 
+    </div>
+    <div data-ng-controller="NotificationsController"
+        data-ng-init="getNotification()">
 
+        <div layout="row"
+            data-ng-repeat="notification in notifications | filter:filterByContact track by notification._id">
+            <md-whiteframe class="md-whiteframe-z2"
+                ng-if="notification.type == 'message' && notification.userTo._id == authentication.user._id"
+                div flex="40" layout-padding layout="row">
 
-      
-
-
-
-      data-ng-controller="NotificationsController"
-      data-ng-init="getNotification()" >
-
-         <div layout="row"
-         data-ng-repeat="notification in notifications | filter:filterByContact track by notification._id">
-            <md-whiteframe class="md-whiteframe-z2" ng-if="notification.type == 'message' && notification.userTo._id == authentication.user._id" div flex="40" layout-padding layout="row">
-    
-                    <img flex="20" data-ng-src="{{notification.userFrom.avatar}}"
-                    width="100%" height="100%" class="img-circle" />
-                    <div layout="column" flex="80">
-                     <h3 id="response">{{notification.content}}- 
-                     {{notification.type}}</h3>
-                     <p>envoyé par 
-                     <strong id="response">{{notification.userFrom.username}}</strong> le {{notification.created}}  <a class="btn" data-ng-click="removeNotification(notification._id);"> <i
-                     class="glyphicon glyphicon-trash"></i>
-                  </a></p>          
-                  </div>
-            </md-whiteframe>            
-            <md-whiteframe class="md-whiteframe-z2"  ng-if="notification.type == 'message' && notification.userTo._id != authentication.user._id"  flex="40" offset="60" layout-padding layout="row">
+            <img flex="20"
+                data-ng-src="{{notification.userFrom.avatar}}"
+                width="100%" height="100%" class="img-circle" />
             <div layout="column" flex="80">
-               <h3 id="sent">{{notification.content}}
-               {{notification.type}}</h3>
-               <p> envoyé par 
-               <strong id="sent">{{notification.userTo.username}}</strong> le {{notification.created}} <a class="btn" data-ng-click="removeNotification(notification._id);"> <i
-                     class="glyphicon glyphicon-trash"></i>
-                  </a></p>
-                                 
-               </div>
-                    <img flex="20" data-ng-src="{{notification.userFrom.avatar}}"
-                    width="100%" height="100%" class="img-circle" />
+                <h3 id="response">{{notification.content}}</h3>
+                <p>
+                    {{notification.type}} envoyé par <strong
+                        id="response">{{notification.userFrom.username}}</strong>
+                    le {{notification.created}} <a class="btn"
+                        data-ng-click="removeNotification(notification._id);">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </a>
+                </p>
+            </div>
+            </md-whiteframe>
+            <md-whiteframe class="md-whiteframe-z2"
+                ng-if="notification.type == 'message' && notification.userTo._id != authentication.user._id"
+                flex="40" offset="60" layout-padding layout="row">
+            <div layout="column" flex="80">
+                <h3 id="sent">{{notification.content}}</h3>
+                <p>
+                    {{notification.type}} envoyé par <strong id="sent">{{notification.userTo.username}}</strong>
+                    le {{notification.created}} <a class="btn"
+                        data-ng-click="removeNotification(notification._id);">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </a>
+                </p>
 
-            </md-whiteframe>            
-            <md-whiteframe ng-if="notification.type == 'notification'"  class="md-whiteframe-z2" flex="100">
-               <center>
-               <h3 id="systeme">{{notification.content}}
-               {{notification.type}}</h3>
-               <p> créé par le <strong id="systeme">système</strong> le {{notification.created}}  <a class="btn" data-ng-click="removeNotification(notification._id);"> <i
-                     class="glyphicon glyphicon-trash"></i>
-                  </a></p>
+            </div>
+            <img flex="19"
+                data-ng-src="{{notification.userFrom.avatar}}"
+                width="100%" height="100%" class="img-circle" /> </md-whiteframe>
+            <md-whiteframe ng-if="notification.type == 'notification'"
+                class="md-whiteframe-z2" flex="100">
+            <center>
+                <h3 id="systeme">{{notification.content}}</h3>
+                <p>
+                    {{notification.type}} créé par le <strong
+                        id="systeme">système</strong> le
+                    {{notification.created}} <a class="btn"
+                        data-ng-click="removeNotification(notification._id);">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </a>
+                </p>
 
-                 </center>
+            </center>
             </md-whiteframe>
             <md-divider md-inset ng-if="!$last"></md-divider>
-      </div> 
-         <a class="btn" data-ng-click="removeAllNotification();"> <i
-            class="glyphicon glyphicon-trash"> ERASE ALL</i>
-         </a>
-   <form name="messageForm" data-ng-submit="sendMessage();">
-   <md-input-container>
-     <label>Destinataire</label>
-     <input type="text" ng-model="message.userToName">
-   </md-input-container>
-   <md-input-container>
-     <input type="hidden" ng-model="message.userTo">
-   </md-input-container>
-   <md-input-container>
-     <label>Contenu</label>
-     <textarea ng-model="message.content"></textarea>
-   </md-input-container>
-   <md-input-container> <md-button
-     class="md-primary" data-ng-click="submit();">Envoyer</md-button>
-   </md-input-container>
-   <form>
-   </div>            
+        </div>
+        <a class="btn" data-ng-click="removeAllNotification();"> <i
+            class="glyphicon glyphicon-trash"></i> Supprimer toutes les
+            notifications
+        </a>
+        <form name="messageForm" data-ng-submit="sendMessage();">
+            <md-input-container> <label>Destinataire</label>
+            <input type="text" ng-model="message.userToName"> </md-input-container>
+            <md-input-container> <input
+                type="hidden" ng-model="message.userTo"> </md-input-container>
+            <md-input-container> <label>Contenu</label>
+            <textarea ng-model="message.content"></textarea> </md-input-container>
+            <md-input-container> <md-button
+                class="md-primary" data-ng-click="submit();">Envoyer</md-button>
+            </md-input-container>
+            <form>
+    </div>
 </section>
