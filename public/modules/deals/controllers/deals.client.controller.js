@@ -209,13 +209,9 @@ angular.module('deals').run(function(editableOptions) {
 
         //only ask from server the deal between the limits
         var DealsLimited = $resource(
-            '/dealslimited',
-            {limitStart: $scope.limitStart,limitEnd: $scope.limitEnd, page: page},
-            {
-              query: {method:'POST',isArray: true }
-            }
+            '/dealslimited/:page'            
           );
-        DealsLimited.query(function(deals) {
+        DealsLimited.query({page: page},function(deals) {
           // console.log('queryall(): server results limited');
           // console.log(deals);
           // for (var j = 0; j < deals.length; j++) {
@@ -336,14 +332,10 @@ angular.module('deals').run(function(editableOptions) {
       );      
   
       var markersByRadius = $resource(
-          '/MarkersByRadius',
-          {srchLng: $rootScope.srchLng,srchLat: $rootScope.srchLat, srchRadius: $rootScope.srchRadius},
-          {
-            query: {method:'POST',isArray: true }
-          }
+          '/MarkersByRadius/:srchLng/:srchLat/:srchRadius'
         );
         console.log('markersByRadius(): ressource created');
-        markersByRadius.query(function(markers) {
+        markersByRadius.query({srchLng: $rootScope.srchLng,srchLat: $rootScope.srchLat, srchRadius: $rootScope.srchRadius},function(markers) {
           console.log('markersByRadius(): markers = ', markers);
           $scope.dealMarkers = markers;
           $scope.numberOfDeals = markers.length;
