@@ -262,11 +262,12 @@ angular.module('deals').run(function(editableOptions) {
       });
     };
 
+
+
     /*
     * dealsByRadius :
     * UPDATE the list of deals in the ngreapet using the liste used to display the map markers
     */
-
     $scope.dealsByRadius = function(page){
         page = page || 1;     
       // if(okscroll == 1){
@@ -279,7 +280,7 @@ angular.module('deals').run(function(editableOptions) {
 
         console.log('dealsByRadius(): page : ', page);
         var dealsByRadius = $resource(
-            '/DealsByRadius/:srchLng/:srchLat/:srchRadius/:page'
+            '/DealsByRadius'
           );
           console.log('dealsByRadius(): ressource created');
           dealsByRadius.query({
@@ -303,6 +304,56 @@ angular.module('deals').run(function(editableOptions) {
 
             //enable scrolling again :
             $scope.busyLoadingData = false;
+        });
+
+
+        console.log('dealsByRadius(): end update list'); 
+      
+      // else
+      // {
+      //   console.log('no more deals to show !');
+      // }       
+    };
+    $scope.dealSearch = function(){
+      var page = $scope.currentPage;
+      // if(okscroll == 1){
+        //limitEnd can't exeed dealMarkers size :    
+        // if($scope.limitEnd >= ($scope.dealMarkers.length)){
+        //   $scope.limitEnd = $scope.dealMarkers.length;
+        //   okscroll = 0;
+        // };
+        $scope.resultIsByRadius = true;
+
+        console.log('dealSearch(): page : ', page);
+        console.log('dealSearch(): searchText : ', $scope.srchText);
+        console.log('dealSearch(): searchOrder : ', $scope.srchOrder);
+        var dealSearch = $resource(
+            '/DealsSearch'
+          );
+          console.log('dealSearch(): ressource created');
+          dealSearch.query({
+              srchLng: $rootScope.srchLng,
+              srchLat: $rootScope.srchLat, 
+              srchRadius: $rootScope.srchRadius, 
+              srchText: $scope.srchText, 
+              srchOrder: $scope.srchOrder, 
+              page: page
+            },
+          function(deals) {
+            console.log('dealSearch(): server results');
+            console.log(deals);
+            $scope.deals = deals
+            console.log('dealSearch(): limite parameters before for: ' + 
+               $scope.limitStart + ';' +
+               $scope.limitEnd
+            );
+
+            //update limit
+            // $scope.limitStart = $scope.limitEnd;
+            // $scope.limitEnd += limitDelta;
+
+            //enable scrolling again :
+            // $scope.busyLoadingData = false;
         });
 
 
@@ -378,7 +429,22 @@ angular.module('deals').run(function(editableOptions) {
     else{
       console.log('findByRadius() : find : without paramaters');
       // $controller('MapInitController',{$scope: $scope});
-      $scope.queryAllMarkers();
+      if(!($rootScope.uPos)){
+          console.log('findByRadius() : use random has default');
+          var long = -180 + 180 * 2 * Math.random();
+          var lat = -85 + 85 * 2 * Math.random();
+          var rad = 500000 * Math.random() + 300000;
+          $rootScope.srchLng = long;
+          $rootScope.srchLat = lat;
+          $rootScope.srchRadius = rad;
+          $scope.markersByRadius();
+      }
+      else
+      {
+        console.log('findByRadius() : queryAllMarkers()');
+        $scope.queryAllMarkers();
+      }
+
       //$scope.queryAll();
       // $controller('MapDisplayController', {$scope, $scope});
       

@@ -149,11 +149,14 @@ exports.dealsByRadiusLimited = function(req, res) {
   var srchLng = parseFloat(req.param('srchLng')),
       srchLat = parseFloat(req.param('srchLat')),
       srchRadius = parseFloat(req.param('srchRadius')),
+      srchText = req.param('srchText'),
+      srchOrder = req.param('srchOrder'),
       page = parseInt(req.param('page'));
 
   console.log('dealsByRadiusLimited() :');
   // console.log(req);
-  console.log('srchLng:' + srchLng + ', srchLat: ' + srchLat + ', srchRadius: ' + srchRadius + ', page: ' + page);
+  console.log('srchLng:' + srchLng + ', srchLat: ' + srchLat + ', srchRadius: ' + srchRadius + ', srchText: ' + srchText + ', srchOrder: ' + srchOrder + ', page: ' + page);
+
 
   if(srchLng && srchLat && srchRadius && page){
 

@@ -61,7 +61,6 @@ angular.module('maps')
             var map,autocomplete,circle,markers,markerCluster;
             var place_changedListener,dragendListener,bounds_changedListener,radius_changedListener,center_changedListener,idleListener;
             var singleton_cluster = 1;
-            var init_circle = true;
 
             console.log('In MapDisplayController');
 
@@ -78,7 +77,7 @@ angular.module('maps')
 
                 //Map options  :
                 var mapOptions = MyMapOptions || {
-                    zoom: 5,
+                    zoom: 4,
                     streetViewControl: false,
                     // mapTypeControl: true,
                     mapTypeControl: false,
@@ -287,7 +286,7 @@ angular.module('maps')
                     if (circle) {
                         circle.setMap(null);
                     }
-                    var circleOptions = {
+                    var circleHomeOptions = {
                         center:position,
                         radius: radius*1000,
                         strokeColor: '#2196f3',
@@ -298,8 +297,8 @@ angular.module('maps')
                         // ,
                         // editable: true
                     };
-                    circle = new google.maps.Circle(circleOptions);
-                    $rootScope.circleOptions = circleOptions;
+                    circle = new google.maps.Circle(circleHomeOptions);
+                    $rootScope.circle = true;
 
                     $rootScope.srchLng = position.lng();
                     $rootScope.srchLat = position.lat();
@@ -369,6 +368,7 @@ angular.module('maps')
                         console.log('listenMap(): no place result !');
                         $rootScope.srchLng = null;
                         $rootScope.srchLat = null;
+                        $rootScope.srchRadius = null;
                         $scope.findByRadius();
                         return;
                     }
@@ -384,6 +384,7 @@ angular.module('maps')
                     {
                        $rootScope.srchRadius = +$rootScope.srchRadius; 
                     }
+
                     var circleOptions = {
                         center: place.geometry.location,
                         radius: $rootScope.srchRadius,
@@ -398,18 +399,13 @@ angular.module('maps')
                     $rootScope.srchLng = circle.getCenter().lng();
                     $rootScope.srchLat = circle.getCenter().lat();
 
-
+                    //set circle listeners :
                     if (radius_changedListener) {
                         google.maps.event.removeListener(radius_changedListener);
                     }
                     radius_changedListener = google.maps.event.addListener(circle, 'radius_changed', function() {
                         console.log('listenMap(): radius_changed');
                         $rootScope.srchRadius = circle.getRadius();
-                        // $rootScope.srchLng = circle.getCenter().lng();
-                        // $rootScope.srchLat = circle.getCenter().lat();
-                        //Clear listener :
-                        // mapChanged = true;
-                        // map.fitBounds(circle.getBounds()% 2400000);
                         $scope.$apply();
                         $scope.findByRadius();
                     });
@@ -419,15 +415,13 @@ angular.module('maps')
                     }
                     center_changedListener = google.maps.event.addListener(circle, 'center_changed', function() {
                         console.log('listenMap(): center_changed');
-                        // $rootScope.srchRadius = circle.getRadius();
                         $rootScope.srchLng = circle.getCenter().lng();
                         $rootScope.srchLat = circle.getCenter().lat();
-                        //Clear listener :
-                        // mapChanged = true;
                         $scope.$apply();
                         $scope.findByRadius();
 
                     });
+
 
                     map.fitBounds(circle.getBounds());
                     //Clear listener :
@@ -435,6 +429,7 @@ angular.module('maps')
                     $scope.$apply();
                     $scope.findByRadius();
                 });
+
                 console.log('listenMap(): listener set');
             };
 
@@ -450,12 +445,27 @@ angular.module('maps')
                     circle.setMap(null);
                 }
                 //set circle from home page
-                if(init_circle && $rootScope.circleOptions)
+                if($rootScope.srchLng && $rootScope.srchLat && $rootScope.srchRadius)
                 {
+                    if(circle)
+                    {
+                        circle.setMap(null);
+                    }
                     console.log('markerMap(): get home circle');
-                    circle = new google.maps.Circle($rootScope.circleOptions);
+                    var circleOptions = {
+                        center: new google.maps.LatLng(
+                                    $rootScope.srchLat,
+                                    $rootScope.srchLng
+                                ),
+                        radius: $rootScope.srchRadius,
+                        strokeColor: '#2196f3',
+                        fillOpacity: 0.2,
+                        fillColor: '#2196f3',
+                        map: map,
+                        editable: true
+                    };
+                    circle = new google.maps.Circle(circleOptions);
                     circle.setMap(map);
-                    init_circle = false;
                 }
 
                 console.log('markerMap(): start updating map markers');
@@ -513,12 +523,15 @@ angular.module('maps')
                     //recenter on result :
                     //already done on search circle ! -> not yet!
                     // if(!circle){
-                        var bounds = new google.maps.LatLngBounds();
-                        for (i = 0; i < markers.length; i++) {
-                            bounds.extend(markers[i].getPosition());
-                        }
+                        // var bounds = new google.maps.LatLngBounds();
+                        // for (i = 0; i < markers.length; i++) {
+                        //     bounds.extend(markers[i].getPosition());
+                        // }
 
-                        map.fitBounds(bounds);
+                        // map.fitBounds(bounds);
+
+                        map.fitBounds(circle.getBounds());                    
+
                     // }
                     console.log('markerMap(): markers updated');
                 }
@@ -536,7 +549,7 @@ angular.module('maps')
             $scope.Map = function () {
                 Initializer.mapsAPInitialized.
                 then(function() {
-                    $scope.initMap();
+                    $scope.initMap(null,true);
                     $scope.listenMap();
                     $scope.findByRadius();
                     $scope.$watch('queryExecuted',function(newValue, oldValue){
@@ -547,6 +560,18 @@ angular.module('maps')
                         else{                        
                             $scope.markerMap();
                         }
+                    });
+                    $scope.$watch('srchDealRadius',function(newValue, oldValue){
+                            // $scope.listenMap();
+                            if(newValue === oldValue){
+                                return;
+                            }
+                            else
+                            {                        
+                                circle.setRadius($scope.srchDealRadius*1000);
+                                $rootScope.srchRadius = $scope.srchDealRadius*1000;
+                                $scope.findByRadius();
+                            }                    
                     });
                     // $scope.markerMap();
                     // $scope.$watch('deals',function(){

@@ -2,13 +2,23 @@
     <div layout="row" layout-sm="column">
         <!-- <div layout="column" flex style="height: {{windowHeight}}px; overflow: auto;"> -->
         <div layout="column" flex style="height: 800px; overflow: auto;">
-
-<!--             <div infinite-scroll='findByLimited()'
-                infinite-scroll-disabled='busyLoadingData'
-                infinite-scroll-distance='1'>
- -->                <md-content>
-                    <md-subheader class="md-primary">Deals
-                    à compy city plage :D</md-subheader>
+                <md-content>
+                  <md-whiteframe class="md-whiteframe-z1" layout layout-align="center center">
+                            <form name="searchForm" data-ng-submit="dealSearch()">
+                                <div layout="row" layout-sm="column" flex-gt-sm offset="3">
+                                    <md-input-container class="md-accent" flex-gt-sm="20">
+                                    <label>Quoi ?</label> <input data-ng-model="srchText"
+                                        type="text"> </md-input-container>
+                                    <md-select ng-model="srchOrder" placeholder="Trier par">
+                                      <md-option value="date">date</md-option>
+                                      <md-option value="promotion">promotion</md-option>
+                                      <md-option value="success">success</md-option>
+                                    </md-select>                                    
+                                    <md-input-container flex-gt-sm="10"> <md-button
+                                        class="md-raised md-primary" data-bg-action="submit()">Rechercher</md-button>
+                                    </md-input-container>
+                                </div>
+                    </md-whiteframe>
                     <md-list data-ng-if="deals[0]._id"> <md-list-item class="md-3-line"
                         data-ng-repeat="deal in deals| filter:searchQuery track by deal._id">
                     
@@ -79,13 +89,31 @@
 
         <div flex hide-sm>
        
-            <!--<input type="range" ng-model="$root.srchRadius" min="0"
-                max="10000000" step="10000" style="width: 140px"
-                class="ng-pristine ng-valid">-->
+  <md-whiteframe class="md-whiteframe-z1" layout layout-align="center center">
+                <div layout="row" layout-sm="column" flex-gt-sm offset="5">
+                    <md-input-container class="md-accent" flex-gt-sm="20">
+                    <label>Où ?</label> <input id="pac-input"
+                        type="text"> </md-input-container>
+                    <div flex-gt-sm offset="1"></div>
+                    <md-input-container class="md-accent" flex-gt-sm="30">
+                    <label>Cercle de recherche</label> <md-slider
+                        class="md-accent" flex-gt-sm="30" min="0" max="1000"
+                        value="500" ng-init="srchDealRadius = 500"
+                        ng-model="srchDealRadius" aria-label="srchDealRadius"
+                        id="srchDealRadius-slider"> </md-slider> </md-input-container>
+                    <div flex-gt-sm offset="1"></div>
+                    <md-input-container flex-gt-sm="5"> <md-checkbox
+                        ng-model="data.cb1" aria-label="Checkbox 1">Deal
+                    web ?</md-checkbox> </md-input-container>
+                    <div flex-gt-sm offset="1"></div>
+<!--                     <md-input-container flex-gt-sm="5"> <md-button
+                        class="md-raised md-primary" href="/#!/deals">Search</md-button>
+                    </md-input-container>
+ -->                </div>
+    </md-whiteframe>
+
             <section data-ng-controller="MapsController"
                 data-ng-init="Map()">
-                <input id="pac-input" class="controls" type="text"
-                    placeholder="Enter a location">
                 <div map-canvas id="map-canvas" style="height: 800px;"></div>
             </section>
             <!--<div class=".col-md-2">
