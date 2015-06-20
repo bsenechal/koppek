@@ -492,6 +492,7 @@ exports.updateGrade = function(req, res) {
   console.log('updateGrade() : idUser:', idUser);
   console.log('updateGrade() : action:', action);
   console.log('updateGrade() : type of action:', typeof(action));
+  // console.log('updateGrade() : req: ', req);
   if(action && _id && idUser){ 
     console.log('updateGrade() : before updateUserPoints()');
     if(action == 'plus'){
