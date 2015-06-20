@@ -1,89 +1,106 @@
 <section data-ng-controller="DealsController" data-ng-init="findOne()">
 
-    <md-content class="md-padding" layout="row" layout-sm="column"> 
-    <md-card flex-gt-sm="20"> <md-card-content layout="column">
-    <img ng-src="https://koppekimages.s3-eu-west-1.amazonaws.com/deals/{{deal.image}}" width="100%" height="100%"/>
-    <br />
-       <md-button class="md-raised md-primary"><strong>{{::deal.initialPrice}} €</strong></md-button>
-       <center><strong><del>{{::deal.salePrice}} €</del> (- {{::deal.reduction}}%)</strong></center>
-    </md-card-content>
-    </md-card> 
-    
-    <md-card flex="78"> <md-card-content>
-    <form editable-form name="editableForm" onaftersave="editDeal()">
-        <div layout-margin layout-fill layout-padding>
+    <md-content class="md-padding" layout="row" layout-sm="column">
+    <md-card flex-gt-sm="20"> <md-card-content>
+    <form editable-form name="editableForm" onaftersave="editDeal()" layout="column">
 
-            <span ng-show="editableForm.$visible"><br /> <br /></span>
-            <div layout="row">
-            <h2 class="md-display-2" editable-text="deal.title"
-                e-name="deal.title" e-required flex="95">{{deal.title}}</h2>
-                <md-button ng-show="deal.onlineDeal" flex="5" href="{{deal.urlWebSite}}" target="_blank" class="md-fab md-primary"  alt="Voir sur le site" aria-label="Voir sur le site">
-                    <md-icon class="glyphicon glyphicon-share"></md-icon>
-                </md-button>
-            </div>    
-            <hr>
-            
-            <md-content layout-padding>
-            <div layout="row" layout-sm="column">
-                    <div flex="95" layout="column">
-                        <span>{{deal.created | date:'medium'}}</span>
-                        <span>{{deal.user.name}}</span>
-                        <br />
-                        <p editable-text="deal.description" e-name="deal.description" e-required>{{deal.description}}</p>
-                    </div>
-                    <div flex="5">
-                        <div align="center">
-                       <md-button align="center" class="md-fab md-mini md-primary" aria-label="Vote plus" data-ng-click="::updateGradePlus(deal);">
-                            <md-icon class="glyphicon glyphicon-thumbs-up"></md-icon>
-                          </md-button>
-                            </div>
-
-                              <h2 class="md-headline" align="center">{{deal.grade}}</h2>
-                              <div align="center">
-                         <md-button class="md-fab md-mini md-warn" aria-label="Vote plus" data-ng-click="::updateGradeMinus(deal);">
-                            <md-icon class="glyphicon glyphicon-thumbs-down"></md-icon>
-                          </md-button>
-                            </div>
-                    </div>
-                </div>
+        <img
+            ng-src="https://koppekimages.s3-eu-west-1.amazonaws.com/deals/{{deal.image}}"
+            width="100%" height="100%" /> <br />
+        <md-button type="button" ng-show="!editableForm.$visible"
+            class="md-raised md-primary">
+        <strong>{{::deal.salePrice}} €</strong></md-button>
+        <div ng-show="editableForm.$visible">
+            <br />
+            <label>Prix constaté</label> <span
+                editable-text="deal.salePrice" e-name="deal.salePrice"
+                e-required>{{::deal.salePrice}} €</span>
         </div>
-
         
-
-        <div>
-            
+        <center ng-show="!editableForm.$visible">
+        
+            <strong><del>{{::deal.initialPrice}} €</del> (-
+                {{::deal.reduction}}%)</strong>
+                
+        </center>
+        <div ng-show="editableForm.$visible">
+        <br />
+            <label>Prix initial</label> <span
+                editable-text="deal.initialPrice"
+                e-name="deal.initialPrice" e-required>{{::deal.initialPrice}}
+                €</span>
         </div>
+
         <div class="buttons">
             <!-- buttons to submit / cancel form -->
             <span ng-show="editableForm.$visible"> <br />
-                <button type="submit" class="btn btn-primary"
-                    ng-disabled="editableForm.$waiting">Save</button>
-                <button type="button" class="btn btn-default"
+                 <md-button type="submit" class="md-primary md-raised"
+                    ng-disabled="editableForm.$waiting">Sauvegarder</md-button>
+                <md-button type="button" class="md-default md-raised"
                     ng-disabled="editableForm.$waiting"
-                    ng-click="editableForm.$cancel()">Cancel</button>
+                    ng-click="editableForm.$cancel()">Annuler</md-button>
             </span>
         </div>
-
-        </md-content>
     </form>
-    </md-card-content>
+    </md-card-content> </md-card> <md-card flex="78"> <md-card-content>
+    <div layout="row">
+        <h2 class="md-display-2" flex="95">{{deal.title}}</h2>
+        <md-button ng-show="deal.onlineDeal" flex="5"
+            href="{{deal.urlWebSite}}" target="_blank"
+            class="md-fab md-primary" alt="Voir sur le site"
+            aria-label="Voir sur le site"> <md-icon
+            class="glyphicon glyphicon-share"></md-icon> </md-button>
+    </div>
+    <hr>
+
+    <md-content layout-padding>
+    <div layout="row" layout-sm="column">
+        <div flex="95" layout="column">
+            <span>{{deal.created | date:'medium'}}</span> <span>{{deal.user.name}}</span>
+            <br />
+            <p>{{deal.description}}</p>
+        </div>
+        <div flex="5">
+            <div align="center">
+                <md-button align="center"
+                    class="md-fab md-mini md-primary"
+                    aria-label="Vote plus"
+                    data-ng-click="::updateGradePlus(deal);">
+                <md-icon class="glyphicon glyphicon-thumbs-up"></md-icon>
+                </md-button>
+            </div>
+
+            <h2 class="md-headline" align="center">{{deal.grade}}</h2>
+            <div align="center">
+                <md-button class="md-fab md-mini md-warn"
+                    aria-label="Vote plus"
+                    data-ng-click="::updateGradeMinus(deal);">
+                <md-icon class="glyphicon glyphicon-thumbs-down"></md-icon>
+                </md-button>
+            </div>
+        </div>
+    </div>
+
+
+    </md-content> </md-card-content>
 
     <div class="md-actions" layout="row" layout-align="end center">
         <div hide-sm>Un problème dans l'annonce ?</div>
-        <md-button class="md-primary md-raised"
-            aria-label="Editer"
+        <md-button class="md-primary md-raised" aria-label="Editer"
             ng-click="editableForm.$show()"
             ng-show="!editableForm.$visible">Editer</md-button>
-        <md-button class="md-raised" aria-label="Deal Expiré ?"> Deal expiré ? </md-button>
-        <md-button class="md-raised md-warn"  aria-label="Signaler un deal" ngClick="updateAlert(deal)">
+        <md-button class="md-raised" aria-label="Deal Expiré ?">
+        Deal expiré ? </md-button>
+        <md-button class="md-raised md-warn"
+            aria-label="Signaler un deal" ngClick="updateAlert(deal)">
         <i class="glyphicon glyphicon-exclamation-sign"></i></md-button>
     </div>
     </md-card> </md-content>
 
-	<div ng-if="deal !== undefined"
-		ng-include="'modules/comments/views/index.client.view.html'"
-		data-ng-controller="CommentsController"
-		data-ng-init="findComments(deal, 2)" />
-	</div>
+    <div ng-if="deal !== undefined"
+        ng-include="'modules/comments/views/index.client.view.html'"
+        data-ng-controller="CommentsController"
+        data-ng-init="findComments(deal, 2)" />
+    </div>
 
 </section>

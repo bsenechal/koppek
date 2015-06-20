@@ -62,5 +62,6 @@ module.exports = {
 	thresholdCheckRole: 10,
 	thresholdArrayRole: [0,0.25,0.5,0.75,1],
 	ArrayRole: ['manant','écuyer', 'sir', 'cavalier de l\'apocalypse'],
-	dealByPage: 20
+	dealByPage: 20,
+    submitBeforeModif: 5
 };
