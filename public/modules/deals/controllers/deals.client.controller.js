@@ -3,9 +3,9 @@
 angular.module('deals').run(function(editableOptions) {
   editableOptions.theme = 'bs3'; 
 })
-.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade', '$window', 'uuid4', '$mdToast',
-  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade, $window, uuid4, $mdToast) {
-	console.log();
+.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade', '$window', 'uuid4',
+  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade, $window, uuid4) {
+  console.log();
     
     $scope.windowHeight = angular.element($window).height() - 64;
     //   if (!deal || !deal.user){
@@ -20,42 +20,33 @@ angular.module('deals').run(function(editableOptions) {
     $scope.limitStart = 0;
     $scope.limitEnd = limitDelta;
     $scope.busyLoadingData = true;
-	  $scope.uploadProgress = 0;
+    $scope.uploadProgress = 0;
     $scope.urlWebSite = "";
-	  $scope.imageName="default";
+    $scope.imageName="default";
 
     //pagination parameters :
       $scope.currentPage = 1;
     
-	// Nécessaire pour la création de deal
-	$scope.onlineDeal = false;
-	$scope.validate = false;
-	
-    function displayToast(content){
-       $mdToast.show(
-            $mdToast.simple()
-                .content(content)
-                .position('top right')
-                .hideDelay(2000)
-         );
-    };
+  // Nécessaire pour la création de deal
+  $scope.onlineDeal = false;
+  $scope.validate = false;
     
-	$scope.editDeal = function() {
-		var dealModification = {
-		idDeal: this.deal._id,
-		initialPrice : this.deal.initialPrice,
-		salePrice : this.deal.salePrice};
-		console.log(dealModification);
-	 
+  $scope.editDeal = function() {
+    var dealModification = {
+    idDeal: this.deal._id,
+    initialPrice : this.deal.initialPrice,
+    salePrice : this.deal.salePrice};
+    console.log(dealModification);
+   
         $resource('/addModification').save(dealModification, function(response) {
-			// TODO : METTRE UN MESSAGE OK :D
+      // TODO : METTRE UN MESSAGE OK :D
           console.log(response);
         });
-	}  
+  }  
 
-	$scope.upload = function(event) {
+  $scope.upload = function(event) {
         event.preventDefault();
-	  if($scope.file) {
+    if($scope.file) {
           
          $resource('/getS3Credentials').get(function(credential) {
           // Configure The S3 Object 
@@ -63,40 +54,41 @@ angular.module('deals').run(function(editableOptions) {
           AWS.config.region = credential.region;
           $scope.imageName = uuid4.generate();
           var bucket = new AWS.S3({ params: { Bucket: credential.bucket } });
-		var params = { Key: $scope.imageName, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
+    var params = { Key: $scope.imageName, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
         
-		bucket.putObject(params, function(err, data) {
-		  if(err) {
-			// There Was An Error With Your S3 Config
-			alert(err.message);
-			return false;
-		  }
-		  else {
-			  $scope.$apply(function() { 
-				$scope.validate = true;
-			  });
-			// Success!
+    bucket.putObject(params, function(err, data) {
+      if(err) {
+      // There Was An Error With Your S3 Config
+      alert(err.message);
+      return false;
+      }
+      else {
+        $scope.$apply(function() { 
+        $scope.validate = true;
+        });
+      // Success!
 
             $scope.disableUpload = true;
             $scope.$apply();
-		  }
-		})
-		.on('httpUploadProgress',function(progress) {
-			  // Log Progress Information
-			  $scope.$apply(function() { 
-				$scope.uploadProgress = Math.round(progress.loaded / progress.total * 100);
-			  });
-			  
-			});
+      }
+    })
+    .on('httpUploadProgress',function(progress) {
+        // Log Progress Information
+        $scope.$apply(function() { 
+        $scope.uploadProgress = Math.round(progress.loaded / progress.total * 100);
+        });
+        
+      });
           });
-	  }
+    }
       
-	  else {
-		displayToast('Veuillez selectionner un fichier svp');
-	  }
-	  
-	}
-		
+    else {
+    // No File Selected
+    alert('No File Selected');
+    }
+    
+  }
+    
     $scope.create = function(isValid) {
       if (isValid) {
          
@@ -106,16 +98,16 @@ angular.module('deals').run(function(editableOptions) {
           salePrice: this.salePrice,
           loc : this.loc,
           description: this.description,
-		  image: $scope.imageName,
-		  onlineDeal: this.onlineDeal,
+      image: $scope.imageName,
+      onlineDeal: this.onlineDeal,
           urlWebSite : this.urlWebSite
         });
         console.log('create: Tmp deal');
         console.log(deal);
         deal.$save(function(response) {
-            displayToast('Le deal a correctement été ajouté.');
             $location.path('deals/' + response._id);
         });
+        console.log('create: reinit scope');
       } else {
         $scope.submitted = true;
       }
@@ -126,10 +118,9 @@ angular.module('deals').run(function(editableOptions) {
         deal.$remove(function(response) {
           for (var i in $scope.deals) {
             if ($scope.deals[i] === deal) {
-                $scope.deals.splice(i,1);
+        $scope.deals.splice(i,1);
             }
           }
-          displayToast('Le deal a correctement été supprimé.');
           $location.path('deals');
         });
       } else {
@@ -144,7 +135,7 @@ angular.module('deals').run(function(editableOptions) {
         var deal = $scope.deal;
         if(!deal.updated) {
           deal.updated = [];
-		}
+    }
         deal.updated.push(new Date().getTime());
 
         deal.$update(function() {
@@ -162,19 +153,19 @@ angular.module('deals').run(function(editableOptions) {
     };
 
     function updateGrade(deal,action) {
+      console.log('updateGrade() : got a deal');
+      console.log('updateGrade() : deal = ', deal);
+      console.log('updateGrade() : action = ',action);
 
       var userId = deal.user;
       if(typeof(userId) != 'string'){
         userId = userId._id;
       }
-    var updateGrade = $resource(
-          '/updateGrade',
-          {_id: deal._id, idUser:userId , action: action},
-          {
-            query: {method:'POST',isArray: false }
-          }
-        );
-      updateGrade.query(function(dealResult) {
+
+      var updateGrade = $resource(
+          '/updateGrade'
+      );
+      updateGrade.save({_id: deal._id, idUser:userId , action: action},function(dealResult) {
         console.log('updateGrade(): server results limited');
         if(action == 'alert')
         {
@@ -187,8 +178,8 @@ angular.module('deals').run(function(editableOptions) {
           console.log('updateGrade(): new Deal Grade : ', dealResult.grade);
           deal.grade = dealResult.grade;        
         }
-        });
-      displayToast('Votre vote a bien été pris en compte.');
+      });
+      console.log('updateGrade() : deal updated');
     };
 
 
@@ -286,34 +277,29 @@ angular.module('deals').run(function(editableOptions) {
         //   okscroll = 0;
         // };
         $scope.resultIsByRadius = true;
-        list_Id = [];
-        var limitEnd = page*20;
-        if(limitEnd > $scope.dealMarkers.length){
-          limitEnd = $scope.dealMarkers.length;
-        }
-        for (var j = (page-1)*20; j < limitEnd; j++) {
-          list_Id.push($scope.dealMarkers[j]._id);            
-        }
+        // list_Id = [];
+        // var limitEnd = page*20;
+        // if(limitEnd > $scope.dealMarkers.length){
+        //   limitEnd = $scope.dealMarkers.length;
+        // }
+        // for (var j = (page-1)*20; j < limitEnd; j++) {
+        //   list_Id.push($scope.dealMarkers[j]._id);            
+        // }
         console.log('dealsByRadius(): list_Id :');
         console.log(list_Id);
         console.log('dealsByRadius(): page : ', page);
         var dealsByRadius = $resource(
-            '/DealsByRadius',
-            {
-              // srchLng: $rootScope.srchLng,
-              // srchLat: $rootScope.srchLat, 
-              // srchRadius: $rootScope.srchRadius,
-              list_Id: list_Id,
-              // page: page
-              // limitStart: $scope.limitStart,
-              // limitEnd: $scope.limitEnd
-            },
-            {
-              query: {method:'POST',isArray: true }
-            }
+            '/DealsByRadius/:srchLng/:srchLat/:srchRadius/:page'
           );
           console.log('dealsByRadius(): ressource created');
-          dealsByRadius.query(function(deals) {
+          dealsByRadius.query({
+              srchLng: $rootScope.srchLng,
+              srchLat: $rootScope.srchLat, 
+              srchRadius: $rootScope.srchRadius,
+              //list_Id: list_Id,
+              page: page
+            },
+          function(deals) {
             console.log('dealsByRadius(): server results');
             console.log(deals);
             $scope.deals = deals
@@ -323,8 +309,8 @@ angular.module('deals').run(function(editableOptions) {
             );
 
             //update limit
-            $scope.limitStart = $scope.limitEnd;
-            $scope.limitEnd += limitDelta;
+            // $scope.limitStart = $scope.limitEnd;
+            // $scope.limitEnd += limitDelta;
 
             //enable scrolling again :
             $scope.busyLoadingData = false;

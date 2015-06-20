@@ -14,6 +14,8 @@ module.exports = function(app) {
     .delete(users.requiresLogin, notifications.deleteUserAllNotifications);
   app.route('/notifications/:userId/:notificationId')
     .delete(users.requiresLogin, notifications.deleteUserNotifications);
+  app.route('/notificationsConnect')
+    .get(users.requiresLogin, notifications.connectNotificationsSocket);
   app.route('/notifications/:userId/:userTo')
     .get(users.requiresLogin, notifications.getUserMessages);
     // .post(deals.create);

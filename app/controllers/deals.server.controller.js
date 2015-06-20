@@ -483,15 +483,16 @@ function dealAlertManager (idDeal){
 
 exports.updateGrade = function(req, res) {
   console.log('updateGrade() : init');
-  var _id = req.query._id;
-  var action = req.query.action;
-  var idUser = req.query.idUser;
+  var _id = req.body._id;
+  var action = req.body.action;
+  var idUser = req.body.idUser;
   var value = 0;
 
   console.log('updateGrade() : _id :', _id);
   console.log('updateGrade() : idUser:', idUser);
   console.log('updateGrade() : action:', action);
   console.log('updateGrade() : type of action:', typeof(action));
+  console.log('updateGrade() : req :', req);
   // console.log('updateGrade() : req: ', req);
   if(action && _id && idUser){ 
     console.log('updateGrade() : before updateUserPoints()');

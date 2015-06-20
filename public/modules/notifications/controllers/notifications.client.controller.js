@@ -4,7 +4,18 @@ angular.module('notifications').controller('NotificationsController', ['$rootSco
   function($rootScope, $scope, $http,  $stateParams,$resource, Socket, utils, Authentication, $mdToast) {
     
 
-    var socket = io('http://localhost:3000');
+    var notificationsSocket = io('http://localhost:3000');
+
+    //connect to server socket for notification:
+    $resource('/notificationsConnect').get({},function(){
+      // if(err){
+      //   console.log('NotificationsController(): connexion error !(socket)');
+      // }
+      // else
+      // {
+        console.log('NotificationsController(): connected to server socket !');
+      // }
+    });
       
 
     $scope.authentication = Authentication;
@@ -124,16 +135,16 @@ angular.module('notifications').controller('NotificationsController', ['$rootSco
     //     .join(' ');
     // };
 
-    Socket.on('notifications:updated', function (notifications) {
-      console.log('NotificationsController : Socket.on : notifications:updated for userId : ',Authentication.user._id);
-      console.log('NotificationsController : Socket.on : notifications = ',notifications);
-      // console.log('NotificationsController : Socket.on : notifications = ',notificationsObj[0].notifications);
+    notificationsSocket.on('notifications:updated', function (notifications) {
+      console.log('NotificationsController : notificationsSocket.on : notifications:updated for userId : ',Authentication.user._id);
+      console.log('NotificationsController : notificationsSocket.on : notifications = ',notifications);
+      // console.log('NotificationsController : notificationsSocket.on : notifications = ',notificationsObj[0].notifications);
       // $scope.getNotification();
       // $scope.notifications = notifications;
       $scope.notifications = notifications;
       $scope.$apply();
       // for(var i=0; i<notifications.length; i++){
-      //   console.log('NotificationsController : Socket.on : showing a toast ! : content = ',notifications[i].content)
+      //   console.log('NotificationsController : notificationsSocket.on : showing a toast ! : content = ',notifications[i].content)
         // var toast = $mdToast.simple()
         //   .content(notifications[i].content)
         //   .action('remove')
