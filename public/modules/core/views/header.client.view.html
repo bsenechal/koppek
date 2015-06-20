@@ -5,18 +5,20 @@
         class="md-theme-light">
     <h1 class="md-toolbar-tools">Menu</h1>
     </md-toolbar> <md-content ng-controller="LeftCtrl" layout-padding> <md-list>
-    <md-list-item class="md-3-line" data-ng-show="authentication.user"> <img
-        ng-src="{{authentication.user.avatar}}" class="md-avatar"
-        alt="{{item.who}}" />
-    <div class="md-list-item-text">
+    <md-list-item class="md-3-line" data-ng-show="authentication.user"
+        layout="row">
+    <div flex="20">
+        <br /> <img ng-src="{{authentication.user.avatar}}"
+            class="img-circle" alt="{{item.who}}" width="100%"
+            height="100%" />
+    </div>
     <md-button href="/#!/myAccount" aria-label="Mon compte">
-        <h3></h3>
+    <div class="md-list-item-text">
         <h4>{{ authentication.user.firstName }} {{
             authentication.user.lastName }}</h4>
         <p>Cavalier de l'apocalypse</p>
-        </md-button>
     </div>
-    </md-list-item> <md-divider></md-divider> <md-list-item class="md-3-line"
+    </md-button> </md-list-item> <md-divider></md-divider> <md-list-item class="md-3-line"
         ng-repeat="item in ::menu.items | orderBy: 'position'">
     <div class="md-list-item-text">
         <h3>{{ item.title }}</h3>
@@ -52,9 +54,10 @@
         <md-button class="md-icon-button" aria-label="Favorite">
         <md-icon md-svg-icon="modules/core/img/icons/favorite.svg"></md-icon>
         </md-button>
-        <md-button href="/#!/notifications" aria-label="Notifications" hide-sm>
-            <md-icon md-svg-src="modules/core/img/icons/chat.svg" aria-label="notifications"></md-icon>        
-        </md-button>
+        <md-button href="/#!/notifications" aria-label="Notifications"
+            hide-sm> <md-icon
+            md-svg-src="modules/core/img/icons/chat.svg"
+            aria-label="notifications"></md-icon> </md-button>
         <md-button class="md-icon-button" aria-label="More">
         <md-icon md-svg-icon="modules/core/img/icons/more_vert.svg"></md-icon>
         </md-button>
