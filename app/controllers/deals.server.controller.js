@@ -160,61 +160,20 @@ exports.dealsByRadiusLimited = function(req, res) {
 
   if(srchLng && srchLat && srchRadius && page){
 
-  // Deal
-  //   .where('_id').in(list_Id)
-  //   // .skip((page-1)*dealByPage)
-  //   // .limit((page)*dealByPage)
-  //   .exec(function(err, deals) {
-  //     if (err) {
-  //       return res.status(500).json({
-  //         error: 'Cannot list the deals'
-  //       });
-  //     }
-  //     console.log('dealsByRadiusLimited');
-  //     console.log(deals);
-  //     res.json(deals);
-  //   });
-
-  Deal
-  // // .find()
-  // // .where('loc')
-  .geoNear(
-    [srchLng,srchLat],
-    {
-      maxDistance : srchRadius/6378137,
-      distanceMultiplier: 6378137,
-      //change default limit output... to study !
-      num : 2000,
-      // query :
-      spherical : true
-    },
-    function(err, results, stats) {
-      if (err) throw err;
-
-      results = results.map(function(x) {
-        delete x.dis;
-        var a = new Deal( x.obj );
-
-        return a;
+  Deal.where('loc')
+  .near({ center: [srchLng, srchLat], maxDistance: srchRadius/6378137, spherical: true })
+  .skip((page-1)*dealByPage).limit(page*dealByPage)
+  .exec(function(err, deals) {
+    if (err) {
+      res.render('error', {
+        status: 500
       });
-      Deal.populate( results, { path: 'user', select: 'name username'}, function(err,dealsByRadius) {
-        if (err) throw err;
-        if(dealsByRadius){
-          var limitEnd = page*dealByPage;
-          if(page<dealsByRadius.length){
-            limitEnd = dealsByRadius.length;
-          }
-          var resultLimited = [];
-          for(var i=(page-1)*dealByPage;i<limitEnd;i++){
-            resultLimited.push(dealsByRadius[i]);
-          }
-          console.log('dealsByRadiusLimited() : resultLimited = ',resultLimited);
-          res.json(resultLimited);
-        }
-
-      });
+    } else {
+      console.log('dealsByRadiusLimited(): find() : deals = ', deals)
+      res.json(deals);
     }
-  );
+  }); 
+
   }
   else{
       return res.status(500).json({
@@ -240,57 +199,18 @@ exports.markersByRadius = function(req, res) {
 
   if(srchLng && srchLat && srchRadius){
 
-
-  Deal
-  // .find()
-  // .select('_id loc')
-  // .where('loc')
-  .geoNear(
-    [srchLng,srchLat],
-    {
-      maxDistance : srchRadius/6378137,
-      distanceMultiplier: 6378137,
-      //change default limit output... to study !
-      num : 2000,
-      // query :
-      spherical : true
-    },
-    function(err, results, stats) {
-      if (err) throw err;
-
-      results = results.map(function(x) {
-        delete x.dis;
-
-        // var a = new Deal( x.obj );
-        var a = {_id: x.obj._id, loc: x.obj.loc};
-
-        return a;
+  Deal.where('loc').near({ center: [srchLng, srchLat], maxDistance: srchRadius/6378137, spherical: true }).select('_id loc').
+  exec(function(err, deals) {
+    if (err) {
+      res.render('error', {
+        status: 500
       });
-      // Deal.populate( results, { path: 'user', select: 'name username' }, function(err,dealsByRadius) {
-      //   if (err) throw err;
-
-        // console.log(dealsByRadius);
-        // res.json(dealsByRadius);
-        res.json(results);
-
-      // });
+    } else {
+      console.log('dealsByRadiusLimited(): find() : deals = ', deals)
+      res.json(deals);
     }
-  );
-  // .where({ coordinates: ['longitude', 'latitude'], type: 'Point' })
-  // .within().box( [0, -50], [50, 0])
-  // .near({ center: { coordinates: [req.query.srchLng, req.query.srchLat], type: 'Point' }, maxDistance: req.body.srchRadius })
-  // .sort('-created')
-  // .populate('user', 'name username')
-  // .exec(function(err, deals) {
-  //   if (err) {
-  //     console.log('Cannot list the deals -> error in find paramters');
-  //     return res.status(500).json({
-  //       error: 'Cannot list the deals'
-  //     });
-  //   }
-  //   console.log('list the deals by radius -> Success !');
-  //   res.json(deals);
-  // });
+  }); 
+
   }
   else{
       return res.status(500).json({
