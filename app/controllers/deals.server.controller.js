@@ -123,76 +123,95 @@ exports.s3Credentials = function(req, res) {
  */
 exports.dealsByRadiusLimited = function(req, res) {
 
-  if(req.query.list_Id){
+  // if(req.query.list_Id){
   // console.log(req);
   //Dont forget to cast in order to use it in the geoNear fct as numbers :
-  var list_Id = [];
-  if(typeof(req.query.list_Id) == "string"){
-    list_Id.push(req.query.list_Id);
+  // var list_Id = [];
+  // if(typeof(req.query.list_Id) == "string"){
+  //   list_Id.push(req.query.list_Id);
 
-  }else{
-    list_Id = req.query.list_Id;
-  }
+  // }else{
+  //   list_Id = req.query.list_Id;
+  // }
 
-  var page = parseInt(req.query.page);
+  // var page = parseInt(req.query.page);
   // var srchLng = parseFloat(req.query.srchLng),
   //     srchLat = parseFloat(req.query.srchLat),
   //     srchRadius = parseFloat(req.query.srchRadius);
 
-  console.log('dealsByRadiusLimited(): list_Id = ', list_Id );
-  console.log('dealsByRadiusLimited(): type of list_Id: ', typeof(list_Id));
+  // console.log('dealsByRadiusLimited(): list_Id = ', list_Id );
+  // console.log('dealsByRadiusLimited(): type of list_Id: ', typeof(list_Id));
   // console.log('dealsByRadiusLimited(): page = ', page );
   console.log('dealsByRadiusLimited(): dealByPage = ', dealByPage );
   // console.log('limitStart:' + limitStart);
   // console.log('limitEnd:' + limitEnd);
 
+  var srchLng = parseFloat(req.param('srchLng')),
+      srchLat = parseFloat(req.param('srchLat')),
+      srchRadius = parseFloat(req.param('srchRadius')),
+      page = parseInt(req.param('page'));
 
-  Deal
-    .where('_id').in(list_Id)
-    // .skip((page-1)*dealByPage)
-    // .limit((page)*dealByPage)
-    .exec(function(err, deals) {
-      if (err) {
-        return res.status(500).json({
-          error: 'Cannot list the deals'
-        });
-      }
-      console.log('dealsByRadiusLimited');
-      console.log(deals);
-      res.json(deals);
-    });
+  console.log('dealsByRadiusLimited() :');
+  // console.log(req);
+  console.log('srchLng:' + srchLng + ', srchLat: ' + srchLat + ', srchRadius: ' + srchRadius + ', page: ' + page);
+
+  if(srchLng && srchLat && srchRadius && page){
 
   // Deal
+  //   .where('_id').in(list_Id)
+  //   // .skip((page-1)*dealByPage)
+  //   // .limit((page)*dealByPage)
+  //   .exec(function(err, deals) {
+  //     if (err) {
+  //       return res.status(500).json({
+  //         error: 'Cannot list the deals'
+  //       });
+  //     }
+  //     console.log('dealsByRadiusLimited');
+  //     console.log(deals);
+  //     res.json(deals);
+  //   });
+
+  Deal
   // // .find()
   // // .where('loc')
-  // .geoNear(
-  //   [srchLng,srchLat],
-  //   {
-  //     maxDistance : srchRadius/6378137,
-  //     distanceMultiplier: 6378137,
-  //     //change default limit output... to study !
-  //     num : 2000,
-  //     // query :
-  //     spherical : true
-  //   },
-  //   function(err, results, stats) {
-  //     if (err) throw err;
+  .geoNear(
+    [srchLng,srchLat],
+    {
+      maxDistance : srchRadius/6378137,
+      distanceMultiplier: 6378137,
+      //change default limit output... to study !
+      num : 2000,
+      // query :
+      spherical : true
+    },
+    function(err, results, stats) {
+      if (err) throw err;
 
-  //     results = results.map(function(x) {
-  //       delete x.dis;
-  //       var a = new Deal( x.obj );
+      results = results.map(function(x) {
+        delete x.dis;
+        var a = new Deal( x.obj );
 
-  //       return a;
-  //     });
-  //     Deal.populate( results, { path: 'user', select: 'name username', options: {skip: limitStart, limit: limitEnd-limitStart} }, function(err,dealsByRadius) {
-  //       if (err) throw err;
+        return a;
+      });
+      Deal.populate( results, { path: 'user', select: 'name username'}, function(err,dealsByRadius) {
+        if (err) throw err;
+        if(dealsByRadius){
+          var limitEnd = page*dealByPage;
+          if(page<dealsByRadius.length){
+            limitEnd = dealsByRadius.length;
+          }
+          var resultLimited = [];
+          for(var i=(page-1)*dealByPage;i<limitEnd;i++){
+            resultLimited.push(dealsByRadius[i]);
+          }
+          console.log('dealsByRadiusLimited() : resultLimited = ',resultLimited);
+          res.json(resultLimited);
+        }
 
-  //       console.log(dealsByRadius);
-  //       res.json(dealsByRadius);
-
-  //     });
-  //   }
-  // );
+      });
+    }
+  );
   }
   else{
       return res.status(500).json({
@@ -212,7 +231,7 @@ exports.markersByRadius = function(req, res) {
       srchLat = parseFloat(req.query.srchLat),
       srchRadius = parseFloat(req.query.srchRadius);
 
-  console.log('Server Side: dealsByRadius');
+  console.log('markersByRadius: ');
   // console.log(req);
   console.log('srchLng:' + srchLng + ', srchLat: ' + srchLat + ', srchRadius: ' + srchRadius);
 
