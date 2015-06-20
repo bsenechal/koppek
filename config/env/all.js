@@ -40,7 +40,6 @@ module.exports = {
                 'public/lib/angular-messages/angular-messages.min.js',
                 'public/lib/angular-uuid4/angular-uuid4.min.js',
                 'public/lib/ngImgCrop/compile/minified/ng-img-crop.js',
-                'public/lib/message-center/message-center.js',
 			]
 		},
 		css: [

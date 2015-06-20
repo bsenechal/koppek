@@ -1,13 +1,15 @@
 'use strict';
 
 
-angular.module('core').controller('HomeController', ['$scope', 'Authentication', 'messageCenterService',
-	function($scope, Authentication, messageCenterService ) {
+angular.module('core').controller('HomeController', ['$scope', 'Authentication', '$mdToast',
+	function($scope, Authentication, $mdToast) {
 		// This provides Authentication context.
 		$scope.authentication = Authentication;
-        
-        
-        // EXEMPLE A RETIRER 
-        messageCenterService.add('success', 'ceci est un test', { status: messageCenterService.status.unseen });
+       $mdToast.show(
+        $mdToast.simple()
+          .content('Ulysse !? Mais pourquoi pas UlFrisé ?')
+          .position('top left right')
+          .hideDelay(3000)
+        );
     }
 ]);

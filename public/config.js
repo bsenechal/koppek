@@ -4,7 +4,7 @@
 var ApplicationConfiguration = (function() {
 	// Init module configuration options
 	var applicationModuleName = 'koppek';
-	var applicationModuleVendorDependencies = ['infinite-scroll','ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'btford.socket-io', 'yaru22.angular-timeago', 'xeditable', 'ngAria', 'ngMaterial', 'ngMessages', 'uuid4', 'ngImgCrop', 'MessageCenterModule'];
+	var applicationModuleVendorDependencies = ['infinite-scroll','ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'btford.socket-io', 'yaru22.angular-timeago', 'xeditable', 'ngAria', 'ngMaterial', 'ngMessages', 'uuid4', 'ngImgCrop'];
 
 	// repe a new vertical module
 	var registerModule = function(moduleName, dependencies) {
