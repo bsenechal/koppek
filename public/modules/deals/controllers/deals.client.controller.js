@@ -162,13 +162,9 @@ angular.module('deals').run(function(editableOptions) {
       }
 
       var updateGrade = $resource(
-          '/updateGrade',
-          {_id: deal._id, idUser:userId , action: action},
-          {
-            query: {method:'POST',isArray: false }
-          }
+          '/updateGrade'
         );
-      updateGrade.query(function(dealResult) {
+      updateGrade.save({_id: deal._id, idUser:userId , action: action},function(dealResult) {
         console.log('updateGrade(): server results limited');
         if(action == 'alert')
         {
@@ -284,34 +280,29 @@ angular.module('deals').run(function(editableOptions) {
         //   okscroll = 0;
         // };
         $scope.resultIsByRadius = true;
-        list_Id = [];
-        var limitEnd = page*20;
-        if(limitEnd > $scope.dealMarkers.length){
-          limitEnd = $scope.dealMarkers.length;
-        }
-        for (var j = (page-1)*20; j < limitEnd; j++) {
-          list_Id.push($scope.dealMarkers[j]._id);            
-        }
+        // list_Id = [];
+        // var limitEnd = page*20;
+        // if(limitEnd > $scope.dealMarkers.length){
+        //   limitEnd = $scope.dealMarkers.length;
+        // }
+        // for (var j = (page-1)*20; j < limitEnd; j++) {
+        //   list_Id.push($scope.dealMarkers[j]._id);            
+        // }
         console.log('dealsByRadius(): list_Id :');
         console.log(list_Id);
         console.log('dealsByRadius(): page : ', page);
         var dealsByRadius = $resource(
-            '/DealsByRadius',
-            {
-              // srchLng: $rootScope.srchLng,
-              // srchLat: $rootScope.srchLat, 
-              // srchRadius: $rootScope.srchRadius,
-              list_Id: list_Id,
-              // page: page
-              // limitStart: $scope.limitStart,
-              // limitEnd: $scope.limitEnd
-            },
-            {
-              query: {method:'POST',isArray: true }
-            }
+            '/DealsByRadius/:srchLng/:srchLat/:srchRadius/:page'
           );
           console.log('dealsByRadius(): ressource created');
-          dealsByRadius.query(function(deals) {
+          dealsByRadius.query({
+              srchLng: $rootScope.srchLng,
+              srchLat: $rootScope.srchLat, 
+              srchRadius: $rootScope.srchRadius,
+              //list_Id: list_Id,
+              page: page
+            },
+          function(deals) {
             console.log('dealsByRadius(): server results');
             console.log(deals);
             $scope.deals = deals
@@ -321,8 +312,8 @@ angular.module('deals').run(function(editableOptions) {
             );
 
             //update limit
-            $scope.limitStart = $scope.limitEnd;
-            $scope.limitEnd += limitDelta;
+            // $scope.limitStart = $scope.limitEnd;
+            // $scope.limitEnd += limitDelta;
 
             //enable scrolling again :
             $scope.busyLoadingData = false;
