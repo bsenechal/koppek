@@ -8,8 +8,6 @@ angular.module('deals').run(function(editableOptions) {
 	console.log();
     
     $scope.windowHeight = angular.element($window).height() - 64;
-    // document.documentElement.style.overflow = 'hidden';  // firefox, chrome
-    // document.body.scroll = "no"; // ie only    // $scope.hasAuthorization = function(deal) {
     //   if (!deal || !deal.user){
     //     return false;
     //   }
@@ -22,9 +20,9 @@ angular.module('deals').run(function(editableOptions) {
     $scope.limitStart = 0;
     $scope.limitEnd = limitDelta;
     $scope.busyLoadingData = true;
-	$scope.uploadProgress = 0;
+	  $scope.uploadProgress = 0;
     $scope.urlWebSite = "";
-	$scope.imageName="default";
+	  $scope.imageName="default";
     
 	// Nécessaire pour la création de deal
 	$scope.onlineDeal = false;
@@ -201,60 +199,71 @@ angular.module('deals').run(function(editableOptions) {
     * queryAll:
     * get all deals with restriction, but limited to improve ng-repeat performance
     */
-    $scope.queryAll = function(){
-      if(okscroll == 1){
-        if($scope.limitEnd >= ($scope.dealMarkers.length)){
-          $scope.limitEnd = $scope.dealMarkers.length;
-          okscroll = 0;
-        };
+    $scope.queryAll = function(page){
+      // if(okscroll == 1){
+      //   if($scope.limitEnd >= ($scope.dealMarkers.length)){
+      //     $scope.limitEnd = $scope.dealMarkers.length;
+      //     okscroll = 0;
+      //   };
+        $scope.resultIsByRadius = false;
+
         //only ask from server the deal between the limits
         var DealsLimited = $resource(
             '/dealslimited',
-            {limitStart: $scope.limitStart,limitEnd: $scope.limitEnd},
+            {limitStart: $scope.limitStart,limitEnd: $scope.limitEnd, page: page},
             {
               query: {method:'POST',isArray: true }
             }
           );
         DealsLimited.query(function(deals) {
-          console.log('queryall(): server results limited');
-          console.log(deals);
-          for (var j = 0; j < deals.length; j++) {
-              $scope.deals.push(deals[j]);
-          }
-          $scope.limitStart = $scope.limitEnd;
-          $scope.limitEnd += limitDelta;
+          // console.log('queryall(): server results limited');
+          // console.log(deals);
+          // for (var j = 0; j < deals.length; j++) {
+      //         $scope.deals.push(deals[j]);
+      //     }
+      //     $scope.limitStart = $scope.limitEnd;
+      //     $scope.limitEnd += limitDelta;
 
-          //enable scrolling again :
-          $scope.busyLoadingData = false;
+      //     //enable scrolling again :
+      //     $scope.busyLoadingData = false;
+              $scope.deals = deals;
         });
-      }
-      else{
-        console.log('no more deals to show !');
-      }       
+      // }
+      // else{
+      //   console.log('no more deals to show !');
+      // }       
 
     };
+
+
 
     /*
     * queryAllMarkers:
     * get all loc only to be displayed on the map
     */
     $scope.queryAllMarkers = function(){
+      console.log('queryAllMarkers(): init');
       var MarkersRessource = $resource(
-          '/Markers',
-          {
-            query: {method:'GET',isArray: true }
-          }
+          '/Markers'
+          // ,
+          // {
+          //   query: {method:'GET',isArray: true }
+          // }
         );
       MarkersRessource.query(function(markers) {
-        console.log('queryAllMarkers(): server results Markers');
-        console.log(markers);
+        console.log('queryAllMarkers(): Markers = ', markers);
         $scope.dealMarkers = markers;
+        console.log('queryAllMarkers(): $scope.dealMarkers = ', $scope.dealMarkers);
+        $scope.pages = [];
+        for(var i=1;i<(markers.length/20);i++){
+          $scope.pages.push(i);
+        }
         if($scope.queryExecuted){
           $scope.queryExecuted = false;
         }else{
           $scope.queryExecuted = true;
         }
-        $scope.queryAll();
+        $scope.queryAll(1);
       });
     };
 
@@ -263,27 +272,29 @@ angular.module('deals').run(function(editableOptions) {
     * UPDATE the list of deals in the ngreapet using the liste used to display the map markers
     */
 
-    $scope.dealsByRadius = function(){     
-      if(okscroll == 1){
+    $scope.dealsByRadius = function(page){     
+      // if(okscroll == 1){
         //limitEnd can't exeed dealMarkers size :    
-        if($scope.limitEnd >= ($scope.dealMarkers.length)){
-          $scope.limitEnd = $scope.dealMarkers.length;
-          okscroll = 0;
-        };
-
+        // if($scope.limitEnd >= ($scope.dealMarkers.length)){
+        //   $scope.limitEnd = $scope.dealMarkers.length;
+        //   okscroll = 0;
+        // };
+        $scope.resultIsByRadius = true;
         list_Id = [];
-        for (var j = $scope.limitStart; j < $scope.limitEnd; j++) {
+        for (var j = (page-1)*20; j < page*20; j++) {
           list_Id.push($scope.dealMarkers[j]._id);            
         }
         console.log('dealsByRadius(): list_Id :');
         console.log(list_Id);
+        console.log('dealsByRadius(): page : ', page);
         var dealsByRadius = $resource(
             '/DealsByRadius',
             {
               // srchLng: $rootScope.srchLng,
               // srchLat: $rootScope.srchLat, 
               // srchRadius: $rootScope.srchRadius,
-              list_Id: list_Id
+              list_Id: list_Id,
+              // page: page
               // limitStart: $scope.limitStart,
               // limitEnd: $scope.limitEnd
             },
@@ -295,9 +306,7 @@ angular.module('deals').run(function(editableOptions) {
           dealsByRadius.query(function(deals) {
             console.log('dealsByRadius(): server results');
             console.log(deals);
-            for (var j = 0; j < deals.length; j++) {
-                $scope.deals.push(deals[j]);
-            }
+            $scope.deals = deals
             console.log('dealsByRadius(): limite parameters before for: ' + 
                $scope.limitStart + ';' +
                $scope.limitEnd
@@ -313,11 +322,11 @@ angular.module('deals').run(function(editableOptions) {
 
 
         console.log('dealsByRadius(): end update list'); 
-      }
-      else
-      {
-        console.log('no more deals to show !');
-      }       
+      
+      // else
+      // {
+      //   console.log('no more deals to show !');
+      // }       
     };
 
     $scope.markersByRadius = function(){
@@ -336,16 +345,19 @@ angular.module('deals').run(function(editableOptions) {
         );
         console.log('markersByRadius(): ressource created');
         markersByRadius.query(function(markers) {
-          console.log('markersByRadius(): server results');
-          console.log(markers);
+          console.log('markersByRadius(): markers = ', markers);
           $scope.dealMarkers = markers;
+          $scope.pages = [];
+          for(var i=1;i<(markers.length/20);i++){
+            $scope.pages.push(i);
+          }
           if($scope.queryExecuted){
             $scope.queryExecuted = false;
           }else{
             $scope.queryExecuted = true;
           }
           // $controller('MapDisplayController',{$scope: $scope});
-          $scope.dealsByRadius();
+          $scope.dealsByRadius(1);
         });    
     };
 
@@ -413,11 +425,11 @@ angular.module('deals').run(function(editableOptions) {
       );
       if ($rootScope.srchLng && $rootScope.srchLat && $rootScope.srchRadius){
         console.log('findByLimited() : with paramaters');
-        $scope.dealsByRadius();
+        $scope.dealsByRadius(1);
       }
       else{
         console.log('findByLimited() : find : without paramaters');
-        $scope.queryAll();
+        $scope.queryAll(1);
       }
 
     };

@@ -11,12 +11,15 @@ var mongoose = require('mongoose'),
   http = require('http'),
   io = require('socket.io')(http),
   Comment = mongoose.model('Comment'),
+  config = require('../../config/config'),
   _ = require('lodash'),
   UserFunction = require('./users/users.role.server.controller'),
   DealModification = mongoose.model('DealModification');
 
 var snowball_stemmer = require('../../node_modules/snowball-stemmer.jsx/dest/french-stemmer.common.js');
 var keyword_extractor = require('keyword-extractor');
+
+var dealByPage = parseInt(config.dealByPage);
 
 
 function cleanText(text){
@@ -131,21 +134,23 @@ exports.dealsByRadiusLimited = function(req, res) {
     list_Id = req.query.list_Id;
   }
 
+  var page = parseInt(req.query.page);
   // var srchLng = parseFloat(req.query.srchLng),
   //     srchLat = parseFloat(req.query.srchLat),
   //     srchRadius = parseFloat(req.query.srchRadius);
 
-  console.log('Server Side: dealsByRadiusLimited');
-  console.log('list_Id:' + list_Id);
-  console.log('type of list_Id:' + typeof(list_Id));
+  console.log('dealsByRadiusLimited(): list_Id = ', list_Id );
+  console.log('dealsByRadiusLimited(): type of list_Id: ', typeof(list_Id));
+  // console.log('dealsByRadiusLimited(): page = ', page );
+  console.log('dealsByRadiusLimited(): dealByPage = ', dealByPage );
   // console.log('limitStart:' + limitStart);
   // console.log('limitEnd:' + limitEnd);
 
 
   Deal
     .where('_id').in(list_Id)
-    // .skip(limitStart)
-    // .limit(limitEnd-limitStart)
+    // .skip((page-1)*dealByPage)
+    // .limit((page)*dealByPage)
     .exec(function(err, deals) {
       if (err) {
         return res.status(500).json({
@@ -608,6 +613,7 @@ exports.allMarkers = function(req, res) {
     }
     console.log('all');
     console.log(deals);
+
     res.json(deals);
   });
 };
@@ -617,9 +623,14 @@ exports.allMarkers = function(req, res) {
  */
 exports.limited = function(req, res) {
     var limitStart = parseFloat(req.query.limitStart),
+      page = parseFloat(req.query.page),
       limitEnd = parseFloat(req.query.limitEnd);
 
-  Deal.find().skip(limitStart).limit(limitEnd-limitStart).sort('-created').populate('user', 'name username').exec(function(err, deals) {
+  Deal.find()
+      .skip((page-1)*dealByPage)
+      .limit((page)*dealByPage)
+      .sort('-created').populate('user', 'name username')
+      .exec(function(err, deals) {
     if (err) {
       return res.status(500).json({
         error: 'Cannot list the deals'

@@ -345,6 +345,7 @@ angular.module('maps')
 
                 console.log('markerMap(): deals');
                 console.log($scope.dealMarkers);
+                console.log('markerMap(): loc exist ? : ',$scope.dealMarkers[0]);
 
                 if($scope.dealMarkers.length > 0){
                     var marker = null;
