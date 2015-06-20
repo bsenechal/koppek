@@ -15,6 +15,22 @@ var mongoose = require('mongoose'),
 
 var socketio;
 /**
+ * connect socket notification !
+ */
+exports.connectNotificationsSocket = function (req,res) {
+  console.log('connectNotificationsSocket: connection...');
+  // socketio = req.app.get('socketio'); // tacke out socket instance from the app container
+  socketio = req.app.get('socketio'); // tacke out socket instance from the app container
+  if(req.app){
+    console.log('connectNotificationsSocket: OK');
+  }
+  else
+  {
+    console.log('connectNotificationsSocket: Error');
+  }
+};
+
+/**
  * Get notifications from a user model
  */
 function userNotifications(user, callback){
@@ -51,7 +67,7 @@ function userMessages(user, userTo, callback){
  */
 function emitUserNotifications (userId) {
   userNotifications(userId, function(notifications){
-    if(notifications != 'UserNotifications:error'){
+    if(notifications != 'UserNotifications:error' && socketio){
       socketio.sockets.emit('notifications:updated', notifications); // emit an event for all connected clients  
     }
   });
@@ -71,7 +87,6 @@ function emitUserMessages (userId, userTo) {
  */
 exports.getUserNotifications = function (req,res) {
   var userId = req.param('userId');
-  socketio = req.app.get('socketio'); // tacke out socket instance from the app container
   emitUserNotifications(userId);
 };
 /**
@@ -80,7 +95,6 @@ exports.getUserNotifications = function (req,res) {
 exports.getUserMessages = function (req,res) {
   var userId = req.param('userId');
   var userTo = req.param('userTo');
-  socketio = req.app.get('socketio'); // tacke out socket instance from the app container
   emitUserMessages(userId, userTo);
 };
 /**
@@ -88,6 +102,7 @@ exports.getUserMessages = function (req,res) {
  */
 exports.setUserNotifications = function(userId,Content) {
   //update grade according to value :
+  console.log('setUserNotifications() : setting user notification...');
   var Notif = new Notification();
   Notif.userTo = userId;
   Notif.content = Content;
@@ -100,7 +115,10 @@ exports.setUserNotifications = function(userId,Content) {
     }
     else
     {
-      emitUserNotifications(userId);
+      if(socketio){
+        emitUserNotifications(userId);
+      }
+      console.log('setUserNotifications() : findOneAndUpdate() : ok');
     }
   });
 };
@@ -125,7 +143,6 @@ exports.setUserMailNotifications = function(req, res) {
     else
     {
       // socketio = req.app.get('socketio'); // tacke out socket instance from the app container
-      socketio = req.app.get('socketio'); // tacke out socket instance from the app container
       emitUserNotifications(userId);
     }
   });
@@ -142,7 +159,6 @@ exports.deleteUserNotifications = function(req, res) {
     }
     else{
       // console.log("socketio contient :",req.app.get('socketio'));
-      socketio = req.app.get('socketio'); // tacke out socket instance from the app container
       emitUserNotifications(userId);
     }    
   });
@@ -158,7 +174,6 @@ exports.deleteUserAllNotifications = function(req,res) {
       console.log('deleteUserAllNotifications() : findOne() : got an error');
     }
     else{
-      socketio = req.app.get('socketio'); // tacke out socket instance from the app container
       emitUserNotifications(userId);
     }    
   });

@@ -13,8 +13,8 @@ module.exports = function(app) {
     // .post(deals.create);
   app.route('/Markers')
     .get(deals.allMarkers);
-  app.route('/MarkersByRadius')
-    .post(deals.markersByRadius);
+  app.route('/MarkersByRadius/:srchLng/:srchLat/:srchRadius')
+    .get(deals.markersByRadius);
   app.route('/DealsByRadius/:srchLng/:srchLat/:srchRadius/:page')
     .get(deals.dealsByRadiusLimited);
   app.route('/updateGrade')
@@ -23,8 +23,8 @@ module.exports = function(app) {
     .get(deals.generateDeals); 
   app.route('/getS3Credentials')
     .get(users.requiresLogin, deals.s3Credentials);
-  app.route('/dealslimited')
-    .post(deals.limited);
+  app.route('/dealslimited/:page')
+    .get(deals.limited);
   app.route('/addModification')
 	.post(users.requiresLogin, deals.addModification);
   app.route('/deals/:dealId')

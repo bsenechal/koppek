@@ -227,9 +227,9 @@ exports.dealsByRadiusLimited = function(req, res) {
 exports.markersByRadius = function(req, res) {
   // console.log(req);
   //Dont forget to cast in order to use it in the geoNear fct as numbers :
-  var srchLng = parseFloat(req.query.srchLng),
-      srchLat = parseFloat(req.query.srchLat),
-      srchRadius = parseFloat(req.query.srchRadius);
+  var srchLng = parseFloat(req.param('srchLng')),
+      srchLat = parseFloat(req.param('srchLat')),
+      srchRadius = parseFloat(req.param('srchRadius'));
 
   console.log('markersByRadius: ');
   // console.log(req);
@@ -489,15 +489,17 @@ function dealAlertManager (idDeal){
 
 exports.updateGrade = function(req, res) {
   console.log('updateGrade() : init');
-  var _id = req.query._id;
-  var action = req.query.action;
-  var idUser = req.query.idUser;
+  var _id = req.body._id;
+  var action = req.body.action;
+  var idUser = req.body.idUser;
   var value = 0;
 
   console.log('updateGrade() : _id :', _id);
   console.log('updateGrade() : idUser:', idUser);
   console.log('updateGrade() : action:', action);
   console.log('updateGrade() : type of action:', typeof(action));
+  console.log('updateGrade() : req :', req);
+  // console.log('updateGrade() : req: ', req);
   if(action && _id && idUser){ 
     console.log('updateGrade() : before updateUserPoints()');
     if(action == 'plus'){
@@ -647,9 +649,7 @@ exports.allMarkers = function(req, res) {
  * List of Deals limited
  */
 exports.limited = function(req, res) {
-    var limitStart = parseFloat(req.query.limitStart),
-      page = parseFloat(req.query.page),
-      limitEnd = parseFloat(req.query.limitEnd);
+    var page = parseFloat(req.param('page'));
 
   Deal.find()
       .skip((page-1)*dealByPage)
