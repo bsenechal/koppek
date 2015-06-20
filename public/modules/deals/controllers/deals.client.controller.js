@@ -167,18 +167,27 @@ angular.module('deals').run(function(editableOptions) {
       if(typeof(userId) != 'string'){
         userId = userId._id;
       }
-
-      $resource('/updateGrade', {_id: deal._id, idUser:userId , action: action}).save(function(dealResult) {
-          if(action == 'alert')
-            {
-              deal.alert = dealResult.alert; 
-              deal.description = dealResult.description;          
-            }
-            else
-            {
-              deal.grade = dealResult.grade;        
-            }
-      });
+    var updateGrade = $resource(
+          '/updateGrade',
+          {_id: deal._id, idUser:userId , action: action},
+          {
+            query: {method:'POST',isArray: false }
+          }
+        );
+      updateGrade.query(function(dealResult) {
+        console.log('updateGrade(): server results limited');
+        if(action == 'alert')
+        {
+          console.log('updateGrade(): new Deal Alert : ', dealResult.alert);
+          deal.alert = dealResult.alert; 
+          deal.description = dealResult.description;          
+        }
+        else
+        {
+          console.log('updateGrade(): new Deal Grade : ', dealResult.grade);
+          deal.grade = dealResult.grade;        
+        }
+        });
       displayToast('Votre vote a bien été pris en compte.');
     };
 
