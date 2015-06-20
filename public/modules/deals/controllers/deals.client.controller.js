@@ -19,17 +19,15 @@ angular.module('deals').run(function(editableOptions) {
     $scope.limitStart = 0;
     $scope.limitEnd = limitDelta;
     $scope.busyLoadingData = true;
-	  $scope.uploadProgress = 0;
-    $scope.urlWebSite = "";
-	  $scope.imageName="default";
+	
+
 
     //pagination parameters :
       $scope.currentPage = 1;
     
 	// Nécessaire pour la création de deal
-	$scope.onlineDeal = false;
-	$scope.validate = false;
-	
+
+    
     function displayToast(content){
        $mdToast.show(
             $mdToast.simple()
@@ -37,6 +35,14 @@ angular.module('deals').run(function(editableOptions) {
                 .position('top right')
                 .hideDelay(2000)
          );
+    };
+    
+    $scope.initCreateDeal = function() {
+        $scope.onlineDeal = false;
+        $scope.validate = false;   
+        $scope.urlWebSite = "";
+        $scope.imageName="default";
+        $scope.uploadProgress = 0;
     };
     
 	$scope.editDeal = function() {
