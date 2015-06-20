@@ -20,7 +20,7 @@ var snowball_stemmer = require('../../node_modules/snowball-stemmer.jsx/dest/fre
 var keyword_extractor = require('keyword-extractor');
 
 var dealByPage = parseInt(config.dealByPage);
-
+var submitBeforeModif = parseInt(config.submitBeforeModif);
 
 function cleanText(text){
       var tmp_keywords = keyword_extractor.extract(text, {language:'french', remove_digits: true, return_changed_case:false, remove_duplicates: true });
@@ -397,10 +397,16 @@ exports.update = function(req, res) {
 
 exports.addModification = function(req, res) {
   var modif = req.body;
-
+  
   DealModification.findOneAndUpdate({idDeal : modif.idDeal}, {$push : { user: req.user._id, salePrice: modif.salePrice, initialPrice: modif.initialPrice}}, {upsert: true}, function(err) {
-	  console.log(err);
-	  
+	  if (err) {
+        return res.status(500).json({
+        error: 'Impossible de prendre en compte la modification'
+      });  
+      }
+      else{       
+        res.json(modif);        
+      }
   });
  };
 

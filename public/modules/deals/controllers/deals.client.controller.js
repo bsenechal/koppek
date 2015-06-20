@@ -5,8 +5,7 @@ angular.module('deals').run(function(editableOptions) {
 })
 .controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade', '$window', 'uuid4', '$mdToast',
   function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade, $window, uuid4, $mdToast) {
-	console.log();
-    
+
     $scope.windowHeight = angular.element($window).height() - 64;
     //   if (!deal || !deal.user){
     //     return false;
@@ -49,7 +48,7 @@ angular.module('deals').run(function(editableOptions) {
 	 
         $resource('/addModification').save(dealModification, function(response) {
 			// TODO : METTRE UN MESSAGE OK :D
-          console.log(response);
+          displayToast('Votre demande de modification a bien été enregistrée.');
         });
 	}  
 
