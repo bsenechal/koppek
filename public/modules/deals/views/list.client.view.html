@@ -1,19 +1,12 @@
 <section data-ng-controller="DealsController" >
     <div layout="row" layout-sm="column">
         <!-- <div layout="column" flex style="height: {{windowHeight}}px; overflow: auto;"> -->
-        <div layout="column" flex style="height: 100%; overflow: auto;">
+        <div layout="column" flex style="height: 800px; overflow: auto;">
 
 <!--             <div infinite-scroll='findByLimited()'
                 infinite-scroll-disabled='busyLoadingData'
                 infinite-scroll-distance='1'>
  -->                <md-content>
- 
-                       <!--      <md-button data-ng-if="resultIsByRadius" data-ng-repeat="page in pages" data-ng-click="dealsByRadius(page)">
-                                {{::page}}
-                             </md-button>
-                            <md-button data-ng-if="!resultIsByRadius" data-ng-repeat="page in pages" data-ng-click="queryAll(page)">
-                                {{::page}}
-                            </md-button> -->
                     <md-subheader class="md-primary">Deals
                     à compy city plage :D</md-subheader>
                     <md-list> <md-list-item class="md-3-line"
@@ -76,6 +69,8 @@
                         </md-whiteframe>
                     </md-list-item> </md-list>
                 
+                    <pagination data-ng-if="resultIsByRadius" total-items="numberOfDeals" ng-model="currentPage" ng-change="dealsByRadius(currentPage)" items-per-page='20' max-size='5' class="pagination-sm" boundary-links="true" rotate="false" ></pagination>
+                    <pagination data-ng-if="!resultIsByRadius" total-items="numberOfDeals" ng-model="currentPage" ng-change="queryAll(currentPage)" items-per-page='20' max-size='5' class="pagination-sm" boundary-links="true" rotate="false" ></pagination>
                 </md-content>
 
             <!-- </div> -->

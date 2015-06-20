@@ -23,6 +23,9 @@ angular.module('deals').run(function(editableOptions) {
 	  $scope.uploadProgress = 0;
     $scope.urlWebSite = "";
 	  $scope.imageName="default";
+
+    //pagination parameters :
+      $scope.currentPage = 1;
     
 	// Nécessaire pour la création de deal
 	$scope.onlineDeal = false;
@@ -200,6 +203,7 @@ angular.module('deals').run(function(editableOptions) {
     * get all deals with restriction, but limited to improve ng-repeat performance
     */
     $scope.queryAll = function(page){
+          page = page || 1;
       // if(okscroll == 1){
       //   if($scope.limitEnd >= ($scope.dealMarkers.length)){
       //     $scope.limitEnd = $scope.dealMarkers.length;
@@ -254,16 +258,15 @@ angular.module('deals').run(function(editableOptions) {
         console.log('queryAllMarkers(): Markers = ', markers);
         $scope.dealMarkers = markers;
         console.log('queryAllMarkers(): $scope.dealMarkers = ', $scope.dealMarkers);
-        $scope.pages = [];
-        for(var i=1;i<(markers.length/20);i++){
-          $scope.pages.push(i);
-        }
+        $scope.numberOfDeals = markers.length;
+        $scope.currentPage = 1;
+        console.log('queryAllMarkers(): markers.length = ', markers.length);
         if($scope.queryExecuted){
           $scope.queryExecuted = false;
         }else{
           $scope.queryExecuted = true;
         }
-        $scope.queryAll(1);
+        $scope.queryAll();
       });
     };
 
@@ -272,7 +275,8 @@ angular.module('deals').run(function(editableOptions) {
     * UPDATE the list of deals in the ngreapet using the liste used to display the map markers
     */
 
-    $scope.dealsByRadius = function(page){     
+    $scope.dealsByRadius = function(page){
+        page = page || 1;     
       // if(okscroll == 1){
         //limitEnd can't exeed dealMarkers size :    
         // if($scope.limitEnd >= ($scope.dealMarkers.length)){
@@ -281,7 +285,11 @@ angular.module('deals').run(function(editableOptions) {
         // };
         $scope.resultIsByRadius = true;
         list_Id = [];
-        for (var j = (page-1)*20; j < page*20; j++) {
+        var limitEnd = page*20;
+        if(limitEnd > $scope.dealMarkers.length){
+          limitEnd = $scope.dealMarkers.length;
+        }
+        for (var j = (page-1)*20; j < limitEnd; j++) {
           list_Id.push($scope.dealMarkers[j]._id);            
         }
         console.log('dealsByRadius(): list_Id :');
@@ -347,17 +355,16 @@ angular.module('deals').run(function(editableOptions) {
         markersByRadius.query(function(markers) {
           console.log('markersByRadius(): markers = ', markers);
           $scope.dealMarkers = markers;
-          $scope.pages = [];
-          for(var i=1;i<(markers.length/20);i++){
-            $scope.pages.push(i);
-          }
+          $scope.numberOfDeals = markers.length;
+          $scope.currentPage = 1;
+          console.log('markersByRadius(): markers.length = ', markers.length);
           if($scope.queryExecuted){
             $scope.queryExecuted = false;
           }else{
             $scope.queryExecuted = true;
           }
           // $controller('MapDisplayController',{$scope: $scope});
-          $scope.dealsByRadius(1);
+          $scope.dealsByRadius();
         });    
     };
 
@@ -425,11 +432,11 @@ angular.module('deals').run(function(editableOptions) {
       );
       if ($rootScope.srchLng && $rootScope.srchLat && $rootScope.srchRadius){
         console.log('findByLimited() : with paramaters');
-        $scope.dealsByRadius(1);
+        $scope.dealsByRadius();
       }
       else{
         console.log('findByLimited() : find : without paramaters');
-        $scope.queryAll(1);
+        $scope.queryAll();
       }
 
     };
