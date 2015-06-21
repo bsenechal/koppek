@@ -3,8 +3,8 @@
 angular.module('deals').run(function(editableOptions) {
   editableOptions.theme = 'bs3'; 
 })
-.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade', '$window', 'uuid4',
-  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade, $window, uuid4) {
+.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade', '$window', 'uuid4', 'Authentication',
+  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade, $window, uuid4, Authentication) {
     
     $scope.windowHeight = angular.element($window).height() - 64;
     //   if (!deal || !deal.user){
@@ -18,13 +18,31 @@ angular.module('deals').run(function(editableOptions) {
     $scope.limitStart = 0;
     $scope.limitEnd = limitDelta;
     $scope.busyLoadingData = true;
-
-
+    console.log(Authentication.user);
+    $scope.allowToVote = true;
+    
     //pagination parameters :
       $scope.currentPage = 1;
     
   // Nécessaire pour la création de deal
-
+    
+    $scope.allowToVoteFct = function(idDeal) {
+        
+        
+        // A MODIFIER
+        
+        
+        
+        var votes = Authentication.user.votes;
+        console.log(idDeal);
+        for (var i = 0 ; i < votes.length ; i++){
+            if (idDeal == votes[i]) {
+                $scope.allowToVote = false;
+                break;
+            }
+        }
+        console.log($scope.allowToVote);
+    }
     
     $scope.initCreateDeal = function(){
         $scope.uploadProgress = 0;
@@ -160,15 +178,14 @@ angular.module('deals').run(function(editableOptions) {
       console.log('updateGrade() : deal = ', deal);
       console.log('updateGrade() : action = ',action);
 
+      $resource('/users/votes').save({_id: deal._id});
+            
       var userId = deal.user;
       if(typeof(userId) != 'string'){
         userId = userId._id;
       }
 
-      var updateGrade = $resource(
-          '/updateGrade'
-      );
-      updateGrade.save({_id: deal._id, idUser:userId , action: action},function(dealResult) {
+      $resource('/updateGrade').save({_id: deal._id, idUser:userId , action: action},function(dealResult) {
         console.log('updateGrade(): server results limited');
         if(action == 'alert')
         {

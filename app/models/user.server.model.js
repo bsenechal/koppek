@@ -79,6 +79,10 @@ var UserSchema = new Schema({
 		date: Date,
 		content: String
 	}],
+    votes: [{
+		date: Date,
+		type: Schema.ObjectId
+	}],
 	updated: {
 		type: Date
 	},
