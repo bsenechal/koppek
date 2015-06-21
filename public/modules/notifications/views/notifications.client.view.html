@@ -40,13 +40,13 @@
                 div flex="40" layout-padding layout="row">
 
             <img flex="20"
-                data-ng-src="{{notification.userFrom.avatar}}"
+                data-ng-src="{{::notification.userFrom.avatar}}"
                 width="100%" height="100%" class="img-circle" />
             <div layout="column" flex="80">
-                <h3 id="sent">{{notification.content}}</h3>
+                <h3 id="sent">{{::notification.content}}</h3>
                 <p>
-                    {{notification.type}} envoyé à <strong id="sent">{{notification.userTo.username}}</strong>
-                    le {{notification.created}} <a class="btn"
+                    {{::notification.type}} envoyé à <strong id="sent">{{::notification.userTo.username}}</strong>
+                    le {{::notification.created}} <a class="btn"
                         data-ng-click="removeNotification(notification._id);">
                         <i class="glyphicon glyphicon-trash"></i>
                     </a>

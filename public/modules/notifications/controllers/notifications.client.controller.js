@@ -13,6 +13,10 @@ angular.module('notifications').controller('NotificationsController', ['$rootSco
     if(!$rootScope.notifications)
     {
       $rootScope.notifications = [];
+       //connect to server socket for notification:
+       $resource('/notificationsConnect').get({},function(){
+           console.log('NotificationsController(): connected to server socket !');
+       });          
     }
     console.log('NotificationsController : init()');
 

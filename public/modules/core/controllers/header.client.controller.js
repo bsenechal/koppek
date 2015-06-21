@@ -14,11 +14,6 @@ angular.module('core')
 
         $scope.toggleLeft = buildToggler('left');
 
-       //connect to server socket for notification:
-       $resource('/notificationsConnect').get({},function(){
-           console.log('NotificationsController(): connected to server socket !');
-       });
-
 		$scope.toggleCollapsibleMenu = function() {
 			$scope.isCollapsed = !$scope.isCollapsed;
 		};
