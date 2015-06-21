@@ -5,7 +5,6 @@ angular.module('deals').run(function(editableOptions) {
 })
 .controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade', '$window', 'uuid4',
   function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade, $window, uuid4) {
-  console.log();
     
     $scope.windowHeight = angular.element($window).height() - 64;
     //   if (!deal || !deal.user){
@@ -19,16 +18,21 @@ angular.module('deals').run(function(editableOptions) {
     $scope.limitStart = 0;
     $scope.limitEnd = limitDelta;
     $scope.busyLoadingData = true;
-    $scope.uploadProgress = 0;
-    $scope.urlWebSite = "";
-    $scope.imageName="default";
+
 
     //pagination parameters :
       $scope.currentPage = 1;
     
   // Nécessaire pour la création de deal
-  $scope.onlineDeal = false;
-  $scope.validate = false;
+
+    
+    $scope.initCreateDeal = function(){
+        $scope.uploadProgress = 0;
+        $scope.urlWebSite = "";
+        $scope.imageName="default";
+        $scope.onlineDeal = false;
+        $scope.validate = false;
+    }
     
   $scope.editDeal = function() {
     var dealModification = {

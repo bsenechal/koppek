@@ -4,11 +4,11 @@
             data-ng-init="HomeMap()" hide-sm>
 <!--                 <input id="pac-input" type="text"
                     placeholder="Enter a location">
- -->            <div map-canvas id="map-canvas" style="height: 600px;"></div>
+ -->            <div map-canvas id="map-canvas" style="height: {{mapHeight}}px;"></div>
         </div>
         <div>
-                <md-card> <md-subheader class="md-primary">Recherche
-                de deals</md-subheader> <md-card-content>
+                <md-card><!-- <md-subheader class="md-primary">Recherche
+                de deals</md-subheader>--> <md-card-content>
                 <div layout="row" layout-sm="column" flex-gt-sm offset="5">
                     <md-input-container class="md-accent" flex-gt-sm="30">
                     <label>Où voulez-vous chercher ?</label> <input id="pac-input"
