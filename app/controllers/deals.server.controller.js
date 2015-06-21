@@ -123,62 +123,83 @@ exports.s3Credentials = function(req, res) {
  */
 exports.dealsByRadiusLimited = function(req, res) {
 
-  // if(req.query.list_Id){
-  // console.log(req);
-  //Dont forget to cast in order to use it in the geoNear fct as numbers :
-  // var list_Id = [];
-  // if(typeof(req.query.list_Id) == "string"){
-  //   list_Id.push(req.query.list_Id);
-
-  // }else{
-  //   list_Id = req.query.list_Id;
-  // }
-
-  // var page = parseInt(req.query.page);
-  // var srchLng = parseFloat(req.query.srchLng),
-  //     srchLat = parseFloat(req.query.srchLat),
-  //     srchRadius = parseFloat(req.query.srchRadius);
-
-  // console.log('dealsByRadiusLimited(): list_Id = ', list_Id );
-  // console.log('dealsByRadiusLimited(): type of list_Id: ', typeof(list_Id));
-  // console.log('dealsByRadiusLimited(): page = ', page );
   console.log('dealsByRadiusLimited(): dealByPage = ', dealByPage );
-  // console.log('limitStart:' + limitStart);
-  // console.log('limitEnd:' + limitEnd);
 
   var srchLng = parseFloat(req.param('srchLng')),
       srchLat = parseFloat(req.param('srchLat')),
       srchRadius = parseFloat(req.param('srchRadius')),
       srchText = req.param('srchText'),
-      srchOrder = req.param('srchOrder'),
+      srchOrder = String(req.param('srchOrder')),
       page = parseInt(req.param('page'));
 
   console.log('dealsByRadiusLimited() :');
+  if(!srchText)
+  {
+    srchText=''
+  };
   // console.log(req);
   console.log('srchLng:' + srchLng + ', srchLat: ' + srchLat + ', srchRadius: ' + srchRadius + ', srchText: ' + srchText + ', srchOrder: ' + srchOrder + ', page: ' + page);
 
 
   if(srchLng && srchLat && srchRadius && page){
-
-  Deal.where('loc')
-  .near({ center: [srchLng, srchLat], maxDistance: srchRadius/6378137, spherical: true })
-  .skip((page-1)*dealByPage).limit(page*dealByPage)
-  .exec(function(err, deals) {
-    if (err) {
-      res.render('error', {
-        status: 500
-      });
-    } else {
-      console.log('dealsByRadiusLimited(): find() : deals = ', deals)
-      res.json(deals);
+    if(srchOrder == 'date'){
+      Deal.where('loc')
+      .near({ center: [srchLng, srchLat], maxDistance: srchRadius/6378137, spherical: true })
+      .sort('-created')
+      .where({description: new RegExp('^.*'+srchText+'.*$', "i")})
+      .skip((page-1)*dealByPage).limit(page*dealByPage)
+      .exec(function(err, deals) {
+        if (err) {
+          res.render('error', {
+            status: 500
+          });
+        } else {
+          console.log('dealsByRadiusLimited(): find() : deals = ', deals)
+          res.json(deals);
+        }
+      }); 
     }
-  }); 
-
+    else if(srchOrder == 'success')
+    {
+      Deal.where('loc')
+      .near({ center: [srchLng, srchLat], maxDistance: srchRadius/6378137, spherical: true })
+      .sort('-grade')
+      .where({description: new RegExp('^.*'+srchText+'.*$', "i")})
+      .skip((page-1)*dealByPage).limit(page*dealByPage)
+      .exec(function(err, deals) {
+        if (err) {
+          res.render('error', {
+            status: 500
+          });
+        } else {
+          console.log('dealsByRadiusLimited(): find() : deals = ', deals)
+          res.json(deals);
+        }
+      }); 
+    }
+    else
+    {
+      Deal.where('loc')
+      .near({ center: [srchLng, srchLat], maxDistance: srchRadius/6378137, spherical: true })
+      .where({description: new RegExp('^.*'+srchText+'.*$', "i")})
+      .skip((page-1)*dealByPage).limit(page*dealByPage)
+      .exec(function(err, deals) {
+        if (err) {
+          res.render('error', {
+            status: 500
+          });
+        } else {
+          console.log('dealsByRadiusLimited(): find() : deals = ', deals)
+          res.json(deals);
+        }
+      }); 
+    }
   }
   else{
       return res.status(500).json({
         error: 'Empty Search Parameters !'
-      });  }
+      });  
+  }
 };
 /*
 *

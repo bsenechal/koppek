@@ -323,10 +323,12 @@ angular.module('deals').run(function(editableOptions) {
         //   okscroll = 0;
         // };
         $scope.resultIsByRadius = true;
+        var srchOrder = $scope.srchOrder;
 
         console.log('dealSearch(): page : ', page);
         console.log('dealSearch(): searchText : ', $scope.srchText);
-        console.log('dealSearch(): searchOrder : ', $scope.srchOrder);
+        console.log('dealSearch(): searchOrder : ', srchOrder);
+
         var dealSearch = $resource(
             '/DealsSearch'
           );
@@ -336,7 +338,7 @@ angular.module('deals').run(function(editableOptions) {
               srchLat: $rootScope.srchLat, 
               srchRadius: $rootScope.srchRadius, 
               srchText: $scope.srchText, 
-              srchOrder: $scope.srchOrder, 
+              srchOrder: srchOrder, 
               page: page
             },
           function(deals) {
