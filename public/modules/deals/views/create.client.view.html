@@ -8,6 +8,9 @@
                 <md-input-container> <label>Titre *</label>
                 <input name="title" ng-model="title" ng-required="true">
                 </md-input-container>
+                <md-input-container>
+                <input id="pac-input" class="controls" type="text" ng-required="true">
+                </md-input-container>
 
                 <md-input-container> <label>Prix
                     initial *</label> <input name="initialPrice"
@@ -64,9 +67,9 @@
         <div flex>
             <div data-ng-controller="MapsController"
                 data-ng-init="MapCreateDeal()">
-                <input id="pac-input" class="controls" type="text"
+<!--                 <input id="pac-input" class="controls" type="text"
                     placeholder="Enter a location">
-                <div map-canvas id="map-canvas" style="height: 800px;"></div>
+ -->                <div map-canvas id="map-canvas" style="height: 800px;"></div>
             </div>
         </div>
 </section>

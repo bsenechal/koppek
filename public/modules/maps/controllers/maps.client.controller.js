@@ -77,7 +77,7 @@ angular.module('maps')
 
                 //Map options  :
                 var mapOptions = MyMapOptions || {
-                    zoom: 4,
+                    zoom: 9,
                     streetViewControl: false,
                     // mapTypeControl: true,
                     mapTypeControl: false,
@@ -352,7 +352,7 @@ angular.module('maps')
                         google.maps.event.removeListener(radius_changedListener);
                     }
                     radius_changedListener = google.maps.event.addListener(Circ, 'radius_changed', function() {
-                        console.log('listenMap(): radius_changed');
+                        console.log('setCircleListener(): radius_changed');
                         $rootScope.srchRadius = Circ.getRadius();
                         $scope.$apply();
                         $scope.findByRadius();
@@ -362,7 +362,7 @@ angular.module('maps')
                         google.maps.event.removeListener(center_changedListener);
                     }
                     center_changedListener = google.maps.event.addListener(Circ, 'center_changed', function() {
-                        console.log('listenMap(): center_changed');
+                        console.log('setCircleListener(): center_changed');
                         $rootScope.srchLng = Circ.getCenter().lng();
                         $rootScope.srchLat = Circ.getCenter().lat();
                         $scope.$apply();
@@ -375,6 +375,7 @@ angular.module('maps')
             //Map set listener :
             $scope.listenMap = function() {
                 console.log('listenMap(): start setting map listener');
+                geolocalize(map, navigator);
                 // Listen for the event fired when the user selects an item from the
                 // pick list. Retrieve the matching places for that item.
                 if (place_changedListener) {
@@ -404,7 +405,7 @@ angular.module('maps')
                         circle.setMap(null);
                     }
                     if(!$rootScope.srchRadius){
-                        $rootScope.srchRadius = 1000000;                        
+                        $rootScope.srchRadius = 20;                        
                     }
                     else
                     {
@@ -474,6 +475,7 @@ angular.module('maps')
                     console.log('markerMap(): get home circle');
    
                     circle.setMap(map);
+                    map.fitBounds(circle.getBounds());                    
                     setCircleListener(circle);
                 }
 
@@ -595,7 +597,7 @@ angular.module('maps')
                 Initializer.mapsAPInitialized.
                 then(function() {
                     // $scope.initMap().then(
-                    $scope.initMap();
+                    $scope.initMap(null,true);
                     // $scope.initMap().mapsInitialized.then(
                     $scope.createDealMap();
                     // )
@@ -607,7 +609,7 @@ angular.module('maps')
                     // $scope.initMap().then(
                     $scope.initMap(
                         {
-                            zoom: 8,
+                            zoom: 9,
                             scrollwheel: false,
                             streetViewControl: false,
                             disableDefaultUI: true,

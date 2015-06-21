@@ -3,7 +3,7 @@
         <!-- <div layout="column" flex style="height: {{windowHeight}}px; overflow: auto;"> -->
         <div layout="column" flex style="height: 800px; overflow: auto;">
                 <md-content>
-                <md-whiteframe class="md-whiteframe-z3" layout layout-align="center center" >
+                <md-whiteframe ng-show="numberOfDeals >= 1" class="md-whiteframe-z3" layout layout-align="center center" >
                         <span flex="100" layout-padding>
                             <form name="searchForm" data-ng-submit="dealSearch()">
                                 <div layout="row" layout-sm="column">
@@ -19,11 +19,12 @@
                                         class="md-raised md-primary" data-bg-action="submit()">Rechercher</md-button>
                                     </md-input-container>
                                 </div>
+                            </form>
                         </span>
                     </md-whiteframe>
                     <md-divider></md-divider>
                     <md-list data-ng-if="deals[0]._id"> <md-list-item class="md-3-line"
-                        data-ng-repeat="deal in deals| filter:searchQuery track by deal._id" ng-init="allowToVoteFct(deal._id)">
+                        data-ng-repeat="deal in deals| filter:searchQuery track by deal._id">
                     
                     <md-whiteframe class="md-whiteframe-z2" layout="row" layout-padding layout-margin>
 
@@ -62,14 +63,14 @@
                                 </a>
                               </span>-->
                               <div align="center">
-                       <md-button align="center" class="md-fab md-mini md-primary" aria-label="Vote plus" ng-disabled="allowToVote" data-ng-click="::updateGradePlus(deal);">
+                       <md-button align="center" class="md-fab md-mini md-primary" aria-label="Vote plus" data-ng-disabled="isDisabled[deal._id]" data-ng-click="::updateGradePlus(deal);isDisabled[deal._id] = true">
                             <md-icon class="glyphicon glyphicon-thumbs-up"></md-icon>
                           </md-button>
                             </div>
 
                               <h2 class="md-headline" align="center">{{deal.grade}}</h2>
                               <div align="center">
-                         <md-button class="md-fab md-mini md-warn" aria-label="Vote plus" data-ng-click="::updateGradeMinus(deal);">
+                         <md-button class="md-fab md-mini md-warn" aria-label="Vote moins" data-ng-disabled="isDisabled[deal._id]" data-ng-click="::updateGradeMinus(deal);isDisabled[deal._id] = true">
                             <md-icon class="glyphicon glyphicon-thumbs-down"></md-icon>
                           </md-button>
                             </div>
@@ -81,7 +82,9 @@
                         </div>
                         </md-whiteframe>
                     </md-list-item> </md-list>
-                    <center ng-show="numberOfDeals < 1"><h3> Pas encore de deal dans cette zone... <a href="#!/deals/create"><br /><br /> Pourquoi ne pas en créer un ?</a></h3></center>
+                    <md-whiteframe ng-show="numberOfDeals < 1" class="md-whiteframe-z1" layout layout-align="center center" >
+                        <center><h3> Pas encore de deal dans cette zone... <a href="#!/deals/create"><br /><br /> Pourquoi ne pas en créer un ?</a></h3></center>
+                    </md-whiteframe>
                     <pagination ng-show="numberOfDeals >= 1" data-ng-if="resultIsByRadius" total-items="numberOfDeals" ng-model="currentPage" ng-change="dealsByRadius(currentPage)" items-per-page='20' max-size='5' class="pagination-sm" boundary-links="true" rotate="false" ></pagination>
                     <pagination ng-show="numberOfDeals >= 1" data-ng-if="!resultIsByRadius" total-items="numberOfDeals" ng-model="currentPage" ng-change="queryAll(currentPage)" items-per-page='20' max-size='5' class="pagination-sm" boundary-links="true" rotate="false" ></pagination>
                 </md-content>
@@ -98,8 +101,8 @@
                     <div flex-gt-sm offset="1"></div>
                     <md-input-container class="md-accent" flex-gt-sm="30">
                    <md-slider
-                        class="md-accent" flex-gt-sm="40" min="0" max="2000"
-                        value="500" ng-init="srchDealRadius = 500"
+                        class="md-accent" flex-gt-sm="40" min="0" max="100"
+                        value="20" ng-init="srchDealRadius = 20"
                         ng-model="srchDealRadius" aria-label="srchDealRadius"
                         id="srchDealRadius-slider"> </md-slider> </md-input-container>
                     <div flex-gt-sm offset="1"></div>

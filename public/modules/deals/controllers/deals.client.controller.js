@@ -3,8 +3,8 @@
 angular.module('deals').run(function(editableOptions) {
   editableOptions.theme = 'bs3'; 
 })
-.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade', '$window', 'uuid4', 'Authentication',
-  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade, $window, uuid4, Authentication) {
+.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade', '$window', 'uuid4', 'Authentication','$parse',
+  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade, $window, uuid4, Authentication,$parse) {
     
     $scope.windowHeight = angular.element($window).height() - 64;
     //   if (!deal || !deal.user){
@@ -19,23 +19,24 @@ angular.module('deals').run(function(editableOptions) {
     $scope.limitEnd = limitDelta;
     $scope.busyLoadingData = true;
     console.log(Authentication.user);
-    $scope.allowToVote = true;
     
     //pagination parameters :
       $scope.currentPage = 1;
     
   // Nécessaire pour la création de deal
-    
-    $scope.allowToVoteFct = function(idDeal) {
-        var votes = Authentication.user.votes;
-        console.log(idDeal);
-        for (var i = 0 ; i < votes.length ; i++){
-            if (idDeal == votes[i]) {
-                $scope.allowToVote = false;
-                break;
-            }
-        }
-        console.log($scope.allowToVote);
+    $scope.isDisabled = {};
+    $scope.allowToVoteFct = function(idDeal, key) {
+      $scope.isDisabled[key] = false;
+      // Assigns a value to it
+      // $scope.eval('disablePlus'+index) = false;
+      console.log('allowToVoteFct(): idDeal = ',idDeal);
+      if(Authentication.user.votes.indexOf(idDeal) != -1)
+      {
+        $scope.isDisabled[key] = true;
+      }
+      console.log('allowToVoteFct(): key = ',key);
+      console.log('allowToVoteFct(): $scope.isDisabled[key] = ',$scope.isDisabled[key]);
+      // return allowToVote;
     }
     
     $scope.initCreateDeal = function(){
@@ -111,10 +112,10 @@ angular.module('deals').run(function(editableOptions) {
           title: this.title,
           initialPrice: this.initialPrice,
           salePrice: this.salePrice,
-          loc : this.loc,
+          loc : [$rootScope.longitude,$rootScope.latitude],
           description: this.description,
-      image: $scope.imageName,
-      onlineDeal: this.onlineDeal,
+          image: $scope.imageName,
+          onlineDeal: this.onlineDeal,
           urlWebSite : this.urlWebSite
         });
         console.log('create: Tmp deal');
@@ -168,6 +169,9 @@ angular.module('deals').run(function(editableOptions) {
     };
 
     function updateGrade(deal,action) {
+      //to help the disable :
+      Authentication.user.votes.push(deal._id);
+
       console.log('updateGrade() : got a deal');
       console.log('updateGrade() : deal = ', deal);
       console.log('updateGrade() : action = ',action);
@@ -357,8 +361,8 @@ angular.module('deals').run(function(editableOptions) {
               page: page
             },
           function(deals) {
-            console.log('dealSearch(): server results');
-            console.log(deals);
+            console.log('dealSearch(): server result : OK');
+            // console.log(deals);
             $scope.deals = deals
             console.log('dealSearch(): limite parameters before for: ' + 
                $scope.limitStart + ';' +
@@ -446,16 +450,23 @@ angular.module('deals').run(function(editableOptions) {
     else{
       console.log('findByRadius() : find : without paramaters');
       // $controller('MapInitController',{$scope: $scope});
+      var rad = 40000 * Math.random() + 20000;
       if(!($rootScope.uPos)){
           console.log('findByRadius() : use random has default');
           var long = -180 + 180 * 2 * Math.random();
           var lat = -85 + 85 * 2 * Math.random();
-          var rad = 500000 * Math.random() + 300000;
           $rootScope.srchLng = long;
           $rootScope.srchLat = lat;
           $rootScope.srchRadius = rad;
           $scope.markersByRadius();
       }
+      // else if($rootScope.uPos)
+      // {
+      //     $rootScope.srchLng = $rootScope.uPos.lng();
+      //     $rootScope.srchLat = $rootScope.uPos.lat();
+      //     $rootScope.srchRadius = rad;
+      //     $scope.markersByRadius();
+      // }
       else
       {
         console.log('findByRadius() : queryAllMarkers()');
@@ -501,7 +512,10 @@ angular.module('deals').run(function(editableOptions) {
       Deals.get({
         dealId: $stateParams.dealId
       }, function(deal) {
+        console.log('findOne(): deal = ', deal);
         $scope.deal = deal;
+        //need to wait for the deal to load before disabeling grading buttons:
+        $scope.allowToVoteFct(deal._id,deal._id);
       });
     };
 

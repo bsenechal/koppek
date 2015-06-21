@@ -65,7 +65,8 @@
                 <md-button align="center"
                     class="md-fab md-mini md-primary"
                     aria-label="Vote plus"
-                    data-ng-click="::updateGradePlus(deal);">
+                    data-ng-disabled="isDisabled[deal._id]" 
+                    data-ng-click="::updateGradePlus(deal);isDisabled[deal._id] = true">
                 <md-icon class="glyphicon glyphicon-thumbs-up"></md-icon>
                 </md-button>
             </div>
@@ -73,8 +74,9 @@
             <h2 class="md-headline" align="center">{{deal.grade}}</h2>
             <div align="center">
                 <md-button class="md-fab md-mini md-warn"
-                    aria-label="Vote plus"
-                    data-ng-click="::updateGradeMinus(deal);">
+                    aria-label="Vote moins"
+                    data-ng-disabled="isDisabled[deal._id]"
+                    data-ng-click="::updateGradeMinus(deal);isDisabled[deal._id] = true">
                 <md-icon class="glyphicon glyphicon-thumbs-down"></md-icon>
                 </md-button>
             </div>

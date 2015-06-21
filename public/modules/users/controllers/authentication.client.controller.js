@@ -1,8 +1,17 @@
 'use strict';
 
-angular.module('users').controller('AuthenticationController', ['$scope', '$http', '$location', 'Authentication',
-	function($scope, $http, $location, Authentication) {
+angular.module('users').controller('AuthenticationController', ['$scope', '$http', '$location', 'Authentication', '$mdToast',
+	function($scope, $http, $location, Authentication,$mdToast) {
 		$scope.authentication = Authentication;
+
+		function displayToast(content){
+			$mdToast.show(
+	         $mdToast.simple()
+            .content(content)
+            .position('top right')
+            .hideDelay(2000)
+			);
+		}
 
 		// If user is signed in then redirect back home
 		if ($scope.authentication.user) $location.path('/');
@@ -15,7 +24,8 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 				// And redirect to the index page
 				$location.path('/');
 			}).error(function(response) {
-				$scope.error = response.message;
+				// $scope.error = response.message;
+				displayToast(response.message);
 			});
 		};
 
@@ -27,7 +37,9 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 				// And redirect to the index page
 				$location.path('/');
 			}).error(function(response) {
-				$scope.error = response.message;
+            // $scope.error = response.message;
+            // console.log('signin(): error = ',response.message);
+				displayToast(response.message);
 			});
 		};
 	}
