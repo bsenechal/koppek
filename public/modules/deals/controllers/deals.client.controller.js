@@ -501,6 +501,6 @@ angular.module('deals').run(function(editableOptions) {
             $scope.queryExecuted = true;
           }
       });
-      };
+    };
   }
 ]);

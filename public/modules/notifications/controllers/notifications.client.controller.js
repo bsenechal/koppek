@@ -91,28 +91,30 @@ angular.module('notifications').controller('NotificationsController', ['$rootSco
       });
 
     }
-
     $scope.filterByContact = function(notification) {
+      
+        console.log('filterByContact(): notification = ', notification);
         if($rootScope.searchText != ''){
-          if(notification.userFrom){
+          if(notification.userFrom && notification.userTo)
+          {
+            var regex = new RegExp($rootScope.searchText, 'gi');
             if(
                 (
-                  notification.userTo._id == Authentication.user._id 
-                  && 
-                  notification.userFrom.username.match($rootScope.searchText)
+                  notification.userFrom.username.match(regex)
                 )
                 ||
                 (
-                  notification.userTo.username.match($rootScope.searchText)
-                  && 
-                  notification.userFrom._id == Authentication.user._id 
+                  notification.userTo.username.match(regex)
                 )
               )
             {
+              console.log('filterByContact(): $rootScope.searchText = ', $rootScope.searchText);
+              console.log('filterByContact(): notification.userTo = ', notification.userTo);
+              console.log('filterByContact(): notification.userFrom = ', notification.userFrom);
               return notification;
             }
           }
-          else if('notification'.match($rootScope.searchText) && notification.type == 'notification'){
+          else if('notification' == $rootScope.searchText && notification.type == 'notification'){
             return notification;
           }
         }

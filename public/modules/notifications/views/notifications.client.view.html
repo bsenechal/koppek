@@ -22,7 +22,6 @@
         data-ng-init="getContactList();">
         <md-autocomplete md-search-text="searchText"
             md-items="contact in getMatches(searchText)"
-            md-selected-item="selectedItem"
             md-item-text="contact.display" md-autoselect='true'
             md-search-text-change="setSearchText();"
             md-floating-label="Chercher par contact (commencer à entrer 'notifications' pour voir seulement les notifications)">
@@ -37,17 +36,16 @@
         <div layout="row"
             data-ng-repeat="notification in notifications | filter:filterByContact track by notification._id">
             <md-whiteframe class="md-whiteframe-z2"
-                ng-if="notification.type == 'message' && notification.userTo._id == authentication.user._id"
+                ng-if="notification.type == 'message' && notification.userTo._id != authentication.user._id"
                 div flex="40" layout-padding layout="row">
 
             <img flex="20"
                 data-ng-src="{{notification.userFrom.avatar}}"
                 width="100%" height="100%" class="img-circle" />
             <div layout="column" flex="80">
-                <h3 id="response">{{notification.content}}</h3>
+                <h3 id="sent">{{notification.content}}</h3>
                 <p>
-                    {{notification.type}} envoyé par <strong
-                        id="response">{{notification.userFrom.username}}</strong>
+                    {{notification.type}} envoyé à <strong id="sent">{{notification.userTo.username}}</strong>
                     le {{notification.created}} <a class="btn"
                         data-ng-click="removeNotification(notification._id);">
                         <i class="glyphicon glyphicon-trash"></i>
@@ -56,12 +54,13 @@
             </div>
             </md-whiteframe>
             <md-whiteframe class="md-whiteframe-z2"
-                ng-if="notification.type == 'message' && notification.userTo._id != authentication.user._id"
+                ng-if="notification.type == 'message' && notification.userTo._id == authentication.user._id"
                 flex="40" offset="60" layout-padding layout="row">
             <div layout="column" flex="80">
-                <h3 id="sent">{{notification.content}}</h3>
+                <h3 id="response">{{notification.content}}</h3>
                 <p>
-                    {{notification.type}} envoyé par <strong id="sent">{{notification.userTo.username}}</strong>
+                    {{notification.type}} envoyé par <strong
+                        id="response">{{notification.userFrom.username}}</strong>
                     le {{notification.created}} <a class="btn"
                         data-ng-click="removeNotification(notification._id);">
                         <i class="glyphicon glyphicon-trash"></i>
@@ -95,7 +94,7 @@
         </a>
         <form name="messageForm" data-ng-submit="sendMessage();">
             <md-input-container> <label>Destinataire</label>
-            <input type="text" ng-model="message.userToName"> </md-input-container>
+            <input type="text" ng-model="message.userToName" placeholder="utiliser la barre de recherche" disabled> </md-input-container>
             <md-input-container> <input
                 type="hidden" ng-model="message.userTo"> </md-input-container>
             <md-input-container> <label>Contenu</label>

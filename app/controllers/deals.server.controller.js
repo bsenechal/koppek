@@ -132,38 +132,39 @@ exports.dealsByRadiusLimited = function(req, res) {
       srchOrder = String(req.param('srchOrder')),
       page = parseInt(req.param('page'));
 
+  //set correct srchOrder :
+  if(srchOrder == 'date')
+  {
+    srchOrder = 'created';
+  }
+  if(srchOrder == 'success')
+  {
+    srchOrder = 'grade';
+  }
+
   console.log('dealsByRadiusLimited() :');
+  //define srchText as '' if not existe ('' -> will match every deal, it is essentialy canceling the search)
   if(!srchText)
   {
     srchText=''
   };
+
   // console.log(req);
   console.log('srchLng:' + srchLng + ', srchLat: ' + srchLat + ', srchRadius: ' + srchRadius + ', srchText: ' + srchText + ', srchOrder: ' + srchOrder + ', page: ' + page);
+  //dynamic sort :
 
 
   if(srchLng && srchLat && srchRadius && page){
-    if(srchOrder == 'date'){
+    if(srchOrder == 'created' || srchOrder == 'grade'){
+      //prepare sort query :
+      var queryOrder = {};
+      queryOrder[srchOrder] = -1;
+    console.log('dealsByRadiusLimited() : queryOrder = ', queryOrder);
+
+      //main sorted mongoose query :
       Deal.where('loc')
       .near({ center: [srchLng, srchLat], maxDistance: srchRadius/6378137, spherical: true })
-      .sort('-created')
-      .where({description: new RegExp('^.*'+srchText+'.*$', "i")})
-      .skip((page-1)*dealByPage).limit(page*dealByPage)
-      .exec(function(err, deals) {
-        if (err) {
-          res.render('error', {
-            status: 500
-          });
-        } else {
-          console.log('dealsByRadiusLimited(): find() : deals = ', deals)
-          res.json(deals);
-        }
-      }); 
-    }
-    else if(srchOrder == 'success')
-    {
-      Deal.where('loc')
-      .near({ center: [srchLng, srchLat], maxDistance: srchRadius/6378137, spherical: true })
-      .sort('-grade')
+      .sort(queryOrder)
       .where({description: new RegExp('^.*'+srchText+'.*$', "i")})
       .skip((page-1)*dealByPage).limit(page*dealByPage)
       .exec(function(err, deals) {
@@ -179,6 +180,7 @@ exports.dealsByRadiusLimited = function(req, res) {
     }
     else
     {
+      //main unsorted mongoose query :
       Deal.where('loc')
       .near({ center: [srchLng, srchLat], maxDistance: srchRadius/6378137, spherical: true })
       .where({description: new RegExp('^.*'+srchText+'.*$', "i")})

@@ -579,6 +579,7 @@ angular.module('maps')
                             }
                             else
                             {                        
+                                console.log('$wacth : srchRadius = ',$scope.srchDealRadius );
                                 circle.setRadius($scope.srchDealRadius*1000);
                                 $rootScope.srchRadius = $scope.srchDealRadius*1000;
                                 $scope.findByRadius();
