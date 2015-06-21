@@ -20,12 +20,13 @@ module.exports = function(app) {
 	app.route('/auth/forgot').post(users.forgot);
 	app.route('/auth/reset/:token').get(users.validateResetToken);
 	app.route('/auth/reset/:token').post(users.reset);
-
+    app.route('/users/votes').post(users.updateVote);
+    
 	// Setting up the users authentication api
 	app.route('/auth/signup').post(users.signup);
 	app.route('/auth/signin').post(users.signin);
 	app.route('/auth/signout').get(users.signout);
-
+    
 	// Setting the facebook oauth routes
 	app.route('/auth/facebook').get(passport.authenticate('facebook', {
 		scope: ['email']
@@ -57,4 +58,10 @@ module.exports = function(app) {
 
 	// Finish by binding the user middleware
 	app.param('userId', users.userByID);
+
+    
+    
+    // Statistics
+    app.route('/getNumberOfDeal').get(users.getNumberOfDeal);
+    app.route('/getNumberOfComment').get(users.getNumberOfComment);
 };

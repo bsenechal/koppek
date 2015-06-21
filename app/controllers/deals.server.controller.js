@@ -368,21 +368,17 @@ console.log('visited() : init');
         console.log('got an error');
       }
       else{
-        
-        console.log('updateGrade() : new visited = ', deal.visited);
-        res.json(deal);        
+         res.json(deal);        
       }
     });
 };
 
 function getVisited(idDeal, callback) {
-  console.log('getVisited() : init');
   Deal.findOne({'_id': idDeal}).select('visited').exec(function (err, result) {
     if (err) {
       console.log('got an error');
     }
     else{
-      console.log('getVisited() : findOne() : result= ', result);
       callback(result.visited);
     }
   });
@@ -398,7 +394,6 @@ function getAlert (idDeal, callback) {
       console.log('got an error');
     }
     else{
-      console.log('getAlert() : findOne() : result= ', result);
       callback(result.alert);
     }
   });
@@ -434,21 +429,15 @@ function dealAlertManager (idDeal){
 }
 
 exports.updateGrade = function(req, res) {
-  console.log('updateGrade() : init');
   var _id = req.body._id;
   var action = req.body.action;
   var idUser = req.body.idUser;
   var value = 0;
 
-  console.log('updateGrade() : _id :', _id);
-  console.log('updateGrade() : idUser:', idUser);
-  console.log('updateGrade() : action:', action);
-  console.log('updateGrade() : type of action:', typeof(action));
-  console.log('updateGrade() : req :', req);
   // console.log('updateGrade() : req: ', req);
   if(action && _id && idUser){ 
-    console.log('updateGrade() : before updateUserPoints()');
-    if(action == 'plus'){
+
+  if(action == 'plus'){
       //here, we will be setting the value according to user role:
       UserFunction.updateUserPoints(idUser, 4);
       value = 1;      
@@ -466,9 +455,6 @@ exports.updateGrade = function(req, res) {
       dealAlertManager(_id);
       value = 1;      
     }
-
-    console.log('updateGrade() : value = ', value)
-
       //update grade according to value :
       var query = {"_id": _id};
       var update = {$inc: {'grade': value}};
@@ -482,8 +468,6 @@ exports.updateGrade = function(req, res) {
           console.log('got an error');
         }
         else{
-          
-          console.log('updateGrade() : new Grade = ', deal.grade);
           res.json(deal);        
         }
     });
@@ -492,7 +476,6 @@ exports.updateGrade = function(req, res) {
         error: 'Cannot update the deal grade'
       });  
   }
-  console.log("Je suis updaté :D");
 };
  
 /**

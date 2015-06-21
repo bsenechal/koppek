@@ -20,7 +20,7 @@
                                 </div>
                     </md-whiteframe>
                     <md-list data-ng-if="deals[0]._id"> <md-list-item class="md-3-line"
-                        data-ng-repeat="deal in deals| filter:searchQuery track by deal._id">
+                        data-ng-repeat="deal in deals| filter:searchQuery track by deal._id" ng-init="allowToVoteFct(deal._id)">
                     
                     <md-whiteframe class="md-whiteframe-z2" layout="row" layout-padding layout-margin>
 
@@ -59,7 +59,7 @@
                                 </a>
                               </span>-->
                               <div align="center">
-                       <md-button align="center" class="md-fab md-mini md-primary" aria-label="Vote plus" data-ng-click="::updateGradePlus(deal);">
+                       <md-button align="center" class="md-fab md-mini md-primary" aria-label="Vote plus" ng-disabled="!allowToVote" data-ng-click="::updateGradePlus(deal);">
                             <md-icon class="glyphicon glyphicon-thumbs-up"></md-icon>
                           </md-button>
                             </div>

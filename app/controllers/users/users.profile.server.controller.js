@@ -48,6 +48,17 @@ exports.update = function(req, res) {
 	}
 };
 
+exports.updateVote = function(req, res) {
+    User.findOneAndUpdate({_id : req.user.id}, {$push : { votes: req.body._id}}, {upsert: true}, function(err) {
+        if(err) {
+            return res.status(500).json({
+                error: 'Problème lors du vote'
+            });
+        }
+        res.status(200);
+    });
+};
+
 /**
  * Send User
  */

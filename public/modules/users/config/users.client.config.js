@@ -27,4 +27,10 @@ angular.module('users').config(['$httpProvider',
 			}
 		]);
 	}
+]).run(['Menus',
+   function(Menus) {
+      // Set top bar menu items
+      Menus.addMenuItem('topbar', 'Mon compte', 'myAccount', 'dropdown');
+      Menus.addSubMenuItem('topbar', 'myAccount', 'Accéder à mon compte', 'myAccount');
+   }
 ]);
