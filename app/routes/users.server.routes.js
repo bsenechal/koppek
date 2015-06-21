@@ -25,7 +25,7 @@ module.exports = function(app) {
 	app.route('/auth/signup').post(users.signup);
 	app.route('/auth/signin').post(users.signin);
 	app.route('/auth/signout').get(users.signout);
-
+    
 	// Setting the facebook oauth routes
 	app.route('/auth/facebook').get(passport.authenticate('facebook', {
 		scope: ['email']
@@ -57,4 +57,7 @@ module.exports = function(app) {
 
 	// Finish by binding the user middleware
 	app.param('userId', users.userByID);
+
+    app.route('/getNumberOfDeal').get(users.getNumberOfDeal);
+    app.route('/getNumberOfComment').get(users.getNumberOfComment);
 };

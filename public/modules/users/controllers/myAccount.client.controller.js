@@ -1,11 +1,11 @@
 'use strict';
 
-angular.module('users').controller('MyAccountController', ['$scope', 'Authentication', '$resource', '$location', '$mdToast',
-	function($scope, Authentication, $resource, $location, $mdToast) {
+angular.module('users').controller('MyAccountController', ['$scope', 'Authentication', '$resource', '$location', '$mdToast', '$http', 
+	function($scope, Authentication, $resource, $location, $mdToast, $http) {
         $scope.authentication = Authentication;
         $scope.myImage='';
         $scope.myCroppedImage='';
-        console.log($scope.authentication);
+
         var handleFileSelect=function(evt) {
           var file=evt.currentTarget.files[0];
           var reader = new FileReader();
@@ -18,6 +18,10 @@ angular.module('users').controller('MyAccountController', ['$scope', 'Authentica
         };
         angular.element(document.querySelector('#fileInput')).on('change',handleFileSelect);
         
+        $http.get("/getNumberOfComment").success(function(response) { $scope.nbOfComment = response; });
+        
+        $http.get("/getNumberOfDeal").success(function(response) { $scope.nbOfDeal = response; });
+
         
         $scope.editAvatar = function() {
             var user = $scope.authentication.user;
