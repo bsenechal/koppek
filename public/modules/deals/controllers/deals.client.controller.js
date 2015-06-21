@@ -27,12 +27,6 @@ angular.module('deals').run(function(editableOptions) {
   // Nécessaire pour la création de deal
     
     $scope.allowToVoteFct = function(idDeal) {
-        
-        
-        // A MODIFIER
-        
-        
-        
         var votes = Authentication.user.votes;
         console.log(idDeal);
         for (var i = 0 ; i < votes.length ; i++){
