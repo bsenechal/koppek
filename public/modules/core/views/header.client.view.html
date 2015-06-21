@@ -51,16 +51,27 @@
             aria-label="Inscription" hide-sm>Inscription</md-button>
         <md-button data-ng-hide="authentication.user" href="/#!/signin"
             aria-label="Connexion" hide-sm>Connexion</md-button>
+    
         <md-button class="md-icon-button" aria-label="Favorite">
+          
         <md-icon md-svg-icon="modules/core/img/icons/favorite.svg"></md-icon>
         </md-button>
-        <md-button href="/#!/notifications" aria-label="Notifications"
+        <md-button href="/#!/notifications" aria-label="Notifications" data-ng-show="authentication.user"
             hide-sm> <md-icon
             md-svg-src="modules/core/img/icons/chat.svg"
             aria-label="notifications"></md-icon> </md-button>
-        <md-button class="md-icon-button" aria-label="More">
-        <md-icon md-svg-icon="modules/core/img/icons/more_vert.svg"></md-icon>
-        </md-button>
+            
+         <md-menu md-offset="0 -7" data-ng-show="authentication.user">
+          <md-button aria-label="Open demo menu" class="md-icon-button" ng-click="$mdOpenMenu()">
+            <md-icon md-svg-icon="modules/core/img/icons/more_vert.svg"></md-icon>
+          </md-button>
+          <md-menu-content>
+            <md-menu-item width="7">
+                <md-button href="/auth/signout">Déconnexion</md-button>
+                <md-button href="/#!/myAccount">Mon compte</md-button>  
+            </md-menu-item>
+          </md-menu-content>
+        </md-menu>    
     </div>
     </md-toolbar>
 </div>

@@ -8,7 +8,6 @@ var _ = require('lodash'),
    notificationHandler = require('../notifications.server.controller.js'),
    config = require('../../../config/config'),
    mongoose = require('mongoose'),
-   passport = require('passport'),
    User = mongoose.model('User');
 
 /*
