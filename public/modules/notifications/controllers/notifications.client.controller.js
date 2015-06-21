@@ -1,12 +1,11 @@
 'use strict';
 
-angular.module('notifications').controller('NotificationsController', ['$rootScope', '$scope', '$http',  '$stateParams','$resource', 'Socket', 'utils', 'Authentication', '$mdToast',
-  function($rootScope, $scope, $http,  $stateParams,$resource, Socket, utils, Authentication, $mdToast) {
+angular.module('notifications').controller('NotificationsController', ['$rootScope', '$scope', '$http',  '$stateParams','$resource', 'Socket', 'utils', 'Authentication', '$mdToast', '$anchorScroll',
+  function($rootScope, $scope, $http,  $stateParams,$resource, Socket, utils, Authentication, $mdToast,$anchorScroll) {
     
 
     var notificationsSocket = io('http://localhost:3000');
 
-      
 
     $scope.authentication = Authentication;
     $rootScope.searchText = '';
@@ -19,6 +18,16 @@ angular.module('notifications').controller('NotificationsController', ['$rootSco
        });          
     }
     console.log('NotificationsController : init()');
+
+    $scope.setSrchText = function(text){
+      console.log('setSrchText() : text = ',text);
+      $rootScope.searchText = text;
+      console.log('setSrchText() : $scope.searchText = ',$rootScope.searchText);
+      //set contact info :
+      // $rootScope.getMatches();
+      //move up :
+      $anchorScroll();
+    }
 
     $rootScope.getMessage = function(userTo) {
       console.log('getMessage : userId = ',Authentication.user._id);

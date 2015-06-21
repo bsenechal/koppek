@@ -70,7 +70,7 @@
             </div>
             <img flex="19"
                 data-ng-src="{{notification.userFrom.avatar}}"
-                width="100%" height="100%" class="img-circle" /> </md-whiteframe>
+                width="100%" height="100%" class="img-circle" data-ng-click="setSrchText(notification.userFrom.username)"/> </md-whiteframe>
             <md-whiteframe ng-if="notification.type == 'notification'"
                 class="md-whiteframe-z2" flex="100">
             <center>

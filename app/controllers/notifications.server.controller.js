@@ -23,9 +23,7 @@ exports.connectNotificationsSocket = function (req,res) {
   socketio = req.app.get('socketio'); // tacke out socket instance from the app container
   if(req.app){
     console.log('connectNotificationsSocket: OK');
-    res.render('error', {
-      status: 500
-    });    
+    res.send('connectNotificationsSocket: OK');
   }
   else
   {
@@ -43,7 +41,7 @@ function userNotifications(user, callback){
   .find({$or : [{'userTo': user},{'userFrom': user}]})
   .populate('userTo', 'username avatar')
   .populate('userFrom', 'username avatar')
-  .sort('-created')
+  .sort('created')
   .exec(function(err, notifications) {
     if (err) {
       console.log('userNotifications() : query : error !');
@@ -62,7 +60,7 @@ function userMessages(user, userTo, callback){
   .find({$or : [{$and :[{'userTo': user},{'userFrom': userTo}]},{$and :[{'userTo': userTo},{'userFrom': user}]}]})
   .populate('userTo', 'username')
   .populate('userFrom', 'username')
-  .sort('-created')
+  .sort('created')
   .exec(function(err, notifications) {
     if (err) {
       console.log('userMessages() : query : error !');

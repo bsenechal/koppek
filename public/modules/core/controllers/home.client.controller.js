@@ -6,9 +6,5 @@ angular.module('core').controller('HomeController', ['$scope','$resource', 'Auth
 		// This provides Authentication context.
 		$scope.authentication = Authentication;
 
-       //connect to server socket for notification:
-       $resource('/notificationsConnect').get({},function(){
-           console.log('NotificationsController(): connected to server socket !');
-       });    
     }
 ]);

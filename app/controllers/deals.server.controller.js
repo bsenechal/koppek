@@ -173,7 +173,8 @@ exports.dealsByRadiusLimited = function(req, res) {
             status: 500
           });
         } else {
-          console.log('dealsByRadiusLimited(): find() : deals = ', deals)
+          // console.log('dealsByRadiusLimited(): find() : deals = ', deals);
+          console.log('dealsByRadiusLimited(): find() : OK');
           res.json(deals);
         }
       }); 
@@ -191,7 +192,8 @@ exports.dealsByRadiusLimited = function(req, res) {
             status: 500
           });
         } else {
-          console.log('dealsByRadiusLimited(): find() : deals = ', deals)
+          // console.log('dealsByRadiusLimited(): find() : deals = ', deals);
+          console.log('dealsByRadiusLimited(): find() : OK');
           res.json(deals);
         }
       }); 
@@ -229,7 +231,8 @@ exports.markersByRadius = function(req, res) {
         status: 500
       });
     } else {
-      console.log('dealsByRadiusLimited(): find() : deals = ', deals)
+      // console.log('dealsByRadiusLimited(): find() : deals = ', deals);
+      console.log('dealsByRadiusLimited(): find() : OK');
       res.json(deals);
     }
   }); 
@@ -465,7 +468,9 @@ exports.updateGrade = function(req, res) {
 
       Deal.findOneAndUpdate(query, update, options, function(err, deal) {
         if (err) {
-          console.log('got an error');
+          return res.status(500).json({
+            error: 'updateGrade() : findOneAndUpdate : error'
+          });          
         }
         else{
           res.json(deal);        
@@ -552,8 +557,8 @@ exports.all = function(req, res) {
         error: 'Cannot list the deals'
       });
     }
-    console.log('all');
-    console.log(deals);
+    console.log('deal : all(): ok');
+    // console.log(deals);
     res.json(deals);
   });
 };
@@ -567,8 +572,8 @@ exports.allMarkers = function(req, res) {
         error: 'Cannot list the deals'
       });
     }
-    console.log('all');
-    console.log(deals);
+    console.log('allMarkers() : ok');
+    // console.log(deals);
 
     res.json(deals);
   });
@@ -590,8 +595,8 @@ exports.limited = function(req, res) {
         error: 'Cannot list the deals'
       });
     }
-    console.log('all');
-    console.log(deals);
+    console.log('deal : limited(): OK');
+    // console.log(deals);
     res.json(deals);
   });
 };

@@ -21,6 +21,8 @@ angular.module('users').controller('ContactListController', ['$rootScope', '$sco
     {
       if($scope.searchText == ''){
         $rootScope.getNotification();
+        $rootScope.message.userTo = null;
+        $rootScope.message.userToName = null;      
       }
     };
     $scope.setSearchText = function()
@@ -39,11 +41,12 @@ angular.module('users').controller('ContactListController', ['$rootScope', '$sco
       var res = false;
       console.log('createFilterFor():this=searchText= ', this);
       console.log('createFilterFor():contact= ', contact);
-      var matchRes = String(contact.value).match(String(this));
+      var matchRes = String(contact.value).match(new RegExp(this, 'gi'));
       if(matchRes != null){
         res = true;
       }
       console.log('createFilterFor():matchRes= ', matchRes);
+      console.log('createFilterFor():res= ', res);
       
       return res;
     }
@@ -62,21 +65,25 @@ angular.module('users').controller('ContactListController', ['$rootScope', '$sco
             }
           );
       var results = tmp;
-      if(searchText){
+      if(searchText != ''){
         results = tmp.filter( createFilterFor, searchText);
-      }
-      console.log('getMatches: tmp mapped', results);
-      // var results = searchText ? contactList.filter( createFilterFor(searchText) ) : contactList;
-      //set userTO dans le message :
-      if(results[0]  && searchText){
-        $rootScope.message.userTo = results[0]._id;
-        $rootScope.message.userToName = results[0].display;
+        console.log('getMatches: searchText = ', searchText);
+        console.log('getMatches: results = ', results);
+        // var results = searchText ? contactList.filter( createFilterFor(searchText) ) : contactList;
+        //set userTO dans le message :
+        if(results[0]){
+          $rootScope.message.userTo = results[0]._id;
+          $rootScope.message.userToName = results[0].display;
+          console.log('getMatches: $rootScope.message.userTo = ', $rootScope.message.userTo);
+          console.log('getMatches: $rootScope.message.userToName = ', $rootScope.message.userToName);
 
-        // $rootScope.getMessage(results[0]._id);
-        // $rootScope.selectedItem = results[0].$$hashKey;
+          // $rootScope.getMessage(results[0]._id);
+          // $rootScope.selectedItem = results[0].$$hashKey;
+        }
       }
       else
       {
+        console.log('getMatches: clean contact info');        
         $rootScope.message.userTo = null;
         $rootScope.message.userToName = null;
         // $rootScope.getNotification();

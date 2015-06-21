@@ -607,7 +607,7 @@ angular.module('maps')
                     // $scope.initMap().then(
                     $scope.initMap(
                         {
-                            zoom: 4,
+                            zoom: 8,
                             scrollwheel: false,
                             streetViewControl: false,
                             disableDefaultUI: true,

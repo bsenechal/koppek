@@ -77,8 +77,8 @@ exports.all = function(req, res) {
         error: 'Cannot list the users'
       });
     }
-    console.log('all');
-    console.log(users);
+    console.log('user : all() : OK');
+    // console.log(users);
     res.json(users);
   });
 };
