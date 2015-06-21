@@ -6,22 +6,14 @@ angular.module('notifications').controller('NotificationsController', ['$rootSco
 
     var notificationsSocket = io('http://localhost:3000');
 
-    //connect to server socket for notification:
-    $resource('/notificationsConnect').get({},function(){
-      // if(err){
-      //   console.log('NotificationsController(): connexion error !(socket)');
-      // }
-      // else
-      // {
-        console.log('NotificationsController(): connected to server socket !');
-      // }
-    });
       
 
     $scope.authentication = Authentication;
     $rootScope.searchText = '';
-
-    $scope.notifications = [];
+    if(!$rootScope.notifications)
+    {
+      $rootScope.notifications = [];
+    }
     console.log('NotificationsController : init()');
 
     $rootScope.getMessage = function(userTo) {
@@ -31,9 +23,9 @@ angular.module('notifications').controller('NotificationsController', ['$rootSco
       var notificationsRessource = $resource(
         '/notifications/:userId/:userTo'
       );
-      var notifications = notificationsRessource.query({'userId': Authentication.user._id, 'userTo': userTo},function(){
+      var notifications = notificationsRessource.get({'userId': Authentication.user._id, 'userTo': userTo},function(){
         // console.log('getNotification : notifications = ', notifications);
-        // $scope.notifications = notifications;
+        // $rootScope.notifications = notifications;
       });
     }
 
@@ -51,7 +43,7 @@ angular.module('notifications').controller('NotificationsController', ['$rootSco
       notificationsRessource.query(
         function(){
         console.log('sendMessage : message sent');
-        // $scope.notifications = notifications;
+        // $rootScope.notifications = notifications;
       });
     }
 
@@ -64,7 +56,7 @@ angular.module('notifications').controller('NotificationsController', ['$rootSco
       notificationsRessource.delete({'userId': Authentication.user._id, 'notificationId': notificationId},
         function(){
         // console.log('getNotification : notifications = ', notifications);
-        // $scope.notifications = notifications;
+        // $rootScope.notifications = notifications;
       });
     };
     $scope.removeAllNotification = function() {
@@ -75,7 +67,7 @@ angular.module('notifications').controller('NotificationsController', ['$rootSco
       notificationsRessource.delete({'userId': Authentication.user._id},
         function(){
         // console.log('getNotification : notifications = ', notifications);
-        // $scope.notifications = notifications;
+        // $rootScope.notifications = notifications;
       });
     };
     
@@ -85,15 +77,15 @@ angular.module('notifications').controller('NotificationsController', ['$rootSco
       var notificationsRessource = $resource(
         '/notifications/:userId'
       );
-      var notifications = notificationsRessource.query({'userId': Authentication.user._id},function(){
+      var notifications = notificationsRessource.get({'userId': Authentication.user._id},function(){
         // console.log('getNotification : notifications = ', notifications);
-        // $scope.notifications = notifications;
+        // $rootScope.notifications = notifications;
       });
 
     }
     $scope.filterByContact = function(notification) {
       
-        console.log('filterByContact(): notification = ', notification);
+        // console.log('filterByContact(): notification = ', notification);
         if($rootScope.searchText != ''){
           if(notification.userFrom && notification.userTo)
           {
@@ -108,9 +100,9 @@ angular.module('notifications').controller('NotificationsController', ['$rootSco
                 )
               )
             {
-              console.log('filterByContact(): $rootScope.searchText = ', $rootScope.searchText);
-              console.log('filterByContact(): notification.userTo = ', notification.userTo);
-              console.log('filterByContact(): notification.userFrom = ', notification.userFrom);
+              // console.log('filterByContact(): $rootScope.searchText = ', $rootScope.searchText);
+              // console.log('filterByContact(): notification.userTo = ', notification.userTo);
+              // console.log('filterByContact(): notification.userFrom = ', notification.userFrom);
               return notification;
             }
           }
@@ -142,23 +134,9 @@ angular.module('notifications').controller('NotificationsController', ['$rootSco
       console.log('NotificationsController : notificationsSocket.on : notifications = ',notifications);
       // console.log('NotificationsController : notificationsSocket.on : notifications = ',notificationsObj[0].notifications);
       // $scope.getNotification();
-      // $scope.notifications = notifications;
-      $scope.notifications = notifications;
+      // $rootScope.notifications = notifications;
+      $rootScope.notifications = notifications;
       $scope.$apply();
-      // for(var i=0; i<notifications.length; i++){
-      //   console.log('NotificationsController : notificationsSocket.on : showing a toast ! : content = ',notifications[i].content)
-        // var toast = $mdToast.simple()
-        //   .content(notifications[i].content)
-        //   .action('remove')
-        //   .highlightAction(false)
-        //   .hideDelay(10000)
-        //   .position('top right');
-        // $mdToast.show(toast);
-      // }
-
-      // $http.get('/notifications').success(function(data) {
-      //   $scope.notifications = data;
-      // });
   });
 }
 ]);

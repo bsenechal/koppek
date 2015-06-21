@@ -6,14 +6,19 @@ angular.module('core')
       $mdSidenav('left').close();
     };
   })
-.controller('HeaderController', ['$scope', '$rootScope', 'Authentication', 'Menus', '$mdSidenav', '$mdUtil',
-	function($scope, $rootScope, Authentication, Menus, $mdSidenav, $mdUtil) {
+.controller('HeaderController', ['$scope', '$rootScope','$resource', 'Authentication', 'Menus', '$mdSidenav', '$mdUtil',
+	function($scope, $rootScope,$resource, Authentication, Menus, $mdSidenav, $mdUtil) {
 		$scope.authentication = Authentication;
 		$scope.isCollapsed = false;
 		$scope.menu = Menus.getMenu('topbar');
 
         $scope.toggleLeft = buildToggler('left');
-        
+
+       //connect to server socket for notification:
+       $resource('/notificationsConnect').get({},function(){
+           console.log('NotificationsController(): connected to server socket !');
+       });
+
 		$scope.toggleCollapsibleMenu = function() {
 			$scope.isCollapsed = !$scope.isCollapsed;
 		};
