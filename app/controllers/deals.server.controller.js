@@ -340,7 +340,7 @@ exports.generateDealsFrance = function(req, res) {
     var randReason = reasonArray[Math.round(Math.random()*(reasonArray.length-1))];
 
     var initialPrice = Math.round(Math.random()*1000+10);
-    var salePrice = initialPrice - Math.round(Math.random()*600 + 1);
+    var salePrice = Math.round(Math.random()*(initialPrice-10) + 1);
 
     deal.user = randUser;
     deal.title = randComplement + ' ' + randObject + '!';
