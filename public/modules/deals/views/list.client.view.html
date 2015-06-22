@@ -63,7 +63,7 @@
                                 </a>
                               </span>-->
                               <div align="center">
-                       <md-button align="center" class="md-fab md-mini md-primary" aria-label="Vote plus" data-ng-disabled="isDisabled[deal._id]" data-ng-click="::updateGradePlus(deal);isDisabled[deal._id] = true">
+                       <md-button align="center" class="md-fab md-mini md-primary" aria-label="Vote plus" data-ng-init="allowToVoteFct(deal._id,deal._id);" data-ng-disabled="isDisabled[deal._id]" data-ng-click="::updateGradePlus(deal);isDisabled[deal._id] = true">
                             <md-icon class="glyphicon glyphicon-thumbs-up"></md-icon>
                           </md-button>
                             </div>
