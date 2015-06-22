@@ -23,6 +23,8 @@ module.exports = function(app) {
     .post(users.requiresLogin, deals.updateGrade);
   app.route('/generateDeals')
     .get(deals.generateDeals); 
+  app.route('/generateDealsFrance')
+    .get(deals.generateDealsFrance); 
   app.route('/getS3Credentials')
     .get(users.requiresLogin, deals.s3Credentials);
   app.route('/dealslimited/:page')

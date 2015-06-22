@@ -293,6 +293,7 @@ exports.generateDeals = function(req, res) {
     deal.description = 'test description' + i;
     deal.initialPrice = 10;
     deal.salePrice = 1;
+    deal.onlineDeal = false;
 
     // deal.latitude = long;
     // deal.longitude = lat;
@@ -314,6 +315,62 @@ exports.generateDeals = function(req, res) {
     });
   }
   console.log('Base pourrie avec ', numberofdeals, 'nouveau deal !');
+};
+// magnigique !
+exports.generateDealsFrance = function(req, res) {
+  //all those variables can be passed as arguments :
+  var numberofdeals = parseInt(req.query.number) || 1000;
+  var poslat = parseFloat(req.query.poslat) || 49.41781599999999;
+  var poslng = parseFloat(req.query.poslng) || 2.826144999999997;
+  var delta = parseFloat(req.query.delta) || 1;
+
+  var userArray = ["5561f7933de31bc837a99243","55623dbfe24760741453dc5b","5561f7933de31bc837a99240","5586eadce02345d83022b191"];
+  var objectArray = ["Chaussure","Voiture","Papier Toilette","Cartable","Table","Chaise","TV","Ordinateur portable","Jante Alu","Citrouille","Macbook"];
+  var complementArray = ["Superbe ","Magnique ","Comme neuf : ","En superbe état : ","Maxi promo sur ","A vendre : ","Aujourd'hui seulement : ","Gratuit : ","Baisse massive sur ","Excellente affaire : "];
+  var verbArray = [" a vendre "," pour pas cher "," dans un suberbe état "," à venir chercher sur place"," à prix cassé "," à bas prix"," disponible en quantité limitée"," sur commande"," dans l'état"," à prix ridicule "];
+  var reasonArray = ["car nous en avons trop "," grâce aux promos de févrié !"," car nous sommes en liquidation !"," faute de trouver preneur."," car je dois m'en séparer."," car ils changent de collection"," car ils arrêtent de vendre ce produit."," dans la mesure des stocks disponibles"," car il s'agit d'une semaine de soldes"," car il s'agit des fêtes"];
+
+  for (var i = 0 ; i < numberofdeals ; i++){
+    var deal = new Deal(req.body);
+
+    var randUser = userArray[Math.round(Math.random()*(userArray.length-1))];
+    var randObject = objectArray[Math.round(Math.random()*(objectArray.length-1))];
+    var randVerb = verbArray[Math.round(Math.random()*(verbArray.length-1))];
+    var randComplement = complementArray[Math.round(Math.random()*(complementArray.length-1))];
+    var randReason = reasonArray[Math.round(Math.random()*(reasonArray.length-1))];
+
+    var initialPrice = Math.round(Math.random()*1000+10);
+    var salePrice = initialPrice - Math.round(Math.random()*600 + 1);
+
+    deal.user = randUser;
+    deal.title = randComplement + ' ' + randObject + '!';
+    deal.description = randObject + ' ' + randVerb + ' ' + randReason + ' (' + i + ')';
+    deal.initialPrice = initialPrice;
+    deal.salePrice = salePrice;
+    deal.onlineDeal = false;
+
+    // deal.latitude = long;
+    // deal.longitude = lat;
+    var long = (poslng-delta) + 2 * delta * Math.random();
+    var lat = (poslat-delta) + 2 * delta * Math.random();
+
+    deal.latitude = lat;
+    deal.longitude = long;
+
+    deal.loc = [long,lat];
+
+    deal.save(function(err) {
+      if (err) {
+        // return res.status(500).json({
+        //   error: 'Cannot save the deal'
+        console.log('generateDealsFrance() : cannot save the deal !');
+        // });
+      }
+      // res.status(200).json();
+      // console.log('Base magnifiée avec ', numberofdeals, 'nouveaux deals !');
+    });
+  }
+  console.log('Base magnifiée avec ', numberofdeals, 'nouveaux deals !');
 };
 
 /**
