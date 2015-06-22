@@ -429,54 +429,39 @@ angular.module('deals').run(function(editableOptions) {
          $rootScope.srchRadius
       );
       if ($rootScope.srchLng && $rootScope.srchLat && $rootScope.srchRadius){
-      console.log('findByRadius() : with paramaters');
-      //A mettre dans une factory de services ?
-      //$scope.queryByRadius();
-
-      //Basic scheme :
-      //1: init an empty map
-      // $controller('MapInitController',{$scope: $scope});
-      //2: query the deals according to search parameters
-      $scope.markersByRadius();
-      //$scope.queryByRadius();
-      //3: update the map
-      // $controller('MapDisplayController', {$scope, $scope});
-      //Final: Watch search parameters change, if so -> do 2 and 3 again
-      // $scope.$watch('srchRadius',function(){
-      //   $scope.queryByRadius();
-      //   $controller('MapDisplayController', {$scope, $scope});
-      // },true)
-    }
-    else{
-      console.log('findByRadius() : find : without paramaters');
-      // $controller('MapInitController',{$scope: $scope});
-      var rad = 40000 * Math.random() + 20000;
-      if(!($rootScope.uPos)){
-          console.log('findByRadius() : use random has default');
-          var long = -180 + 180 * 2 * Math.random();
-          var lat = -85 + 85 * 2 * Math.random();
-          $rootScope.srchLng = long;
-          $rootScope.srchLat = lat;
-          $rootScope.srchRadius = rad;
-          $scope.markersByRadius();
+        console.log('findByRadius() : with paramaters');
       }
-      // else if($rootScope.uPos)
-      // {
-      //     $rootScope.srchLng = $rootScope.uPos.lng();
-      //     $rootScope.srchLat = $rootScope.uPos.lat();
-      //     $rootScope.srchRadius = rad;
-      //     $scope.markersByRadius();
-      // }
       else
       {
-        console.log('findByRadius() : queryAllMarkers()');
-        $scope.queryAllMarkers();
+        console.log('findByRadius() : find : without paramaters');
+        // $controller('MapInitController',{$scope: $scope});
+        var rad = 40000 * Math.random() + 20000;
+        //geolocalize on default :
+        navigator.geolocation.getCurrentPosition(function(position) 
+          {
+              console.log('geolocation(): position = ', position);
+              $rootScope.srchLng = position.coords.longitude;
+              $rootScope.srchLat = position.coords.latitude;
+              $rootScope.srchRadius = rad;
+              $scope.markersByRadius();
+          }, 
+          function(error)
+          {
+            console.log('geolocalize: Error occurred. Error code: ' + error.code);
+            console.log('findByRadius() : use random has default');
+            var long = -180 + 180 * 2 * Math.random();
+            var lat = -85 + 85 * 2 * Math.random();
+            $rootScope.srchLng = long;
+            $rootScope.srchLat = lat;
+            $rootScope.srchRadius = rad;
+            // $scope.markersByRadius();
+          }, 
+          {
+              timeout: 5000
+          }
+        );
       }
-
-      //$scope.queryAll();
-      // $controller('MapDisplayController', {$scope, $scope});
-      
-    }
+      $scope.markersByRadius();
 
   };
 

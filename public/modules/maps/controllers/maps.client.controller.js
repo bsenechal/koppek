@@ -375,7 +375,7 @@ angular.module('maps')
             //Map set listener :
             $scope.listenMap = function() {
                 console.log('listenMap(): start setting map listener');
-                geolocalize(map, navigator);
+                // geolocalize(map, navigator);
                 // Listen for the event fired when the user selects an item from the
                 // pick list. Retrieve the matching places for that item.
                 if (place_changedListener) {
