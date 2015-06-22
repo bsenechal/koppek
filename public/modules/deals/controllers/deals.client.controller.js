@@ -3,8 +3,8 @@
 angular.module('deals').run(function(editableOptions) {
   editableOptions.theme = 'bs3'; 
 })
-.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade', '$window', 'uuid4', 'Authentication','$parse',
-  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade, $window, uuid4, Authentication,$parse) {
+.controller('DealsController', ['$scope','$rootScope','$controller','$q', '$stateParams', '$resource', '$location', 'Deals', 'Socket', 'DealsGrade', '$window', 'uuid4', 'Authentication','$parse', '$mdToast',
+  function($scope,$rootScope, $controller,$q, $stateParams,$resource, $location, Deals, Socket, DealsGrade, $window, uuid4, Authentication, $parse, $mdToast) {
     
     $scope.windowHeight = angular.element($window).height() - 64;
     //   if (!deal || !deal.user){
@@ -21,10 +21,20 @@ angular.module('deals').run(function(editableOptions) {
     console.log(Authentication.user);
     
     //pagination parameters :
-      $scope.currentPage = 1;
+    $scope.currentPage = 1;
     
   // Nécessaire pour la création de deal
     $scope.isDisabled = {};
+    
+    function displayToast(content){
+        $mdToast.show(
+            $mdToast.simple()
+              .content(content)
+              .position('top right')
+              .hideDelay(2000)
+         );
+    }
+    
     $scope.allowToVoteFct = function(idDeal, key) {
       $scope.isDisabled[key] = false;
       // Assigns a value to it
@@ -121,9 +131,9 @@ angular.module('deals').run(function(editableOptions) {
         console.log('create: Tmp deal');
         console.log(deal);
         deal.$save(function(response) {
+            displayToast("Votre deal a correctement été créé.");
             $location.path('deals/' + response._id);
         });
-        console.log('create: reinit scope');
       } else {
         $scope.submitted = true;
       }
@@ -134,9 +144,10 @@ angular.module('deals').run(function(editableOptions) {
         deal.$remove(function(response) {
           for (var i in $scope.deals) {
             if ($scope.deals[i] === deal) {
-        $scope.deals.splice(i,1);
+                $scope.deals.splice(i,1);
             }
           }
+          displayToast("Votre deal a correctement été supprimé.");
           $location.path('deals');
         });
       } else {
@@ -151,10 +162,11 @@ angular.module('deals').run(function(editableOptions) {
         var deal = $scope.deal;
         if(!deal.updated) {
           deal.updated = [];
-    }
+        }
         deal.updated.push(new Date().getTime());
 
         deal.$update(function() {
+          displayToast("Votre deal a correctement été modifié.");
           $location.path('deals/' + deal._id);
         });
       } else {
@@ -197,6 +209,7 @@ angular.module('deals').run(function(editableOptions) {
           deal.grade = dealResult.grade;        
         }
       });
+      displayToast("Votre vote a bien été pris en compte.");
       console.log('updateGrade() : deal updated');
     };
 
