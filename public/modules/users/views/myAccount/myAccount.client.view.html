@@ -1,50 +1,49 @@
 
-<section data-ng-controller="MyAccountController" layout="row">
+<section data-ng-controller="MyAccountController" layout="row" layout-sm="column">
 
-    <div flex="20">
+    <div flex-md="40" flex-gt-sm="20">
         <md-content class="md-padding"> <md-card>
         <md-card-content>
         <form editable-form name="editableForm" onaftersave="editUser()">
-            <center>
+			<center>
                 <img
                     data-ng-src="{{authentication.user.avatar}}"
-                    width="200em" height="200em" class="img-circle" />
-
+                    class="img-circle" />
+				
                 <md-button class="md-primary"
                     aria-label="Modifier l'avatar"
                     ng-click="imageForm.$show()"
                     ng-show="!imageForm.$visible">Modifier
                 l'avatar</md-button>
             </center>
-            <h2 ng-show="!editableForm.$visible">
-                {{authentication.user.firstName}} {{authentication.user.lastName}}</h2>
-            <div ng-show="editableForm.$visible">
-                <h5>
-                    <b>Nom</b>
-                </h5>
-                <span editable-text="authentication.user.firstName"
-                    e-name="authentication.user.firstName" e-required>
-                    {{authentication.user.firstName}} </span>
-                <h5>
-                    <b>Prénom</b>
-                </h5>
-                <span editable-text="authentication.user.lastName"
-                    e-name="authentication.user.lastName" e-required>{{authentication.user.lastName}}</span>
-            </div>
-            <h5 ng-show="editableForm.$visible">
-                <b>Email</b>
-            </h5>
-            <span editable-text="authentication.user.email"
-                e-name="authentication.user.email" e-required>{{authentication.user.email}}</span>
+				<h2 ng-show="!editableForm.$visible">
+					{{authentication.user.firstName}} {{authentication.user.lastName}}</h2>
+				<div ng-show="editableForm.$visible">
+					<h5>
+						<b>Nom</b>
+					</h5>
+					<span editable-text="authentication.user.firstName"
+						e-name="authentication.user.firstName" e-required>
+						{{authentication.user.firstName}} </span>
+					<h5>
+						<b>Prénom</b>
+					</h5>
+					<span editable-text="authentication.user.lastName"
+						e-name="authentication.user.lastName" e-required>{{authentication.user.lastName}}</span>
+				</div>
+				<h5 ng-show="editableForm.$visible">
+					<b>Email</b>
+				</h5>
+				<span editable-text="authentication.user.email"
+					e-name="authentication.user.email" e-required>{{authentication.user.email}}</span>
 
 
-            <md-list>
-            <h4>Rôles</h4>
-            <md-list-item class="md-3-line"
-                ng-repeat="item in authentication.user.roles">
-            <p>{{ item}}</p>
-            </md-list-item> </md-list>
-
+				<md-list>
+				<h4>Rôles</h4>
+				<md-list-item class="md-3-line"
+					ng-repeat="item in authentication.user.roles">
+				<p>{{ item}}</p>
+				</md-list-item> </md-list>
             <div class="buttons">
                 <!-- buttons to submit / cancel form -->
                 <span ng-show="editableForm.$visible"> <br /> <md-button
@@ -68,7 +67,7 @@
         </md-card> </md-content>
     </div>
 
-    <div flex="80">
+    <div flex-md="60" flex-gt-sm="80">
         <md-content class="md-padding"> <md-card>
         <md-card-content>
         <div ng-show="!imageForm.$visible">
