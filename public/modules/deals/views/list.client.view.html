@@ -38,7 +38,7 @@
                                 <md-button class="md-raised md-primary">{{::deal.salePrice}} €</md-button>
                             </div>
                             <div align="center">
-                                <del>{{::deal.initialPrice}} €</del> (- {{::deal.reduction}}%)
+                                <del>{{::deal.initialPrice}} €</del> <!--(- {{::deal.reduction}}%)-->
                             </div>
                         </div>
                         <div flex = "70" layout-padding>
@@ -83,7 +83,9 @@
                         </md-whiteframe>
                     </md-list-item> </md-list>
                     <md-whiteframe ng-show="numberOfDeals < 1" class="md-whiteframe-z1" layout layout-align="center center" >
-                        <center><h3> Pas encore de deal dans cette zone... <a href="#!/deals/create"><br /><br /> Pourquoi ne pas en créer un ?</a></h3></center>
+                        <span>
+                            <center><h3> Pas encore de deal dans cette zone... <a href="#!/deals/create"><br /><br /> Pourquoi ne pas en créer un ?</a></h3></center>
+                        </span>
                     </md-whiteframe>
                     <pagination ng-show="numberOfDeals >= 1" data-ng-if="resultIsByRadius" total-items="numberOfDeals" ng-model="currentPage" ng-change="dealsByRadius(currentPage)" items-per-page='20' max-size='5' class="pagination-sm" boundary-links="true" rotate="false" ></pagination>
                     <pagination ng-show="numberOfDeals >= 1" data-ng-if="!resultIsByRadius" total-items="numberOfDeals" ng-model="currentPage" ng-change="queryAll(currentPage)" items-per-page='20' max-size='5' class="pagination-sm" boundary-links="true" rotate="false" ></pagination>
