@@ -5,7 +5,8 @@
  */
 var _ = require('lodash'),
 	mongoose = require('mongoose'),
-	User = mongoose.model('User');
+	User = mongoose.model('User'),
+	s3Credentials = require('../../../s3Credentials.json');
 
 /**
  * User middleware
@@ -51,4 +52,11 @@ exports.hasAuthorization = function(roles) {
 			}
 		});
 	};
+};
+
+/**
+ * S3 credentials
+ */
+exports.s3Credentials = function(req, res) {
+	res.json(s3Credentials["usersCredentials"]);
 };

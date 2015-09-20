@@ -60,7 +60,9 @@ module.exports = function(app) {
 	app.param('userId', users.userByID);
 
     
-    
+    app.route('/users/getS3Credentials')
+    .get(users.requiresLogin, users.s3Credentials);
+	
     // Statistics
     app.route('/getNumberOfDeal').get(users.getNumberOfDeal);
     app.route('/getNumberOfComment').get(users.getNumberOfComment);

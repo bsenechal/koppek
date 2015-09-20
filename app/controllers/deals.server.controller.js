@@ -114,7 +114,7 @@ exports.deal = function(req, res, next, id) {
 
 
 exports.s3Credentials = function(req, res) {
-	res.json(s3Credentials);
+	res.json(s3Credentials["dealsCredentials"]);
 };
 
 /**

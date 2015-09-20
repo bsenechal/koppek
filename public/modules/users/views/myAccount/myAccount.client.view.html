@@ -1,14 +1,11 @@
 
 <section data-ng-controller="MyAccountController" layout="row" layout-sm="column">
-
     <div flex-md="40" flex-gt-sm="20">
         <md-content class="md-padding"> <md-card>
         <md-card-content>
         <form editable-form name="editableForm" onaftersave="editUser()">
 			<center>
-                <img
-                    data-ng-src="{{authentication.user.avatar}}"
-                    class="img-circle" />
+			<img ng-src="https://koppekimages.s3-eu-west-1.amazonaws.com/users/{{authentication.user.avatar}}" width = "90%" height="90%" class="img-circle" />
 				
                 <md-button class="md-primary"
                     aria-label="Modifier l'avatar"

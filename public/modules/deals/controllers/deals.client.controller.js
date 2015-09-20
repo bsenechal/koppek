@@ -73,9 +73,11 @@ angular.module('deals').run(function(editableOptions) {
   $scope.upload = function(event) {
         event.preventDefault();
     if($scope.file) {
-          
+          console.log($scope.file);
          $resource('/getS3Credentials').get(function(credential) {
           // Configure The S3 Object 
+		  
+		  console.log(credential);
           AWS.config.update({ accessKeyId: credential.access_key, secretAccessKey: credential.secret_key});
           AWS.config.region = credential.region;
           $scope.imageName = uuid4.generate();
