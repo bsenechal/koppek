@@ -72,6 +72,7 @@ angular.module('users').controller('MyAccountController', ['$scope', 'Authentica
 				  }
 				})
 			  });
+			  $scope.digest();
             displayToast('Votre avatar a correctement été modifié.');
         };
         

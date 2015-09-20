@@ -39,16 +39,18 @@
                 
                 <md-input-container> <label>Image</label>
                 </md-input-container>
-                <md-input-container> <input
-                    name="file" aria-label="Ajouter une image"
-                    type='file' class="form-control" file
-                    accept="image/*" id="file" data-ng-disabled="disableUpload"> </md-input-container>
+                <md-input-container> 
+				
+				                <input id="inputImageDeal" 
+                type="file" 
+                accept="image/*" 
+                image="imageDeal" 
+                resize-max-height="400"
+                resize-max-width="400"
+                resize-quality="1.0" />
+				
+					</md-input-container>
 
-               <md-input-container> <md-progress-linear
-                    md-mode="buffer" value="{{determinateValue}}"
-                    md-buffer-value="{{uploadProgress}}"></md-progress-linear>
-                <md-button class="md-primary" ng-click="upload($event)" data-ng-disabled="disableUpload">Transférer</md-button>
-                </md-input-container>
 
                 <md-input-container> 
                     <label>Description *</label>
@@ -57,7 +59,13 @@
                     id="description" cols="30" rows="10"
                     class="form-control"
                     required></textarea> </md-input-container>
-
+               
+			   <md-input-container> <md-progress-linear
+                    md-mode="buffer" value="{{determinateValue}}"
+                    md-buffer-value="{{uploadProgress}}"></md-progress-linear>
+             <!--   <md-button class="md-primary" ng-click="upload(imageDeal)" data-ng-disabled="disableUpload">Transférer</md-button>-->
+                </md-input-container>
+				
                 <md-input-container> <md-button
                     class="md-primary" ng-click="submit()">Valider</md-button>
                 </md-input-container>

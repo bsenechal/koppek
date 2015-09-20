@@ -70,19 +70,40 @@ angular.module('deals').run(function(editableOptions) {
         });
   }  
 
-  $scope.upload = function(event) {
-        event.preventDefault();
-    if($scope.file) {
-          console.log($scope.file);
-         $resource('/getS3Credentials').get(function(credential) {
+  		function base64ToFile(base64Data, tempfilename, contentType) {
+			contentType = contentType || '';
+			var sliceSize = 1024;
+			var byteCharacters = atob(base64Data);
+			var bytesLength = byteCharacters.length;
+			var slicesCount = Math.ceil(bytesLength / sliceSize);
+			var byteArrays = new Array(slicesCount);
+
+			for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+				var begin = sliceIndex * sliceSize;
+				var end = Math.min(begin + sliceSize, bytesLength);
+
+				var bytes = new Array(end - begin);
+				for (var offset = begin, i = 0 ; offset < end; ++i, ++offset) {
+					bytes[i] = byteCharacters[offset].charCodeAt(0);
+				}
+				byteArrays[sliceIndex] = new Uint8Array(bytes);
+			}
+			var file = new File(byteArrays, tempfilename, { type: contentType });
+			return file;
+		}
+		
+	function upload(image, imageName) {
+	  var deferred = $q.defer();
+    if(image) {
+         $resource('/deals/getS3Credentials').get(function(credential) {
           // Configure The S3 Object 
 		  
 		  console.log(credential);
           AWS.config.update({ accessKeyId: credential.access_key, secretAccessKey: credential.secret_key});
           AWS.config.region = credential.region;
-          $scope.imageName = uuid4.generate();
           var bucket = new AWS.S3({ params: { Bucket: credential.bucket } });
-    var params = { Key: $scope.imageName, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
+		  
+    var params = { Key: imageName, ContentType: image.type, Body: base64ToFile(image.dataURL.replace(/^[^,]+,/, ''), imageName, image.type), ServerSideEncryption: 'AES256' };
         
     bucket.putObject(params, function(err, data) {
       if(err) {
@@ -91,11 +112,8 @@ angular.module('deals').run(function(editableOptions) {
       return false;
       }
       else {
-        $scope.$apply(function() { 
-        $scope.validate = true;
-        });
       // Success!
-
+			$scope.validate = true;
             $scope.disableUpload = true;
             $scope.$apply();
       }
@@ -114,28 +132,39 @@ angular.module('deals').run(function(editableOptions) {
     // No File Selected
     alert('No File Selected');
     }
-    
+	
+	console.log("sortie upload");
+    return deferred.promise; 
   }
     
     $scope.create = function(isValid) {
       if (isValid) {
-         
-        var deal = new Deals({
-          title: this.title,
-          initialPrice: this.initialPrice,
-          salePrice: this.salePrice,
-          loc : [$rootScope.longitude,$rootScope.latitude],
-          description: this.description,
-          image: $scope.imageName,
-          onlineDeal: this.onlineDeal,
-          urlWebSite : this.urlWebSite
-        });
-        console.log('create: Tmp deal');
+		 var imageName = uuid4.generate();
+		upload(this.imageDeal.resized, imageName)
+		.then(function(){
+		 	var deal = new Deals({
+			  title: this.title,
+			  initialPrice: this.initialPrice,
+			  salePrice: this.salePrice,
+			  loc : [$rootScope.longitude,$rootScope.latitude],
+			  description: this.description,
+			  image: imageName,
+			  onlineDeal: this.onlineDeal,
+			  urlWebSite : this.urlWebSite
+			});
+			
+		 	deal.$save(function(response) {
+			   displayToast("Votre deal a correctement été créé.");
+				$location.path('deals/' + response._id);
+			});
+
+		 });
+
+        
+       /* console.log('create: Tmp deal');
         console.log(deal);
-        deal.$save(function(response) {
-            displayToast("Votre deal a correctement été créé.");
-            $location.path('deals/' + response._id);
-        });
+*/
+console.log("là !");
       } else {
         $scope.submitted = true;
       }
