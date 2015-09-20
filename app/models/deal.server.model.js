@@ -70,6 +70,10 @@ var DealSchema = new Schema({
   urlWebSite: {
     type: String,
     trim: true
+  },
+  active: {
+  type: Boolean,
+    default: true,
   }
 });
 

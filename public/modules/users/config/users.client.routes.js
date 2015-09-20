@@ -17,6 +17,10 @@ angular.module('users').config(['$stateProvider',
 			url: '/myAccount',
 			templateUrl: 'modules/users/views/myAccount/myAccount.client.view.html'
 		}).
+        state('myDeal', {
+			url: '/myDeal',
+			templateUrl: 'modules/users/views/myDeal/myDeal.client.view.html'
+		}).
 		state('accounts', {
 			url: '/settings/accounts',
 			templateUrl: 'modules/users/views/settings/social-accounts.client.view.html'

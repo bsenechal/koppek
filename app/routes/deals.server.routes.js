@@ -15,8 +15,10 @@ module.exports = function(app) {
     .get(deals.allMarkers);
   app.route('/MarkersByRadius/:srchLng/:srchLat/:srchRadius')
     .get(deals.markersByRadius);
-  app.route('/DealsByRadius')
+  app.route('/dealsbyradius')
     .get(deals.dealsByRadiusLimited);
+  app.route('/userDeal/:active')
+    .get(deals.dealsByUser);
   app.route('/DealsSearch')
     .get(deals.dealsByRadiusLimited);
   app.route('/updateGrade')

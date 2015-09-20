@@ -117,6 +117,46 @@ exports.s3Credentials = function(req, res) {
 	res.json(s3Credentials);
 };
 
+
+exports.dealsByUser = function(req, res) {
+
+  console.log('dealsByUser(): user = ', req.user._id );
+
+  var active = req.param('active'),
+  activeOption = {};
+
+  console.log('dealsByUser(): active = ', active );
+
+  if(active == true){
+    activeOption["active"] = true;
+  }
+
+  if(active == false){
+    activeOption["active"] = false;
+  }
+
+      Deal.where({"user": req.user._id})
+      .sort({"created": -1})
+      .where(activeOption)
+      .exec(function(err, deals) {
+        if (err) {
+          res.render('error', {
+            status: 500
+          });
+        } else {
+          console.log('dealsByUser(): find() : OK');
+          console.log('dealsByUser(): deals = ', deals.length);
+          res.json(deals);
+        }
+      }); 
+  // }
+  // else{
+  //     return res.status(500).json({
+  //       error: 'Empty Search Parameters !'
+  //     });  
+  // }
+};
+
 /**
  * TODO : succed in limiting the geoNear query...
  * Find deal by latitude + longitude + radius

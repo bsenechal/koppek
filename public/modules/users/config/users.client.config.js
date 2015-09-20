@@ -32,5 +32,6 @@ angular.module('users').config(['$httpProvider',
       // Set top bar menu items
       Menus.addMenuItem('topbar', 'Mon compte', 'myAccount', 'dropdown');
       Menus.addSubMenuItem('topbar', 'myAccount', 'Accéder à mon compte', 'myAccount');
+      Menus.addSubMenuItem('topbar', 'myAccount', 'Accéder à mes deals', 'myDeal');
    }
 ]);
