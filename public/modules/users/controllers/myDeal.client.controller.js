@@ -3,15 +3,16 @@
 angular.module('users').controller('MyDealController', ['$scope', 'Authentication', '$resource', '$location', '$mdToast', '$http', 
    function($scope, Authentication, $resource, $location, $mdToast, $http) {
         $scope.authentication = Authentication;
-        $scope.myImage='';
-        $scope.myCroppedImage='';
+        $scope.active = true;
+
+
 
         
         $scope.getUserDeal = function(active) {
             var user = $scope.authentication.user,
             activeQuery = {};
 
-            activeQuery['active'] = true;
+            activeQuery['active'] = active;
 
             var userDealRessource = $resource(
               '/userDeal/:active'

@@ -127,13 +127,9 @@ exports.dealsByUser = function(req, res) {
 
   console.log('dealsByUser(): active = ', active );
 
-  if(active == true){
-    activeOption["active"] = true;
-  }
+  activeOption['active'] = active;
 
-  if(active == false){
-    activeOption["active"] = false;
-  }
+  console.log('dealsByUser(): activeOption = ', activeOption );
 
       Deal.where({"user": req.user._id})
       .sort({"created": -1})

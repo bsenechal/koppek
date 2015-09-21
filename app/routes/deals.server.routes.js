@@ -35,7 +35,8 @@ module.exports = function(app) {
 	.post(users.requiresLogin, deals.addModification);
   app.route('/deals/:dealId')
     .get(deals.visited, deals.show)
-    .put(users.requiresLogin, users.hasAuthorization(['admin']), deals.update)
+    // .put(users.requiresLogin, users.hasAuthorization(['admin']), deals.update) -> authorization needs to be done inside : each user can update its deals.
+    .put(users.requiresLogin, deals.update)
     .delete(users.requiresLogin, users.hasAuthorization(['admin']), deals.destroy);
 
   // Finish with setting up the dealId param

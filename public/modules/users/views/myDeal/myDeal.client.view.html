@@ -1,11 +1,10 @@
 Voici la liste de mes deals :
 
-<section data-ng-controller="MyDealController" data-ng-init="getUserDeal()">
+<section data-ng-controller="MyDealController" data-ng-init="getUserDeal(true)">
     <div layout="row" layout-sm="column" flex="50">
         <!-- <div layout="column" flex style="height: {{windowHeight}}px; overflow: auto;"> -->
         <div style="height: 800px; overflow: auto;">
-                
-                <md-whiteframe class="md-whiteframe-z3">
+                    <md-whiteframe class="md-whiteframe-z3">
                         <span>
                             <form name="searchForm">
                                 <div layout="row" layout-sm="column">
@@ -13,6 +12,9 @@ Voici la liste de mes deals :
                                     <label>Quoi ?</label> <input data-ng-model="searchQuery"
                                         type="text"> </md-input-container>
                                 </div>
+                                  <md-switch data-ng-model="active" data-ng-change="getUserDeal(active)" aria-label="active Switch 2">
+                                    Les deals affichés sont des deals actifs : {{ active }}
+                            </md-switch>
                             </form>
                         </span>
                     </md-whiteframe>

@@ -167,7 +167,8 @@ angular.module('deals').run(function(editableOptions) {
 
         deal.$update(function() {
           displayToast("Votre deal a correctement été modifié.");
-          $location.path('deals/' + deal._id);
+          // $location.path('deals/' + deal._id);
+          $location.path('myDeal');
         });
       } else {
         $scope.submitted = true;
