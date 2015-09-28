@@ -3,25 +3,25 @@
 //Setting up route
 angular.module('deals').config(['$stateProvider',
   function($stateProvider) {
-    // Check if the user is connected
-    // var checkLoggedin = function($q, $timeout, $http, $location) {
-    //   // Initialize a new promise
-    //   var deferred = $q.defer();
+     //Check if the user is connected
+     var checkLoggedin = function($q, $timeout, $http, $location) {
+       // Initialize a new promise
+       var deferred = $q.defer();
 
-    //   // Make an AJAX call to check if the user is logged in
-    //   $http.get('/loggedin').success(function(user) {
-    //     // Authenticated
-    //     if (user !== '0') $timeout(deferred.resolve);
+       // Make an AJAX call to check if the user is logged in
+       $http.get('/loggedin').success(function(user) {
+         // Authenticated
+         if (user !== '0') $timeout(deferred.resolve);
 
-    //     // Not Authenticated
-    //     else {
-    //       $timeout(deferred.reject);
-    //       $location.url('/login');
-    //     }
-    //   });
+         // Not Authenticated
+         else {
+           $timeout(deferred.reject);
+           $location.url('/signin');
+         }
+       });
 
-    //   return deferred.promise;
-    // };
+       return deferred.promise;
+    };
 
     // states for my app
     $stateProvider
@@ -36,9 +36,9 @@ angular.module('deals').config(['$stateProvider',
       .state('create deal', {
         url: '/deals/create',
         templateUrl: 'modules/deals/views/create.client.view.html',
-        // resolve: {
-        //   loggedin: checkLoggedin
-        // }
+         resolve: {
+           loggedin: checkLoggedin
+         }
       })
       .state('edit deal', {
         url: '/deals/:dealId/edit',

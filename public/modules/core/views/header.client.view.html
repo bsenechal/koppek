@@ -5,13 +5,32 @@
         class="md-theme-light">
     <h1 class="md-toolbar-tools">Menu</h1>
     </md-toolbar> <md-content ng-controller="LeftCtrl" layout-padding> <md-list>
+	<div data-ng-show="!authentication.user">
+		<h3>Connexion requise</h3>
+		<p>Envie d'accéder à plus de contenu ?<p>
+	
+		<p>Pour cela il vous suffit juste de vous <a href="/#!/signin">connecter</a>.</p>
+		<br/>
+		<md-divider></md-divider> 
+		<md-button href="/#!/signin"
+			class="md-primary"> Connexion </md-button>
+		<md-divider></md-divider> 
+		<md-button href="/#!/signup"
+			class="md-primary"> Inscription </md-button>	
+		<md-divider></md-divider>
+		<br/>
+		<br/>
+		<br/>
+	</div>
+	
     <md-list-item class="md-3-line" data-ng-show="authentication.user"
         layout="row">
     <div flex="20">
-        <br /> <img ng-src="{{authentication.user.avatar}}"
+        <br /> <img ng-src="https://koppekimages.s3-eu-west-1.amazonaws.com/users/{{authentication.user.avatar}}"
             class="img-circle" alt="{{item.who}}" width="100%"
             height="100%" />
     </div>
+
     <md-button href="/#!/myAccount" aria-label="Mon compte">
     <div class="md-list-item-text">
         <h4>{{ authentication.user.firstName }} {{
@@ -19,7 +38,7 @@
         <p>Cavalier de l'apocalypse</p>
     </div>
     </md-button> </md-list-item> <md-divider></md-divider> <md-list-item class="md-3-line"
-        ng-repeat="item in ::menu.items | orderBy: 'position'">
+        ng-repeat="item in ::menu.items | orderBy: 'position'" data-ng-if="item.shouldRender(authentication.user);">
     <div class="md-list-item-text">
         <h3>{{ item.title }}</h3>
         <md-divider></md-divider>
