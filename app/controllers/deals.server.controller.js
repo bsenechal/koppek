@@ -202,6 +202,7 @@ exports.dealsByRadiusLimited = function(req, res) {
       .near({ center: [srchLng, srchLat], maxDistance: srchRadius/6378137, spherical: true })
       .sort(queryOrder)
       .where({description: new RegExp('^.*'+srchText+'.*$', "i")})
+      .where({active:true})
       .skip((page-1)*dealByPage).limit(page*dealByPage)
       .exec(function(err, deals) {
         if (err) {
@@ -221,6 +222,7 @@ exports.dealsByRadiusLimited = function(req, res) {
       Deal.where('loc')
       .near({ center: [srchLng, srchLat], maxDistance: srchRadius/6378137, spherical: true })
       .where({description: new RegExp('^.*'+srchText+'.*$', "i")})
+      .where({active:true})
       .skip((page-1)*dealByPage).limit(page*dealByPage)
       .exec(function(err, deals) {
         if (err) {
@@ -260,7 +262,8 @@ exports.markersByRadius = function(req, res) {
 
   if(srchLng && srchLat && srchRadius){
 
-  Deal.where('loc').near({ center: [srchLng, srchLat], maxDistance: srchRadius/6378137, spherical: true }).select('_id loc').
+  Deal.where({active:true})
+  .where('loc').near({ center: [srchLng, srchLat], maxDistance: srchRadius/6378137, spherical: true }).select('_id loc').
   exec(function(err, deals) {
     if (err) {
       res.render('error', {
@@ -508,7 +511,8 @@ function dealAlertManager (idDeal){
       if(alert>visited*threshold){
         //remove comment or at least banish !
         var query = {'_id': idDeal};
-        var update = {'description': 'ce deal a été supprimé par la communauté !'};
+        // var update = {'description': 'ce deal a été supprimé par la communauté !'};
+        var update = {'active' : false};
         var options = {new: true};
 
         Deal.findOneAndUpdate(query, update, options, function(err, deal) {
