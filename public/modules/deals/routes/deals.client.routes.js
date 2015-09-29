@@ -36,9 +36,9 @@ angular.module('deals').config(['$stateProvider',
       .state('create deal', {
         url: '/deals/create',
         templateUrl: 'modules/deals/views/create.client.view.html',
-         resolve: {
-           loggedin: checkLoggedin
-         }
+         // resolve: {
+         //   loggedin: checkLoggedin
+         // }
       })
       .state('edit deal', {
         url: '/deals/:dealId/edit',

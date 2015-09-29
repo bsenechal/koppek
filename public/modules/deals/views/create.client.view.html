@@ -1,3 +1,4 @@
+
 <section data-ng-controller="DealsController" ng-init="initCreateDeal()" layout="row" layout-sm="column">
         <div layout="column" flex>
             <md-content layout-padding layout-margin> 
@@ -40,16 +41,16 @@
                 <md-input-container> <label>Image</label>
                 </md-input-container>
                 <md-input-container> 
-				
-				                <input id="inputImageDeal" 
+                
+                                <input id="inputImageDeal" 
                 type="file" 
                 accept="image/*" 
-                image="imageDeal" 
+                iuimage="imageDeal" 
                 resize-max-height="400"
                 resize-max-width="400"
                 resize-quality="1.0" />
-				
-					</md-input-container>
+                
+                    </md-input-container>
 
 
                 <md-input-container> 
@@ -60,12 +61,12 @@
                     class="form-control"
                     required></textarea> </md-input-container>
                
-			   <md-input-container> <md-progress-linear
+               <md-input-container> <md-progress-linear
                     md-mode="buffer" value="{{determinateValue}}"
                     md-buffer-value="{{uploadProgress}}"></md-progress-linear>
              <!--   <md-button class="md-primary" ng-click="upload(imageDeal)" data-ng-disabled="disableUpload">Transférer</md-button>-->
                 </md-input-container>
-				
+                
                 <md-input-container> <md-button
                     class="md-primary" ng-click="submit()">Valider</md-button>
                 </md-input-container>
@@ -75,9 +76,7 @@
         <div flex>
             <div data-ng-controller="MapsController"
                 data-ng-init="MapCreateDeal()">
-<!--                 <input id="pac-input" class="controls" type="text"
-                    placeholder="Enter a location">
- -->                <div map-canvas id="map-canvas" style="height: 800px;"></div>
+                <div map-canvas id="map-canvas" style="height: 800px;"></div>
             </div>
         </div>
 </section>
