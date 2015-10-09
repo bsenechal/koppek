@@ -1,0 +1,119 @@
+<section data-ng-controller="DealsController" >
+    <div layout="row" layout-sm="column" flex="50">
+        <!-- <div layout="column" flex style="height: {{windowHeight}}px; overflow: auto;"> -->
+        <div style="height: 800px; overflow: auto;" flex="50">
+                
+                <md-whiteframe ng-show="numberOfDeals >= 1" class="md-whiteframe-z3">
+                        <span>
+                            <form name="searchForm" data-ng-submit="dealSearch()">
+                                <div layout="row" layout-sm="column">
+                                    <md-input-container class="md-accent" flex offset="5" offset-sm="5" flex-sm="90">
+                                    <label>Quoi ?</label> <input data-ng-model="srchText"
+                                        type="text"> </md-input-container>
+                                    <md-select ng-model="srchOrder" placeholder="Trier par" flex offset="5" offset-sm="5" flex-sm="90">
+                                      <md-option value="date">date</md-option>
+                                      <md-option value="promotion">promotion</md-option>
+                                      <md-option value="success">success</md-option>
+                                    </md-select>                                    
+                                    <md-input-container>
+									<div hide-sm>
+										<br />
+									</div>
+									<md-button
+                                        class="md-raised md-primary" data-bg-action="submit()">Rechercher</md-button>
+                                    </md-input-container>
+                                </div>
+                            </form>
+                        </span>
+                    </md-whiteframe>
+                    <md-divider></md-divider>
+                    <md-list data-ng-if="deals[0]._id" layout="column"> <md-list-item class="md-3-line"
+                        data-ng-repeat="deal in deals| filter:searchQuery track by deal._id" layout="row">
+                    
+                        <div flex-sm="25" flex-gt-md="25" flex-md="30">
+                            <md-button aria-label="Detail Deal" data-ng-href="#!/deals/{{::deal._id}}">
+                                <img
+                                ng-src="https://koppekimages.s3-eu-west-1.amazonaws.com/deals/{{::deal.image}}" width = "90%" height="90%"
+                                alt="{{::deal.title}}" />
+                             </md-button>
+                            <div align="center">
+                                <md-button class="md-raised md-primary">{{::deal.salePrice}} €</md-button>
+                            </div>
+                            <div align="center">
+                                <del>{{::deal.initialPrice}} €</del> (- {{::deal.reduction}}%)
+                            </div>
+                        </div>
+						<div flex-sm="60" flex-gt-md="65" flex-md="55">
+                            <h2>
+                                <a
+                                    data-ng-href="/deals/{{::deal._id}}">{{::deal.title}}</a>
+                            </h2>
+                            <div>
+                                <span class="md-caption">{{::deal.created |
+                                    date:'medium'}}</span> / <span>{{::deal.user.name}}</span>
+                                <p>{{::deal.description |
+                                    limitTo:300}}...</p>
+                            </div>
+                        </div>
+                        <div flex-sm="15" flex-gt-md="10" flex-md="15" layout-column>
+                    <!--          <span data-ng-if="hasAuthorization(deal)">
+                                <a class="btn" href="/#!/deals/{{deal._id}}/edit">
+                                  <i class="glyphicon glyphicon-edit"></i>
+                                </a>
+                                <a class="btn" data-ng-click="remove(::deal);">
+                                  <i class="glyphicon glyphicon-trash"></i>
+                                </a>
+                              </span>-->
+                              <div align="center">
+                       <md-button align="center" class="md-fab md-mini md-primary" aria-label="Vote plus" data-ng-init="allowToVoteFct(deal._id,deal._id);" data-ng-disabled="isDisabled[deal._id]" data-ng-click="::updateGradePlus(deal);isDisabled[deal._id] = true">
+                            <md-icon class="glyphicon glyphicon-thumbs-up"></md-icon>
+                          </md-button>
+                            </div>
+
+                              <h2 class="md-headline" align="center">{{deal.grade}}</h2>
+                              <div align="center">
+                         <md-button class="md-fab md-mini md-warn" aria-label="Vote moins" data-ng-disabled="isDisabled[deal._id]" data-ng-click="::updateGradeMinus(deal);isDisabled[deal._id] = true">
+                            <md-icon class="glyphicon glyphicon-thumbs-down"></md-icon>
+                          </md-button>
+                            </div>
+                            <div align="center">
+                              <a class="btn" data-ng-click="::updateAlert(deal);">
+                                <i class="glyphicon glyphicon-exclamation-sign"></i>
+                              </a>
+                            </div>
+                        </div>
+                    </md-list-item> </md-list>
+                    <md-whiteframe ng-show="numberOfDeals < 1" class="md-whiteframe-z1" layout layout-align="center center" >
+                        <center><h3> Pas encore de deal dans cette zone... <a href="/deals/create"><br /><br /> Pourquoi ne pas en créer un ?</a></h3></center>
+                    </md-whiteframe>
+                    <pagination ng-show="numberOfDeals >= 1" data-ng-if="resultIsByRadius" total-items="numberOfDeals" ng-model="currentPage" ng-change="dealsByRadius(currentPage)" items-per-page='20' max-size='5' class="pagination-sm" boundary-links="true" rotate="false" ></pagination>
+                    <pagination ng-show="numberOfDeals >= 1" data-ng-if="!resultIsByRadius" total-items="numberOfDeals" ng-model="currentPage" ng-change="queryAll(currentPage)" items-per-page='20' max-size='5' class="pagination-sm" boundary-links="true" rotate="false" ></pagination>
+
+            <!-- </div> -->
+
+        </div>
+
+        <div flex="50" hide-sm>
+            <div layout="row" layout-sm="column" flex-gt-sm>
+                    <md-input-container class="md-accent" flex-gt-sm="30">
+                    <input id="pac-input"
+                        type="text">  </md-input-container>
+                    <div flex-gt-sm></div>
+                    <md-input-container class="md-accent" flex-gt-sm="30">
+                   <md-slider
+                        class="md-accent" flex-gt-sm="40" min="0" max="100"
+                        value="20" ng-init="srchDealRadius = 20"
+                        ng-model="srchDealRadius" aria-label="srchDealRadius"
+                        id="srchDealRadius-slider"> </md-slider> </md-input-container>
+                    <div flex-gt-sm></div>
+                    <md-input-container flex-gt-sm="20"> <md-checkbox
+                        ng-model="data.cb1" aria-label="Checkbox 1">Deal
+                    web ?</md-checkbox> </md-input-container>
+                    <div flex-gt-sm></div>
+                </div>
+             <section data-ng-controller="MapsController"
+                data-ng-init="Map()">
+                <div map-canvas id="map-canvas" style="height: 800px;"></div>
+            </section>
+        </div>
+</section>

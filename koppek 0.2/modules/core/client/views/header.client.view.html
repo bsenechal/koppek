@@ -1,0 +1,95 @@
+<div ng-controller="HeaderController">
+    <md-sidenav class="md-sidenav-left md-whiteframe-z2"
+        md-component-id="left"> <md-toolbar
+        class="md-theme-light">
+    <h1 class="md-toolbar-tools">Menu</h1>
+    </md-toolbar> <md-content ng-controller="LeftCtrl" layout-padding> <md-list>
+	<div data-ng-show="!authentication.user">
+		<h3>Connexion requise</h3>
+		<p>Envie d'accéder à plus de contenu ?<p>
+	
+		<p>Pour cela il vous suffit juste de vous <a href="/#!/signin">connecter</a>.</p>
+		<br/>
+		<md-divider></md-divider> 
+		<md-button href="/#!/signin"
+			class="md-primary"> Connexion </md-button>
+		<md-divider></md-divider> 
+		<md-button href="/#!/signup"
+			class="md-primary"> Inscription </md-button>	
+		<md-divider></md-divider>
+		<br/>
+		<br/>
+		<br/>
+	</div>
+	
+    <md-list-item class="md-3-line" data-ng-show="authentication.user"
+        layout="row">
+    <div flex="20">
+        <br /> <img ng-src="https://koppekimages.s3-eu-west-1.amazonaws.com/users/{{authentication.user.avatar}}"
+            class="img-circle" alt="{{item.who}}" width="100%"
+            height="100%" />
+    </div>
+
+    <md-button href="/#!/myAccount" aria-label="Mon compte">
+    <div class="md-list-item-text">
+        <h4>{{ authentication.user.firstName }} {{
+            authentication.user.lastName }}</h4>
+        <p>Cavalier de l'apocalypse</p>
+    </div>
+    </md-button> </md-list-item> <md-divider></md-divider> <md-list-item class="md-3-line"
+        ng-repeat="item in ::menu.items | orderBy: 'position'" data-ng-if="item.shouldRender(authentication.user);">
+    <div class="md-list-item-text">
+        <h3>{{ item.title }}</h3>
+        <md-divider></md-divider>
+        <md-list-item class="md-2-line"
+            data-ng-repeat="subitem in item.items | orderBy: 'position'"
+            data-ng-if="subitem.shouldRender(authentication.user);"
+            ui-route="{{subitem.uiRoute}}" ng-class="{active: $uiRoute}">
+        <div class="md-list-item-text">
+            <a href="/#!/{{subitem.link}}" data-ng-bind="subitem.title"></a>
+        </div>
+        </md-list-item>
+
+    </div>
+    </md-list-item> </md-list> <md-divider></md-divider> <md-button ng-click="close()"
+        class="md-primary"> Fermer le menu </md-button> </md-content> </md-sidenav>
+
+    <md-toolbar>
+    <div class="md-toolbar-tools">
+        <md-button class="md-icon-menu" aria-label="Menu"
+            ng-click="toggleLeft()"> <md-icon
+            md-svg-icon="modules/core/client/img/icons/menu.svg"></md-icon> </md-button>
+        <a href="/#!/">Koppek</a> <span flex></span>
+        <md-button href="/#!/deals/create" aria-label="Ajouter un deal"
+            show-sm hide-gt-sm> <span
+            class="glyphicon glyphicon-plus"></span></md-button>
+        <md-button href="/#!/deals/create" aria-label="Ajouter un deal"
+            hide-sm>Ajouter un deal</md-button>
+        <md-button data-ng-hide="authentication.user" href="/#!/authentication/signup"
+            aria-label="Inscription" hide-sm>Inscription</md-button>
+        <md-button data-ng-hide="authentication.user" href="/#!/authentication/signin"
+            aria-label="Connexion" hide-sm>Connexion</md-button>
+    
+        <md-button class="md-icon-button" aria-label="Favorite">
+          
+        <md-icon md-svg-icon="modules/core/client/img/icons/favorite.svg"></md-icon>
+        </md-button>
+        <md-button href="/#!/notifications" aria-label="Notifications" data-ng-show="authentication.user"
+            hide-sm> <md-icon
+            md-svg-src="modules/core/client/img/icons/chat.svg"
+            aria-label="notifications"></md-icon> </md-button>
+            
+         <md-menu md-offset="0 -7" data-ng-show="authentication.user">
+          <md-button aria-label="Open demo menu" class="md-icon-button" ng-click="$mdOpenMenu()">
+            <md-icon md-svg-icon="modules/core/client/img/icons/more_vert.svg"></md-icon>
+          </md-button>
+          <md-menu-content>
+            <md-menu-item width="7">
+                <md-button href="/api/auth/signout">Déconnexion</md-button>
+                <md-button href="/#!/myAccount">Mon compte</md-button>  
+            </md-menu-item>
+          </md-menu-content>
+        </md-menu>    
+    </div>
+    </md-toolbar>
+</div>
